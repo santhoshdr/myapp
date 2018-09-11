@@ -10,7 +10,7 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
-    private int id;
+    private Long id;
     @Column(name = "email")
     private String email;
     @Column(name = "password")
@@ -34,17 +34,11 @@ public class Users {
         this.roles = users.getRoles();
         this.name = users.getName();
         this.lastName =users.getLastName();
-        this.id = users.getId();
+        this.setId(users.getId());
         this.password = users.getPassword();
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getEmail() {
         return email;
@@ -93,4 +87,12 @@ public class Users {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 }

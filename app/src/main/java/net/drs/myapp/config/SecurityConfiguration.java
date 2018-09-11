@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -19,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	private AppAuthenticationEntryPoint appAuthenticationEntryPoint;
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -36,15 +39,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     	 http.csrf().disable();
          http.authorizeRequests()
-                 .antMatchers("**/secured/**").authenticated()
+                 .antMatchers("**'/secured/**").authenticated() //  ' needs to be removed 
                  .anyRequest().permitAll()
                  .and()
                  .formLogin().permitAll();
                 
+                 
+               /* 
+                 http.csrf().disable()
+     		    .authorizeRequests()
+     		  	.antMatchers("/user/**").hasAnyRole("ADMIN","USER")
+     			.and().httpBasic().realmName("MY APP REALM")
+     			.authenticationEntryPoint(appAuthenticationEntryPoint);
+     			
+     			*/
     }
 
     private PasswordEncoder getPasswordEncoder() {
-        return new PasswordEncoder() {
+    	
+    	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;    	
+    	
+        /*return new PasswordEncoder() {
             @Override
             public String encode(CharSequence charSequence) {
                 return charSequence.toString();
@@ -52,8 +68,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
             @Override
             public boolean matches(CharSequence charSequence, String s) {
-                return true;
+                //return true;
+            	return charSequence.toString().equals(s);
             }
         };
-    }
+*/    }
 }
