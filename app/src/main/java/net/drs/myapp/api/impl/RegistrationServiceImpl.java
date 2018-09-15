@@ -20,10 +20,24 @@ public class RegistrationServiceImpl implements IRegistrationService {
 	private IRegistrationDAO registrationDAO;
 	
 	@Override
-	public boolean adduser(User user) {
+	public boolean adduser(User user) throws Exception {
 		
-		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-		return registrationDAO.addUser(user);	
+		try {
+			boolean result = registrationDAO.checkIfUserExistbyName(user);
+			user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()))	;
+			if(!result){
+				return registrationDAO.addUser(user);	
+			}else{
+				throw new Exception("Some problem.");	
+			}
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw e;
+		}
+		
+		
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package net.drs.myapp.api.impl;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityManager;
@@ -26,17 +27,13 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 	
 	public boolean addUser(User user) {
 		try{
-	//		entityManager.persist(user);
+			
 			Users users = new Users(); 
 			Set<Role> roles = new HashSet();
 			Role role = new Role();
 			role.setRole("ADMIN");
-			//role.setRoleId(123);
 			roles.add(role);
-			
 		//	entityManager.merge(role);
-			
-			
 		//	users.setId(user.getUserId());
 			users.setEmail(user.getEmailAddress());
 			users.setActive(1);
@@ -45,8 +42,9 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 			users.setPassword(user.getPassword());
 			//users.set
 			
-			
-			entityManager.merge(users);
+			entityManager.persist(users);
+			user.setUserId(users.getId());
+			entityManager.merge(user);
 			
 			return true;
 		}catch(Exception e){
@@ -60,6 +58,47 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 	public boolean addFotographer(Fotographer fotographer) {
 		entityManager.persist(fotographer);
 		return true;
+	}
+
+
+
+	@Override
+	public boolean checkIfUserExistbyName(User user) throws Exception {
+		try{
+		
+			short enabled = 1;
+			List list = entityManager.createQuery("SELECT count(*) FROM User WHERE firstName=?1 and isActive='true'").setParameter(1,user.getFirstName()).getResultList();;
+			if(list.get(0)!=null && ((Long)list.get(0)).intValue()>0) {
+				throw new Exception("UserName Already present. Try with different username");
+			}
+			
+			
+			// checking is the user name already exists 
+	//		entityManager.find(User.class, user.getFirstName());
+			
+		}catch(Exception e ){
+			throw e;
+		}
+		
+		
+		
+		return false;
+	}
+
+
+
+	@Override
+	public boolean checkIfUserExistbyEmailId(User user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+
+	@Override
+	public boolean checkifUserExistbyPhoneNumber(User user) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 		

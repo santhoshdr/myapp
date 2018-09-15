@@ -5,7 +5,7 @@ import net.drs.myapp.model.User;
 
 public interface IRegistrationService {
 	
-	boolean adduser(User user);
+	boolean adduser(User user) throws Exception;
 	
 	boolean addFotographer(Fotographer fotographer);
 }

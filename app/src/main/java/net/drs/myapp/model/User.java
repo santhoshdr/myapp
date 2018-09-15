@@ -108,6 +108,14 @@ public class User  implements Serializable{
 		this.userId = userId;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	@Column(name="firstName")
 	private String firstName;
 	
@@ -132,8 +140,10 @@ public class User  implements Serializable{
 
 	
 	@Id
-    @Column(name="userId")
+    @Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long id;
+	
 	private Long userId;
 	
 	
