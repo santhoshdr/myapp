@@ -1,21 +1,10 @@
-package net.drs.myapp.model;
+package net.drs.myapp.dto;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-
-@Entity
-@Table(name = "userdetail")
-public class User  implements Serializable{
+public class UserDTO  implements Serializable{
 	/**
 	 * 
 	 */
@@ -117,15 +106,14 @@ public class User  implements Serializable{
 		this.id = id;
 	}
 
-	public Set<Role> getRoles() {
-		return roles;
+	public File getImage() {
+		return image;
 	}
 
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
+	public void setImage(File image) {
+		this.image = image;
 	}
 
-	@Column(name="firstName")
 	private String firstName;
 	
 	private String lastName;
@@ -142,19 +130,13 @@ public class User  implements Serializable{
 	
 	private Date lastUpdated;
 	
-	private String password;
-	
-	@Transient
-	private String confirmPassword;
-
-	
-	@Id
-    @Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	private Long userId;
+
+	private File image;
 	
-	@Transient
-	private Set<Role> roles;
+	private String password;
+	
+	private String confirmPassword;
 }

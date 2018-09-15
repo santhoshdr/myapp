@@ -1,8 +1,12 @@
 package net.drs.myapp.resource;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.drs.myapp.api.IRegistrationService;
+import net.drs.myapp.dto.UserDTO;
+import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
@@ -17,63 +21,33 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RequestMapping("/guest/register")
+@RequestMapping("/guest")
 @RestController
 public class RegistrationRecource {
 	
 	@Autowired
 	IRegistrationService  registrationService;
 	
-	
-
 	@PostMapping("/addUser")
-	public ResponseEntity<?> addArticle(@RequestBody User user,BindingResult bindingResult) {
+	public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO,BindingResult bindingResult) {
         
 		java.util.Date uDate = new java.util.Date();
-
-	//	user.setAddress("Bangalore");
-		user.setDateOfCreation(new java.sql.Date(uDate.getTime()));
-	//	user.setEmailAddress("abc@abc.com");
-    //	user.setFirstName(user.getFirstName());
-	//	user.setLastName("LastName");
-	//  user.setMobileNumber("1234567889");
-	//  user.setPassword(user.getPassword());
-		user.setLastUpdated(new java.sql.Date(uDate.getTime()));				
+		Set<Role> roles = new HashSet();
 		
+		userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
+		userDTO.setLastUpdated(new java.sql.Date(uDate.getTime()));				
 		try {
-			boolean result =registrationService.adduser(user);
+			Role role = new Role();
+			role.setRole("USER");
+			roles.add(role);
+			boolean result =registrationService.adduser(userDTO,roles);
 			
 			SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),"User Added Successfully","");
-			
 			return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(),"");
 			return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 		}
-	/*	if(result){
-			sendEmailNotification.sendEmailNotification("sendEmailNotification", user);
-			
-			sendOTP.verifyOTPGenerate(user,5,5);	
 		}
-		*/
-		
-		
-		////return new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-		
-		
-		
-		
-		
-		
-		
-		/*
-		boolean flag = articleService.addArticle(article);
-        if (flag == false) {
-        	return new ResponseEntity<Void>(HttpStatus.CONFLICT);
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(builder.path("/article/{id}").buildAndExpand(article.getArticleId()).toUri());
-        ////
-*/	}
 }

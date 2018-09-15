@@ -8,10 +8,13 @@ import net.drs.myapp.model.User;
 public interface IUserDAO {
 
 	
-	List<User> getAllUsers();
+	List<User> getAllUsers(int numberofUsers);
 	
 	
-	List<User> getAllActiveUsers();
+	List<User> getAllActiveUsers(int numberofUsers);
+	
+	
+	List<User> getAllAdminActiveUsers(int numberofUsers);
 	
 	
 	User getUser(Long userId);

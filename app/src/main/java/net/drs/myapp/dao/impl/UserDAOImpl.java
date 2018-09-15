@@ -1,5 +1,6 @@
 package net.drs.myapp.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import net.drs.myapp.dao.IUserDAO;
 import net.drs.myapp.model.Otp;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
 
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -25,17 +27,36 @@ public class UserDAOImpl implements IUserDAO {
 	private EntityManager entityManager;
 	
 	
-	public List<User> getAllUsers() {
-			return entityManager.createQuery("from User").getResultList();
+	public List<User> getAllUsers(int numberofUsers) {
+		
+		List tempList = new ArrayList();
+		List<User> userList = new ArrayList<User>(); 
+		tempList = entityManager.createQuery("from Users us , User u where us.id=u.userId").getResultList();
+		
+		
+		Object[] items=  tempList.toArray();
+		
+		for(Object item: items){
+			Object[] arr = (Object[]) item;
+			Users users = (Users) arr[0];
+			User user = (User) arr[1];
+			user.setRoles(users.getRoles());
+			userList.add(user);
+		}
+		
+		return userList;
 	}
 
-	public List<User> getAllActiveUsers() {
+	public List<User> getAllActiveUsers(int numberofUsers) {
 		String selectquery="from User where isActive= :active";
 		javax.persistence.Query query = entityManager.createQuery(selectquery);
 		query.setParameter("active", true);
 		return query.getResultList();
 	}
-/*
+
+	
+	
+	/*
 	public User getUser(Long userId){
 		// not working for 1 - need to check
 		return (User) sessionFactory.getCurrentSession().get(User.class, userId);
@@ -166,5 +187,13 @@ public class UserDAOImpl implements IUserDAO {
 	public Otp getOTPForUserId(Long userid) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<User> getAllAdminActiveUsers(int numberofUsers) {
+		String selectquery="from User where isActive= :active";
+		javax.persistence.Query query = entityManager.createQuery(selectquery);
+		query.setParameter("active", true);
+		return query.getResultList();
 	}	
 }

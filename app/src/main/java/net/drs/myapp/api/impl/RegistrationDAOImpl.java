@@ -25,14 +25,14 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 	@PersistenceContext	
 	private EntityManager entityManager;
 	
-	public boolean addUser(User user) {
+	public boolean addUser(User user,Set<Role> roles) {
 		try{
 			
 			Users users = new Users(); 
-			Set<Role> roles = new HashSet();
+/*			Set<Role> roles = new HashSet();
 			Role role = new Role();
-			role.setRole("ADMIN");
-			roles.add(role);
+			role.setRole("ADMIN");*/
+			//roles.add(role);
 		//	entityManager.merge(role);
 		//	users.setId(user.getUserId());
 			users.setEmail(user.getEmailAddress());
@@ -65,17 +65,10 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 	@Override
 	public boolean checkIfUserExistbyName(User user) throws Exception {
 		try{
-		
-			short enabled = 1;
 			List list = entityManager.createQuery("SELECT count(*) FROM User WHERE firstName=?1 and isActive='true'").setParameter(1,user.getFirstName()).getResultList();;
 			if(list.get(0)!=null && ((Long)list.get(0)).intValue()>0) {
 				throw new Exception("UserName Already present. Try with different username");
 			}
-			
-			
-			// checking is the user name already exists 
-	//		entityManager.find(User.class, user.getFirstName());
-			
 		}catch(Exception e ){
 			throw e;
 		}

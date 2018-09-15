@@ -1,25 +1,38 @@
-package net.drs.myapp.model;
+package net.drs.myapp.dto;
 
-import java.io.Serializable;
+import java.io.File;
 import java.sql.Date;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import net.drs.myapp.model.Role;
 
 
-@Entity
-@Table(name = "userdetail")
-public class User  implements Serializable{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6811026592389788897L;
+// this DTO is used for Updating/Deleting user information
+public class UserServiceDTO {
+
+	private String firstName;
+	
+	private String lastName;
+	
+	private String mobileNumber;
+	
+	private String emailAddress;
+	
+	private String address;
+	
+	private boolean isActive;
+	
+	private Date dateOfCreation;
+	
+	private Date lastUpdated;
+	
+	private Long id;
+	
+	private Long userId;
+
+	private File image;
+	
+	private Set<Role> roles;
 
 	public String getFirstName() {
 		return firstName;
@@ -85,23 +98,15 @@ public class User  implements Serializable{
 		this.lastUpdated = lastUpdated;
 	}
 
-	public String getPassword() {
-		return password;
+	public Long getId() {
+		return id;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
-
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
-	}
-
-    public Long getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 
@@ -109,12 +114,12 @@ public class User  implements Serializable{
 		this.userId = userId;
 	}
 
-	public Long getId() {
-		return id;
+	public File getImage() {
+		return image;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setImage(File image) {
+		this.image = image;
 	}
 
 	public Set<Role> getRoles() {
@@ -124,37 +129,5 @@ public class User  implements Serializable{
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-
-	@Column(name="firstName")
-	private String firstName;
 	
-	private String lastName;
-	
-	private String mobileNumber;
-	
-	private String emailAddress;
-	
-	private String address;
-	
-	private boolean isActive=true;
-	
-	private Date dateOfCreation;
-	
-	private Date lastUpdated;
-	
-	private String password;
-	
-	@Transient
-	private String confirmPassword;
-
-	
-	@Id
-    @Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long id;
-	
-	private Long userId;
-	
-	@Transient
-	private Set<Role> roles;
 }

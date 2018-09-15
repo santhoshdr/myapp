@@ -2,6 +2,7 @@ package net.drs.myapp.api;
 
 import java.util.List;
 
+import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.User;
 
 
@@ -18,14 +19,18 @@ public interface IUserDetails  {
 
 	
 	// this will get all the users
-	List<User> getAllUsers();
+	//int numberofUser - get  numberofUser - records - fetching all can create performance issues
+	 List<UserServiceDTO> getAllUsers(int numberofUser);
 	
 	// get the information of specific user - based on user id
 	User getUserById(Long userid);
 	
 	
 	// get all Active users
-	List<User> getAllActiveUsers();
+	List<UserServiceDTO> getAllActiveUsers(int numberofUser);
+	
+	
+	List<UserServiceDTO> getAllAdminActiveUsers(int numberofUser);
 	
 	//check if the user is active or not, based on userid
 	boolean isUserActive(Long userId);
