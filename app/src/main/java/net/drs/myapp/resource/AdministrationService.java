@@ -8,6 +8,7 @@ import java.util.Set;
 
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
+import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.Role;
@@ -44,7 +45,7 @@ public class AdministrationService {
 			try {
 				Set<Role> roles = new HashSet();
 				Role role = new Role();
-				role.setRole("ADMIN");
+				role.setRole(ApplicationConstants.ROLE_ADMIN);
 				roles.add(role);
 				boolean result =registrationService.adduser(userDTO,roles);
 				
@@ -60,7 +61,7 @@ public class AdministrationService {
 		
 		
 		@GetMapping("/getAllUsers")
-		public ResponseEntity<?> addArticle() {
+		public ResponseEntity<?> getAllUsers() {
 
 			java.util.Date uDate = new java.util.Date();
 			try {

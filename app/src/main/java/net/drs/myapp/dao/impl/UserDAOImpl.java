@@ -1,17 +1,20 @@
 package net.drs.myapp.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IUserDAO;
 import net.drs.myapp.model.Otp;
+import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
 
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -191,9 +194,42 @@ public class UserDAOImpl implements IUserDAO {
 
 	@Override
 	public List<User> getAllAdminActiveUsers(int numberofUsers) {
-		String selectquery="from User where isActive= :active";
+		//String selectquery="from User where isActive= :active";
+		String selectquery="from Users us , User u where us.id=u.userId and u.isActive='true'";// and us.role='ADMIN'";
+		
 		javax.persistence.Query query = entityManager.createQuery(selectquery);
-		query.setParameter("active", true);
-		return query.getResultList();
+		//query.setParameter("active", true);
+		List<User> userList = new ArrayList<User>(); 
+		List tempList = new ArrayList();
+		tempList  = query.getResultList();
+		
+		Object[] items=  tempList.toArray();
+		
+		for(Object item: items){
+			Object[] arr = (Object[]) item;
+			Users users = (Users) arr[0];
+			User user = (User) arr[1];
+			
+			Set<Role> role = users.getRoles();
+			
+			Iterator it = role.iterator();
+			
+			while(it.hasNext()){
+				Role actualRole =  (Role)it.next();
+				
+				
+				if(actualRole.getRole()!=null && actualRole.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN)){
+					user.setRoles(users.getRoles());
+					userList.add(user);
+				}else{
+					System.out.println("User is not ADMIN");
+				}
+			}
+			}
+		
+		return userList;
+
+	
+	
 	}	
 }

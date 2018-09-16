@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.drs.myapp.api.IRegistrationService;
+import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
@@ -34,12 +35,14 @@ public class RegistrationRecource {
 		java.util.Date uDate = new java.util.Date();
 		Set<Role> roles = new HashSet();
 		
+
 		userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
 		userDTO.setLastUpdated(new java.sql.Date(uDate.getTime()));				
 		try {
 			Role role = new Role();
-			role.setRole("USER");
+			role.setRole(ApplicationConstants.ROLE_USER);
 			roles.add(role);
+
 			boolean result =registrationService.adduser(userDTO,roles);
 			
 			SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),"User Added Successfully","");
