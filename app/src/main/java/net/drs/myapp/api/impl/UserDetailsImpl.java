@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.drs.myapp.api.IUserDetails;
+import net.drs.myapp.app.exception.RoleException;
 import net.drs.myapp.dao.IUserDAO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,8 +74,11 @@ public class UserDetailsImpl implements IUserDetails {
 	}
 
 	@Override
-	public boolean deactiveUser(Long userId) {
-		return userDAO.deactivateUser(userId);
+	public boolean deactiveUser(UserServiceDTO  userServiceDTO) {
+		
+		User user = new User();
+		modelMapper.map(userServiceDTO, user);
+		return userDAO.deactivateUser(user);
 	}
 
 	@Override
@@ -95,6 +100,22 @@ public class UserDetailsImpl implements IUserDetails {
 		});
 		//userDAO.getAllUsers();
 		return userDTO;
+	}
+
+
+	@Override
+	public boolean changeUserRole(UserServiceDTO userServiceDTO)  throws RoleException{
+		
+		Users udto = null;
+		try{
+		udto =new Users();
+		userDAO.changeUserRole(userServiceDTO);
+		return false;
+		}catch(RoleException e){
+			throw e;
+		}catch(Exception e){
+			throw new RoleException("Something  wrong. Check later");
+		}
 	}
 
 

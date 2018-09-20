@@ -36,8 +36,8 @@ public class RegistrationServiceImpl implements IRegistrationService {
 			modelMapper.map(userDTO, user);
 			
 			boolean result = registrationDAO.checkIfUserExistbyName(user);
-			user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()))	;
 			if(!result){
+				user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()))	;
 				return registrationDAO.addUser(user,roles);	
 			}else{
 				throw new Exception("Some problem.");	

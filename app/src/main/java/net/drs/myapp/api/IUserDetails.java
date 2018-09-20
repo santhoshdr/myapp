@@ -2,6 +2,8 @@ package net.drs.myapp.api;
 
 import java.util.List;
 
+import net.drs.myapp.app.exception.RoleException;
+import net.drs.myapp.app.exception.UserDetailsException;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.User;
 
@@ -39,9 +41,12 @@ public interface IUserDetails  {
 	boolean activeteUser(Long userId);
 	
 	// Deactivate User / Delete User
-	boolean deactiveUser(Long userId);
+	boolean deactiveUser(UserServiceDTO userServiceDTO);
 	
 	
 	//if the user need to update the details.. 
-	boolean updateUserDetails(User user);	
+	boolean updateUserDetails(User user);
+	
+	
+	boolean changeUserRole(UserServiceDTO userServiceDTO) throws RoleException;
 }

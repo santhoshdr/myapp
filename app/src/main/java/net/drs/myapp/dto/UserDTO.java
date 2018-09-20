@@ -139,4 +139,47 @@ public class UserDTO  implements Serializable{
 	private String password;
 	
 	private String confirmPassword;
+
+private Date creationDate;
+	
+	public Date getCreationDate() {
+	return creationDate;
+}
+
+public void setCreationDate(Date creationDate) {
+	this.creationDate = creationDate;
+}
+
+public String getCreatedBy() {
+	return createdBy;
+}
+
+public void setCreatedBy(String createdBy) {
+	this.createdBy = createdBy;
+}
+
+public Date getUpdatedDate() {
+	return updatedDate;
+}
+
+public void setUpdatedDate(Date updatedDate) {
+	this.updatedDate = updatedDate;
+}
+
+public String getUpdatedBy() {
+	return updatedBy;
+}
+
+public void setUpdatedBy(String updatedBy) {
+	this.updatedBy = updatedBy;
+}
+
+	private String createdBy;
+	
+	private Date updatedDate;
+	
+	private String updatedBy;
+	
+
+
 }

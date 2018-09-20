@@ -1,5 +1,6 @@
 package net.drs.myapp.resource;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +16,10 @@ import net.drs.myapp.response.handler.SuccessMessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,6 +42,11 @@ public class RegistrationRecource {
 
 		userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
 		userDTO.setLastUpdated(new java.sql.Date(uDate.getTime()));				
+		userDTO.setCreatedBy(ApplicationConstants.USER_GUEST);
+		userDTO.setCreationDate(new java.sql.Date(uDate.getTime()));
+		userDTO.setUpdatedBy(ApplicationConstants.USER_GUEST);
+		userDTO.setUpdatedDate(new java.sql.Date(uDate.getTime()));
+		
 		try {
 			Role role = new Role();
 			role.setRole(ApplicationConstants.ROLE_USER);
@@ -53,4 +62,14 @@ public class RegistrationRecource {
 			return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 		}
 		}
+	
+	
+	@GetMapping("/all")
+	@PreAuthorize("hasAnyRole('USER')")
+	public String hello(@AuthenticationPrincipal Principal principal) {
+		
+		principal.getName();
+		return "Hello Youtube";
+    }
+	
 }

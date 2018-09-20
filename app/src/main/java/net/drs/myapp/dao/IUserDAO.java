@@ -2,6 +2,8 @@ package net.drs.myapp.dao;
 
 import java.util.List;
 
+import net.drs.myapp.app.exception.RoleException;
+import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.Otp;
 import net.drs.myapp.model.User;
 
@@ -26,7 +28,7 @@ public interface IUserDAO {
 	boolean activateUser(Long userId);
 	
 	
-	boolean deactivateUser(Long userId);
+	boolean deactivateUser(User user);
 	
 	boolean updateUser(User user);
 	
@@ -43,4 +45,7 @@ public interface IUserDAO {
 
 	Otp getOTPForUserId(Long userid);
 	
+
+	boolean changeUserRole(UserServiceDTO user) throws RoleException;
+
 }

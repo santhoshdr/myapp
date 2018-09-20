@@ -8,8 +8,10 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import net.drs.myapp.app.exception.RoleException;
 import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IUserDAO;
+import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.Otp;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
@@ -162,9 +164,14 @@ public class UserDAOImpl implements IUserDAO {
 	}
 
 	@Override
-	public boolean deactivateUser(Long userId) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean deactivateUser(User user) {
+		
+		User userfromdDB = entityManager.find(User.class, user.getUserId());
+		userfromdDB.setActive(false);
+		userfromdDB.setUpdatedBy(user.getUpdatedBy());
+		userfromdDB.setUpdatedDate(user.getUpdatedDate());
+		entityManager.persist(userfromdDB);
+		return true;
 	}
 
 	@Override
@@ -231,5 +238,34 @@ public class UserDAOImpl implements IUserDAO {
 
 	
 	
+	}
+
+	@Override
+	public boolean changeUserRole(UserServiceDTO userServiceDTO) throws RoleException{
+		
+		
+		try{
+		Role  role = null;
+		Role userUpdatedRole = null;
+		Users usertemp =  entityManager.find(Users.class, userServiceDTO.getUserId());
+		if(userServiceDTO.getRoles().iterator().hasNext()){
+			userUpdatedRole =  userServiceDTO.getRoles().iterator().next();
+		}
+		
+		Iterator it = usertemp.getRoles().iterator();
+		
+		while ( it.hasNext()){
+			role= (Role)it.next();
+			entityManager.createQuery("update Role set role =?1 where roleId = ?2 ").
+			setParameter(1,userUpdatedRole.getRole()).
+			setParameter(2,role.getRoleId()).
+			executeUpdate();
+		}
+		
+		}catch(Exception ex){
+			ex.printStackTrace();
+			throw new RoleException("Unable to add Role. Please contact Administrator ");
+		}
+		return false;
 	}	
 }

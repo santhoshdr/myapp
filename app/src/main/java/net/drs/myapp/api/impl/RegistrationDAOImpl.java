@@ -72,9 +72,6 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 		}catch(Exception e ){
 			throw e;
 		}
-		
-		
-		
 		return false;
 	}
 
