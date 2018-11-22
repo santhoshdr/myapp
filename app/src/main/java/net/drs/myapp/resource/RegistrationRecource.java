@@ -5,11 +5,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
+import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
-import net.drs.myapp.model.User;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 
@@ -33,6 +34,9 @@ public class RegistrationRecource {
 	@Autowired
 	IRegistrationService  registrationService;
 	
+	@Autowired
+	INotifyByEmail notificationByEmailService;
+	
 	@PostMapping("/addUser")
 	public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO,BindingResult bindingResult) {
         
@@ -53,6 +57,20 @@ public class RegistrationRecource {
 			roles.add(role);
 
 			boolean result =registrationService.adduser(userDTO,roles);
+			if(result){
+				//sending email here.. 
+				EmailDTO  emailDto = new EmailDTO();
+				emailDto.setEmailId(userDTO.getEmailAddress());
+				emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
+				emailDto.setCreationDate(new java.sql.Date(uDate.getTime()));
+				emailDto.setUpdatedBy(ApplicationConstants.USER_SYSTEM);
+				emailDto.setUpdatedDate(new java.sql.Date(uDate.getTime()));
+				emailDto.setEmailTemplateId("REGISTRATION_EMAIL");
+				emailDto.setUserID(new Long(123));
+				emailDto.setNeedtoSendEmail(true);
+				notificationByEmailService.insertDatatoDBforNotification(emailDto);
+			}
+			
 			
 			SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),"User Added Successfully","");
 			return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
