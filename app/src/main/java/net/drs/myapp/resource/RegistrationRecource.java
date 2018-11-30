@@ -20,13 +20,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@CrossOrigin
 @RequestMapping("/guest")
 @RestController
 public class RegistrationRecource {
@@ -36,6 +37,7 @@ public class RegistrationRecource {
 	
 	@Autowired
 	INotifyByEmail notificationByEmailService;
+
 	
 	@PostMapping("/addUser")
 	public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO,BindingResult bindingResult) {
@@ -77,7 +79,7 @@ public class RegistrationRecource {
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(),"");
-			return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
 		}
 		}
 	

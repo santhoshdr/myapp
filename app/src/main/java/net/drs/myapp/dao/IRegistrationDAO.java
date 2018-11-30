@@ -13,7 +13,7 @@ public interface IRegistrationDAO {
 	
 	boolean checkIfUserExistbyName(User user) throws Exception;
 	
-	boolean checkIfUserExistbyEmailId(User user);
+	boolean checkIfUserExistbyEmailId(User user) throws Exception;
 	
 	boolean checkifUserExistbyPhoneNumber(User user);
 	

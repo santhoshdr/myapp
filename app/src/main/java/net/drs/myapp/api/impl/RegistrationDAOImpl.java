@@ -1,6 +1,5 @@
 package net.drs.myapp.api.impl;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -78,8 +77,15 @@ public class RegistrationDAOImpl  implements  IRegistrationDAO{
 
 
 	@Override
-	public boolean checkIfUserExistbyEmailId(User user) {
-		// TODO Auto-generated method stub
+	public boolean checkIfUserExistbyEmailId(User user)  throws Exception {
+		try{
+			List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 and isActive='true'").setParameter(1,user.getEmailAddress()).getResultList();;
+			if(list.get(0)!=null && ((Long)list.get(0)).intValue()>0) {
+				throw new Exception("UserName Already present. Try with different username");
+			}
+		}catch(Exception e ){
+			throw e;
+		}
 		return false;
 	}
 
