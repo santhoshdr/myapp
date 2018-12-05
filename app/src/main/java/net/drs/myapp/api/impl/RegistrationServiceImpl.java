@@ -35,10 +35,10 @@ public class RegistrationServiceImpl implements IRegistrationService {
 			
 			modelMapper.map(userDTO, user);
 			
-			boolean result1 = registrationDAO.checkIfUserExistbyEmailId(user);
+			boolean result = registrationDAO.checkIfUserExistbyEmailId(user);
 			
 			
-			boolean result = registrationDAO.checkIfUserExistbyName(user);
+			//boolean result = registrationDAO.checkIfUserExistbyName(user);
 			if(!result){
 				user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()))	;
 				return registrationDAO.addUser(user,roles);	

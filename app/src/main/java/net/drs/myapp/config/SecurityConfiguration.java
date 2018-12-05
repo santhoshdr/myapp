@@ -1,5 +1,7 @@
 package net.drs.myapp.config;
 
+import java.util.Arrays;
+
 import net.drs.myapp.repositpry.UsersRepository;
 import net.drs.myapp.service.CustomUserDetailsService;
 
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.session.web.http.HeaderHttpSessionStrategy;
 import org.springframework.session.web.http.HttpSessionStrategy;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
@@ -40,13 +45,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-    	 http.csrf().disable();
+    	http.csrf().disable();
+    	 //http.cors();
          http.authorizeRequests()
                  .antMatchers("**'/secured/**").authenticated() //  ' needs to be removed 
                  .anyRequest().permitAll()
                  .and()
                  .formLogin().permitAll();
-                
                  
                /* 
                  http.csrf().disable()
@@ -58,6 +63,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
      			*/
     }
 
+    
+    @Bean
+    CorsConfigurationSource corsConfigurationSource()
+    {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://localhost:8085"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+    
     private PasswordEncoder getPasswordEncoder() {
     	
     	BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();

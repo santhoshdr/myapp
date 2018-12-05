@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableScheduling
+@EnableScheduling  
 @EnableBatchProcessing
 @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class})
 public class AppApplication {

@@ -79,7 +79,7 @@ public class RegistrationRecource {
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(),"");
-			return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(errorDetails, HttpStatus.ACCEPTED);
 		}
 		}
 	
