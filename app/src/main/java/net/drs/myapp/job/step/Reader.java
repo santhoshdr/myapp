@@ -94,7 +94,7 @@ public class Reader implements ItemReader<String> {
 		// TODO Auto-generated method stub
 		
 		reader();
-		return "Hello";
+		return null;
 	}
 	
 }
