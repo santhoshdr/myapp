@@ -46,7 +46,7 @@ public class AdministrationService {
 		@Autowired
 		IUserDetails userDetails;
 		
-		@PostMapping("/addUser")
+		@PostMapping("/addAdmin")
 		public ResponseEntity<?> addUser(@AuthenticationPrincipal Principal principal, @RequestBody UserDTO userDTO,BindingResult bindingResult) {
 	    	java.util.Date uDate = new java.util.Date();
 			userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
