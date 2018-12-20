@@ -31,7 +31,7 @@ public class HelloResource {
         return "Secured Hello";
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasAnyRole('USER1')")
     @GetMapping("/secured/alternate")
     public String alternate() {
         return "alternate";
