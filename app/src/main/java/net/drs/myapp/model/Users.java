@@ -17,6 +17,11 @@ public class Users {
     private String password;
     @Column(name = "name")
     private String name;
+    
+    @Column(name = "usersname")
+    private String usersname;
+    
+       
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "active")
@@ -94,5 +99,13 @@ public class Users {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getUsername() {
+		return usersname;
+	}
+
+	public void setUsername(String usersname) {
+		this.usersname = usersname;
 	}
 }
