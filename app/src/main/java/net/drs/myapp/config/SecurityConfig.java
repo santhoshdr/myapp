@@ -16,13 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
-/**
- * Created by rajeevkumarsingh on 01/08/17.
- */
-
 @Configuration
-@EnableWebSecurity(debug=true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(
         securedEnabled = true,
         jsr250Enabled = true,
@@ -84,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.js")
                         .permitAll()
                         .antMatchers("/guest/**").permitAll()
-                  //      .antMatchers("/admin/**").permitAll()
+                       .antMatchers("/admin/**").permitAll()
                         .antMatchers("/rest/hello/secured/alternate/**").permitAll()
                     .antMatchers("/api/auth/**")
                         .permitAll()

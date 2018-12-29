@@ -45,7 +45,6 @@ public class RegistrationRecource {
 		java.util.Date uDate = new java.util.Date();
 		Set<Role> roles = new HashSet();
 		
-
 		userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
 		userDTO.setLastUpdated(new java.sql.Date(uDate.getTime()));				
 		userDTO.setCreatedBy(ApplicationConstants.USER_GUEST);
@@ -59,8 +58,8 @@ public class RegistrationRecource {
 			roles.add(role);
 
 			boolean result =registrationService.adduser(userDTO,roles);
+		
 			if(result){
-				//sending email here.. 
 				EmailDTO  emailDto = new EmailDTO();
 				emailDto.setEmailId(userDTO.getEmailAddress());
 				emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
@@ -73,13 +72,12 @@ public class RegistrationRecource {
 				notificationByEmailService.insertDatatoDBforNotification(emailDto);
 			}
 			
-			
 			SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),"User Added Successfully","");
 			return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(),"");
-			return new ResponseEntity<>(errorDetails, HttpStatus.ACCEPTED);
+			return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 		}
 		}
 	
