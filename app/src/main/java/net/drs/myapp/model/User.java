@@ -19,6 +19,16 @@ public class User  implements Serializable{
 	/**
 	 * 
 	 */
+	
+	
+	public User(){
+		
+	}
+	public User(String emailidOrName,String mobileNumber){
+		this.emailAddress=emailidOrName;
+		this.mobileNumber=mobileNumber;
+	}
+	
 	private static final long serialVersionUID = 6811026592389788897L;
 
 	public String getFirstName() {

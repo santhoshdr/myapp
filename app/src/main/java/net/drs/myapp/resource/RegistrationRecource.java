@@ -8,6 +8,7 @@ import java.util.Set;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
+import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
@@ -74,6 +75,42 @@ public class RegistrationRecource {
 			
 			SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),"User Added Successfully","");
 			return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
+		} catch (Exception e) {
+			e.printStackTrace();
+			ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(),"");
+			return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+		}
+		}
+	
+	
+	
+	
+	
+	@PostMapping("/completeRegistration")
+	public ResponseEntity<?> completeRegistration(@RequestBody CompleteRegistrationDTO completeRegistrationDTO,BindingResult bindingResult) {
+        
+		java.util.Date uDate = new java.util.Date();
+		Set<Role> roles = new HashSet();
+		
+		completeRegistrationDTO.setCreatedDate(new java.sql.Date(uDate.getTime()));
+		completeRegistrationDTO.setUpdatedDate(new java.sql.Date(uDate.getTime()));				
+		completeRegistrationDTO.setCreatedBy(ApplicationConstants.USER_SYSTEM);
+		completeRegistrationDTO.setUpdatedBy(ApplicationConstants.USER_SYSTEM);
+		// USER_SYSTEM means my user regustration. 
+		
+		try {
+			Role role = new Role();
+			role.setRole(ApplicationConstants.ROLE_USER);
+			roles.add(role);
+
+			boolean result =registrationService.completeRegistration(completeRegistrationDTO);
+			if(result){
+			SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),"User Details added Successfully","");
+			return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
+			}else{
+				ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Unable to store user details. Please try after some time...","" );
+				return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(),"");
