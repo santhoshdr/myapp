@@ -39,7 +39,7 @@ public class RegistrationRecource {
 
     @Autowired
     INotifyByEmail notificationByEmailService;
-    
+
     @Autowired
     RabbitMqService rabbitMqService;
 
@@ -75,11 +75,11 @@ public class RegistrationRecource {
                 emailDto.setNeedtoSendEmail(true);
                 notificationByEmailService.insertDatatoDBforNotification(emailDto);
             }
-            
+
             rabbitMqService.publishSMSMessage("User Created", "phone number");
-            
+
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
-            return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");

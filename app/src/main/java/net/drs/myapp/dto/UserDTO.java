@@ -4,182 +4,180 @@ import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 
-public class UserDTO  implements Serializable{
-	/**
+public class UserDTO implements Serializable {
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 6811026592389788897L;
+    private static final long serialVersionUID = 6811026592389788897L;
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getMobileNumber() {
-		return mobileNumber;
-	}
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
-	}
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    public String getEmailAddress() {
+        return emailAddress;
+    }
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public boolean isActive() {
-		return isActive;
-	}
+    public boolean isActive() {
+        return isActive;
+    }
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
 
-	public Date getDateOfCreation() {
-		return dateOfCreation;
-	}
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
 
-	public void setDateOfCreation(Date dateOfCreation) {
-		this.dateOfCreation = dateOfCreation;
-	}
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
 
-	public Date getLastUpdated() {
-		return lastUpdated;
-	}
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
 
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String getConfirmPassword() {
-		return confirmPassword;
-	}
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
 
-	public void setConfirmPassword(String confirmPassword) {
-		this.confirmPassword = confirmPassword;
-	}
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 
     public Long getUserId() {
-		return userId;
-	}
+        return userId;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public File getImage() {
-		return image;
-	}
+    public File getImage() {
+        return image;
+    }
 
-	public void setImage(File image) {
-		this.image = image;
-	}
+    public void setImage(File image) {
+        this.image = image;
+    }
 
-	private String firstName;
-	
-	private String lastName;
-	
-	private String mobileNumber;
-	
-	private String emailAddress;
-	
-	private String address;
-	
-	private boolean isActive=true;
-	
-	private Date dateOfCreation;
-	
-	private Date lastUpdated;
-	
-	private Long id;
-	
-	private Long userId;
+    private String firstName;
 
-	private File image;
-	
-	private String password;
-	
-	private String confirmPassword;
+    private String lastName;
 
-private Date creationDate;
-	
-	public Date getCreationDate() {
-	return creationDate;
-}
+    private String mobileNumber;
 
-public void setCreationDate(Date creationDate) {
-	this.creationDate = creationDate;
-}
+    private String emailAddress;
 
-public String getCreatedBy() {
-	return createdBy;
-}
+    private String address;
 
-public void setCreatedBy(String createdBy) {
-	this.createdBy = createdBy;
-}
+    private boolean isActive = true;
 
-public Date getUpdatedDate() {
-	return updatedDate;
-}
+    private Date dateOfCreation;
 
-public void setUpdatedDate(Date updatedDate) {
-	this.updatedDate = updatedDate;
-}
+    private Date lastUpdated;
 
-public String getUpdatedBy() {
-	return updatedBy;
-}
+    private Long id;
 
-public void setUpdatedBy(String updatedBy) {
-	this.updatedBy = updatedBy;
-}
+    private Long userId;
 
-	private String createdBy;
-	
-	private Date updatedDate;
-	
-	private String updatedBy;
-	
+    private File image;
 
+    private String password;
+
+    private String confirmPassword;
+
+    private Date creationDate;
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
+
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    private String createdBy;
+
+    private Date updatedDate;
+
+    private String updatedBy;
 
 }

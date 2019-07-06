@@ -64,11 +64,11 @@ public class AdministrationService {
 
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
 
-            return new ResponseEntity<>(messageHandler, HttpStatus.ACCEPTED);
+            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
-            return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
     }
 
