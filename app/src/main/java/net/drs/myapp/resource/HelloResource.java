@@ -1,6 +1,5 @@
 package net.drs.myapp.resource;
 
-
 import java.security.Principal;
 
 import net.drs.myapp.api.IUserDetails;
@@ -14,12 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest/hello")
 @RestController
 public class HelloResource {
-	
-	@Autowired
-	IUserDetails userDetails;
-	
 
-	@GetMapping("/all")
+    @Autowired
+    IUserDetails userDetails;
+
+    @GetMapping("/all")
     public String hello() {
         return "Hello Youtube";
     }
@@ -27,7 +25,7 @@ public class HelloResource {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/secured/all")
     public String securedHello(Principal princi) {
-    	userDetails.activeteUser(new Long(123));
+        userDetails.activeteUser(new Long(123));
         return "Secured Hello";
     }
 

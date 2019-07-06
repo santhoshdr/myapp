@@ -6,61 +6,52 @@ import java.sql.Date;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-
-@Inheritance(
-	    strategy = InheritanceType.JOINED
-	)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class CommonDTO implements Serializable {
 
-	/**
+    /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	
-	private String createdBy;
-	
-	private Date updatedDate;
-	
-	private String updatedBy;
-	
-	private Date createdDate;
-	
-	
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    private static final long serialVersionUID = 1L;
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    private String createdBy;
 
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
+    private Date updatedDate;
 
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
-	}
+    private String updatedBy;
 
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    private Date createdDate;
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public Date getCreatedDate() {
-		return createdDate;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setCreatedDate(Date createdDate) {
-		this.createdDate = createdDate;
-	}
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
 
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
 
-	
-	
-	
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
+
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
+
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+
 }
