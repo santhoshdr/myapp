@@ -33,10 +33,10 @@ public class RegistrationServiceImpl implements IRegistrationService {
 
     @Value("${upload.image}")
     private String uploadimage;
-    
+
     @Value("${upload.image.location}")
     private String uploadImageLocation;
-    
+
     @Override
     public boolean adduser(UserDTO userDTO, Set<Role> roles) throws Exception {
 
@@ -55,7 +55,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
             throw e;
         }
     }
-    
+
     @Override
     public boolean addFotographer(Fotographer fotographer) {
         registrationDAO.addFotographer(fotographer);
@@ -90,10 +90,11 @@ public class RegistrationServiceImpl implements IRegistrationService {
             if (!result) {
                 user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
                 userId = registrationDAO.addUserandGetUserId(user, roles);
-                if(uploadimage!=null && uploadimage.equals("folder")){
-                    File filetobeUploaded = userDTO.getImage();
+                File filetobeUploaded = userDTO.getImage() != null ? userDTO.getImage() : null;
+
+                if (uploadimage != null && uploadimage.equals("folder") && filetobeUploaded != null) {
                     byte[] bytes = Files.readAllBytes(filetobeUploaded.toPath());
-                    Path path = Paths.get(uploadImageLocation +File.separator+ userId+"--"+filetobeUploaded.getName());
+                    Path path = Paths.get(uploadImageLocation + File.separator + userId + "--" + filetobeUploaded.getName());
                     Files.write(path, bytes);
                 }
             } else {
@@ -102,7 +103,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
         } catch (Exception e) {
             throw e;
         }
-        return  userId;
+        return userId;
     }
 
     /*
