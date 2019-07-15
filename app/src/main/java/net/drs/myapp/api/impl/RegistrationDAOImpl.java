@@ -25,26 +25,16 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
 
     public boolean addUser(User user, Set<Role> roles) {
         try {
-
             Users users = new Users();
-            /*
-             * Set<Role> roles = new HashSet(); Role role = new Role();
-             * role.setRole("ADMIN");
-             */
-            // roles.add(role);
-            // entityManager.merge(role);
-            // users.setId(user.getUserId());
             users.setEmail(user.getEmailAddress());
             users.setActive(1);
             users.setRoles(roles);
             users.setName(user.getFirstName());
             users.setPassword(user.getPassword());
-            // users.set
-
+            users.setLastName(user.getLastName());
             entityManager.persist(users);
             user.setUserId(users.getId());
             entityManager.merge(user);
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,7 +93,6 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     public boolean completeRegistration(CompleteUserDetails completeUserDetails) {
         try {
             entityManager.merge(completeUserDetails);
-            // entityManager.persist(arg0);(completeUserDetails);
         } catch (Exception e) {
             throw e;
         }
@@ -139,7 +128,6 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     public User checkIfUserPhoneisPresentandVerified(String phoneNumber) {
         boolean verifiedUser = false;
         try {
-
             User user = null;
             /*
              * List<DepartmentEntity> depts =
@@ -156,6 +144,27 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             throw e;
         }
         return null;
+    }
+
+    @Override
+    public Long addUserandGetUserId(User user, Set<Role> roles) {
+
+        Users users = new Users();
+        try {
+            users.setEmail(user.getEmailAddress());
+            users.setActive(1);
+            users.setRoles(roles);
+            users.setName(user.getFirstName());
+            users.setPassword(user.getPassword());
+            users.setLastName(user.getLastName());
+            entityManager.persist(users);
+            user.setUserId(users.getId());
+            entityManager.merge(user);
+        } catch (Exception e) {
+            // throw exception
+            e.printStackTrace();
+        }
+        return users.getId();
     }
 
 }

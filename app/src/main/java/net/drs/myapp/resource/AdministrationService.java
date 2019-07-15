@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 // these methods should be only accessible by admins
-@RequestMapping("/admin")
 @RestController
-// @PreAuthorize("hasAnyRole('ADMIN')")
+@RequestMapping("/admin")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class AdministrationService {
 
     @Autowired

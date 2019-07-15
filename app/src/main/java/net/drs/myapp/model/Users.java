@@ -17,11 +17,10 @@ public class Users {
     private String password;
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "usersname")
     private String usersname;
-    
-       
+
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "active")
@@ -38,12 +37,10 @@ public class Users {
         this.email = users.getEmail();
         this.roles = users.getRoles();
         this.name = users.getName();
-        this.lastName =users.getLastName();
+        this.lastName = users.getLastName();
         this.setId(users.getId());
         this.password = users.getPassword();
     }
-
-
 
     public String getEmail() {
         return email;
@@ -93,19 +90,19 @@ public class Users {
         this.roles = roles;
     }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getUsername() {
-		return usersname;
-	}
+    public String getUsername() {
+        return usersname;
+    }
 
-	public void setUsername(String usersname) {
-		this.usersname = usersname;
-	}
+    public void setUsername(String usersname) {
+        this.usersname = usersname;
+    }
 }

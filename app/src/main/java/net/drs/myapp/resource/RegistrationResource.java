@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/guest")
 @RestController
-public class RegistrationRecource {
+public class RegistrationResource {
 
     @Autowired
     IRegistrationService registrationService;
@@ -60,10 +60,8 @@ public class RegistrationRecource {
             Role role = new Role();
             role.setRole(ApplicationConstants.ROLE_USER);
             roles.add(role);
-
-            boolean result = registrationService.adduser(userDTO, roles);
-
-            if (result) {
+            Long userId = registrationService.adduserandGetId(userDTO, roles);
+            if (userId != null && userId > 0) {
                 EmailDTO emailDto = new EmailDTO();
                 emailDto.setEmailId(userDTO.getEmailAddress());
                 emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
@@ -75,9 +73,7 @@ public class RegistrationRecource {
                 emailDto.setNeedtoSendEmail(true);
                 notificationByEmailService.insertDatatoDBforNotification(emailDto);
             }
-
             rabbitMqService.publishSMSMessage("User Created", "phone number");
-
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -92,18 +88,16 @@ public class RegistrationRecource {
 
         java.util.Date uDate = new java.util.Date();
         Set<Role> roles = new HashSet();
-
         completeRegistrationDTO.setCreatedDate(new java.sql.Date(uDate.getTime()));
         completeRegistrationDTO.setUpdatedDate(new java.sql.Date(uDate.getTime()));
         completeRegistrationDTO.setCreatedBy(ApplicationConstants.USER_SYSTEM);
         completeRegistrationDTO.setUpdatedBy(ApplicationConstants.USER_SYSTEM);
-        // USER_SYSTEM means my user regustration.
+        // USER_SYSTEM means my user registration.
 
         try {
             Role role = new Role();
             role.setRole(ApplicationConstants.ROLE_USER);
             roles.add(role);
-
             boolean result = registrationService.completeRegistration(completeRegistrationDTO);
             if (result) {
                 SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Details added Successfully", "");
