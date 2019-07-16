@@ -11,6 +11,10 @@ public interface IRegistrationService {
 
     boolean adduser(UserDTO userDTO, Set<Role> roles) throws Exception;
 
+    String forgotPassword(String emailId) throws Exception;
+
+    boolean resetPassword(UserDTO userDTO) throws Exception;
+
     Long adduserandGetId(UserDTO userDTO, Set<Role> roles) throws Exception;
 
     boolean completeRegistration(CompleteRegistrationDTO completeRegistrationDTO) throws Exception;

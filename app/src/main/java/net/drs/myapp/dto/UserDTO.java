@@ -140,6 +140,17 @@ public class UserDTO implements Serializable {
 
     private String confirmPassword;
 
+    // this is used at the time of resetting of password
+    private String temperoryPassword;
+
+    public String getTemperoryPassword() {
+        return temperoryPassword;
+    }
+
+    public void setTemperoryPassword(String temperoryPassword) {
+        this.temperoryPassword = temperoryPassword;
+    }
+
     private Date creationDate;
 
     public Date getCreationDate() {

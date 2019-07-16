@@ -6,14 +6,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 
+import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
+import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IRegistrationDAO;
 import net.drs.myapp.dto.CompleteRegistrationDTO;
+import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.CompleteUserDetails;
 import net.drs.myapp.model.Fotographer;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
+import net.drs.myapp.mqservice.NotificationRequest;
+import net.drs.myapp.mqservice.RabbitMqService;
+import net.drs.myapp.utils.AppUtils;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +35,12 @@ public class RegistrationServiceImpl implements IRegistrationService {
 
     @Autowired
     private IRegistrationDAO registrationDAO;
+
+    @Autowired
+    RabbitMqService rabbitMqService;
+
+    @Autowired
+    INotifyByEmail notificationByEmailService;
 
     private ModelMapper modelMapper = new ModelMapper();
 
@@ -64,17 +77,17 @@ public class RegistrationServiceImpl implements IRegistrationService {
 
     @Override
     public boolean completeRegistration(CompleteRegistrationDTO completeRegistrationDTO) throws Exception {
-        User user = null;
+        Users users = null;
         CompleteUserDetails completeUserDetails = new CompleteUserDetails();
         modelMapper.map(completeRegistrationDTO, completeUserDetails);
-        user = registrationDAO.checkIfUserEmailisPresentandVerified(completeRegistrationDTO.getUserIdorEmailAddress());
-        if (null != user) {
-            completeUserDetails.setUserId(user.getUserId());
+        users = registrationDAO.checkIfUserPhoneisPresentandVerified(completeRegistrationDTO.getUserIdorEmailAddress());
+        if (null != users) {
+            completeUserDetails.setUserId(users.getId());
             registrationDAO.completeRegistration(completeUserDetails);
         } else {
-            user = registrationDAO.checkIfUserPhoneisPresentandVerified(completeRegistrationDTO.getUserIdorEmailAddress());
+            users = registrationDAO.checkIfUserPhoneisPresentandVerified(completeRegistrationDTO.getUserIdorEmailAddress());
         }
-        if (user == null) {
+        if (users == null) {
             throw new Exception("Email or Mobile is not registered. Please register with you email id or phone number");
         }
         return false;
@@ -104,6 +117,52 @@ public class RegistrationServiceImpl implements IRegistrationService {
             throw e;
         }
         return userId;
+    }
+
+    @Override
+    public String forgotPassword(String emailId) throws Exception {
+
+        // check if user exist and is active
+        Users users = registrationDAO.checkIfUserPhoneisPresentandVerified(emailId);
+        if (users == null) {
+            throw new Exception("Email Id Not found ...");
+        }
+        System.out.println("Resetting password");
+        String temperoryPassword = AppUtils.generateRandomString();
+        users.setEmail(emailId);
+        users.setPassword(temperoryPassword);
+        users.setId(users.getId());
+        boolean result = registrationDAO.updateUserWithTemperoryPassword(users);
+        if (!result) {
+            throw new Exception("Unable to Reset Password. Kindly Try after some time. OR Contact Administrator.");
+        }
+
+        EmailDTO emailDto = new EmailDTO();
+        java.util.Date uDate = new java.util.Date();
+        emailDto.setEmailId(emailId);
+        emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
+        emailDto.setCreationDate(new java.sql.Date(uDate.getTime()));
+        emailDto.setUpdatedBy(ApplicationConstants.USER_SYSTEM);
+        emailDto.setUpdatedDate(new java.sql.Date(uDate.getTime()));
+        emailDto.setEmailTemplateId("FORGOTPASSWORD_EMAIL");
+        emailDto.setUserID(new Long(123));
+        emailDto.setNeedtoSendEmail(true);
+        Long notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
+
+        rabbitMqService.publishSMSMessage(new NotificationRequest(notificationId, emailId, "FORGOTPASSWORD_EMAIL"));
+        return "SUCCESS";
+    }
+
+    @Override
+    public boolean resetPassword(UserDTO userDTO) throws Exception {
+
+        Users users = registrationDAO.checkIfUserPhoneisPresentandVerified(userDTO.getEmailAddress());
+        if (users == null) {
+            throw new Exception("Email Id Not found ...");
+        }
+        users.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
+        registrationDAO.resetPassword(users);
+        return true;
     }
 
     /*

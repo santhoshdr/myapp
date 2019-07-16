@@ -73,17 +73,46 @@ public class RegistrationResource {
                 emailDto.setEmailTemplateId("REGISTRATION_EMAIL");
                 emailDto.setUserID(new Long(123));
                 emailDto.setNeedtoSendEmail(true);
-                notificationId =  notificationByEmailService.insertDatatoDBforNotification(emailDto);
-                
+                notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
+
                 NotificationRequest notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), "TEMPLATE");
                 rabbitMqService.publishSMSMessage(notificationReq);
             }
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
+            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        }
+    }
 
-            
-            
-            
-            
-            
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<?> forgotPassword(@RequestBody String emailId, BindingResult bindingResult) {
+
+        java.util.Date uDate = new java.util.Date();
+        try {
+            registrationService.forgotPassword(emailId);
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
+            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/resetPassword")
+    public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+
+        try {
+
+            java.util.Date uDate = new java.util.Date();
+            if (!userDTO.getPassword().equalsIgnoreCase(userDTO.getConfirmPassword())) {
+                throw new Exception("Password and Confirm Password doesnt match. Please try again with correct password");
+            }
+
+            registrationService.resetPassword(userDTO);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {

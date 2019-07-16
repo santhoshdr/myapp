@@ -18,7 +18,6 @@ public class User implements Serializable {
     /**
 	 * 
 	 */
-
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

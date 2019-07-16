@@ -44,6 +44,29 @@ public class AppApplicationTests {
     }
 
     @Test
+    public void forgotPassword() {
+        String forgottenEmailid = "77686586894900@email.com";
+        HttpEntity<String> entity = new HttpEntity<String>(forgottenEmailid, headers);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/forgotPassword"), HttpMethod.POST, entity, UserDTO.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+    }
+
+    @Test
+    public void resetPassword() {
+
+        UserDTO userDTO = new UserDTO();
+
+        userDTO.setEmailAddress("77686586894900@email.com");
+        userDTO.setMobileNumber("9999999999");
+        userDTO.setTemperoryPassword("rR5jd8mD");
+        userDTO.setPassword("newpassword");
+        userDTO.setConfirmPassword("newpassword");
+        HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/resetPassword"), HttpMethod.POST, entity, UserDTO.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+    }
+
+    @Test
     public void createUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");

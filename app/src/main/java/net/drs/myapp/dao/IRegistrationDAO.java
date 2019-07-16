@@ -6,6 +6,7 @@ import net.drs.myapp.model.CompleteUserDetails;
 import net.drs.myapp.model.Fotographer;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
 
 public interface IRegistrationDAO {
 
@@ -26,6 +27,10 @@ public interface IRegistrationDAO {
 
     User checkIfUserEmailisPresentandVerified(String email);
 
-    User checkIfUserPhoneisPresentandVerified(String phoneNumber);
+    Users checkIfUserPhoneisPresentandVerified(String emailorphoneNumber) throws Exception;
+
+    boolean updateUserWithTemperoryPassword(Users users);
+
+    boolean resetPassword(Users users);
 
 }

@@ -65,7 +65,6 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     public boolean checkIfUserExistbyEmailId(User user) throws Exception {
         try {
             List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 and isActive='true'").setParameter(1, user.getEmailAddress()).getResultList();
-            ;
             if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
                 throw new Exception("UserName Already present. Try with different username");
             }
@@ -125,25 +124,14 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     }
 
     @Override
-    public User checkIfUserPhoneisPresentandVerified(String phoneNumber) {
-        boolean verifiedUser = false;
+    public Users checkIfUserPhoneisPresentandVerified(String phoneNumberoremailid) throws Exception {
+        Users users = null;
         try {
-            User user = null;
-            /*
-             * List<DepartmentEntity> depts =
-             * manager.createQuery("Select a From DepartmentEntity a",
-             * DepartmentEntity.class).getResultList();
-             */
-            List list = entityManager.createQuery("SELECT user FROM User user WHERE emailAddress=?1 and isActive='true'", User.class).setParameter(1, phoneNumber).getResultList();
-            if (list.size() == 1 && list.get(0) != null) {
-                user = ((User) list.get(0));
-                verifiedUser = true;
-            }
+            users = (Users) entityManager.createQuery("from Users WHERE EMAIL=:email and ACTIVE='1'").setParameter("email", phoneNumberoremailid).getSingleResult();
         } catch (Exception e) {
-            verifiedUser = true;
-            throw e;
+            throw new Exception("Exception in fetching details for the user ");
         }
-        return null;
+        return users;
     }
 
     @Override
@@ -165,6 +153,27 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             e.printStackTrace();
         }
         return users.getId();
+    }
+
+    @Override
+    public boolean updateUserWithTemperoryPassword(Users users) {
+        int result = entityManager.createQuery("update Users set password =:tempPassword WHERE email=:emailid and USER_Id=:userId").setParameter("tempPassword", users.getPassword())
+                .setParameter("emailid", users.getEmail()).setParameter("userId", users.getId()).executeUpdate();
+        if (result == 1) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean resetPassword(Users users) {
+
+        int result = entityManager.createQuery("update Users set password =:newPassword WHERE email=:emailid and USER_Id=:userId").setParameter("newPassword", users.getPassword())
+                .setParameter("emailid", users.getEmail()).setParameter("userId", users.getId()).executeUpdate();
+        if (result == 1) {
+            return true;
+        }
+        return false;
     }
 
 }
