@@ -147,8 +147,7 @@ public class UserDAOImpl implements IUserDAO {
 
 	@Override
 	public User getUser(Long userId) {
-		// TODO Auto-generated method stub
-		return null;
+	    return (User) entityManager.createQuery("from User where id=:id").setParameter("id", userId).getSingleResult();
 	}
 
 	@Override
@@ -176,8 +175,14 @@ public class UserDAOImpl implements IUserDAO {
 
 	@Override
 	public boolean updateUser(User user) {
-		// TODO Auto-generated method stub
-		return false;
+	    User userfromdDB = entityManager.find(User.class, user.getId());
+	    userfromdDB.setAddress(user.getAddress());
+	    userfromdDB.setFirstName(user.getFirstName());
+	    userfromdDB.setLastName(user.getLastName());
+	    userfromdDB.setMobileNumber(user.getMobileNumber());
+	    entityManager.persist(userfromdDB);
+	    entityManager.close();
+		return true;
 	}
 
 	@Override
