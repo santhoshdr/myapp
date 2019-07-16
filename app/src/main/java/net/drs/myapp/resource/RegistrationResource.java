@@ -12,6 +12,7 @@ import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
+import net.drs.myapp.mqservice.NotificationRequest;
 import net.drs.myapp.mqservice.RabbitMqService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
@@ -48,6 +49,7 @@ public class RegistrationResource {
 
         java.util.Date uDate = new java.util.Date();
         Set<Role> roles = new HashSet();
+        Long notificationId = 0L;
 
         userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
         userDTO.setLastUpdated(new java.sql.Date(uDate.getTime()));
@@ -71,9 +73,17 @@ public class RegistrationResource {
                 emailDto.setEmailTemplateId("REGISTRATION_EMAIL");
                 emailDto.setUserID(new Long(123));
                 emailDto.setNeedtoSendEmail(true);
-                notificationByEmailService.insertDatatoDBforNotification(emailDto);
+                notificationId =  notificationByEmailService.insertDatatoDBforNotification(emailDto);
+                
+                NotificationRequest notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), "TEMPLATE");
+                rabbitMqService.publishSMSMessage(notificationReq);
             }
-            rabbitMqService.publishSMSMessage("User Created", "phone number");
+
+            
+            
+            
+            
+            
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {

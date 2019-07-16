@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -27,6 +30,9 @@ import com.rabbitmq.client.DeliverCallback;
 public class RabbitMqService implements IRabbitMqService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMqService.class);
+    
+    private static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+    
 
     private static final String EXCHANGE_NAME = "pub-sub-queue";
 
@@ -54,17 +60,22 @@ public class RabbitMqService implements IRabbitMqService {
     }
 
     @Override
-    public void publishSMSMessage(String smsmessage, String number) {
+    public void publishSMSMessage(NotificationRequest notificationReq) {
         
-        LOG.info("Publishing message to MQ: SMS message {} , number {} ",smsmessage, number);
+
+        byte[] data = null;
+        try {
+            data = DEFAULT_OBJECT_MAPPER.writeValueAsBytes(notificationReq);
+        } catch (JsonProcessingException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(MQ_HOST);
-        Map<String, String> message = new HashMap<String,String>();
-        message.put(number,smsmessage);
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
-                channel.basicPublish(EXCHANGE_NAME, "", null, message.toString().getBytes());
-        } catch (IOException | TimeoutException e) {
+                channel.basicPublish(EXCHANGE_NAME, "", null, data);
+        } catch (IOException | TimeoutException e ) {
             LOG.error("Exception Occurred while creating MQ connection");
             e.printStackTrace();
         }
@@ -117,7 +128,7 @@ public class RabbitMqService implements IRabbitMqService {
     public static void main(String args[]) {
 
         RabbitMqService mq = new RabbitMqService();
-        mq.publishSMSMessage("hi", "asdasd");
+        mq.publishSMSMessage(new NotificationRequest(123L ,"abc@sdjfd.com", "Registrationtemplate"));
     }
 
 }

@@ -6,10 +6,8 @@ import net.drs.myapp.model.Email;
 
 public interface INotifyByEmailDAO {
 
-	
-	public boolean insertEmailDatailstoDB(Email email);
-	
-	
-	public List getEntriesTowhichEmailNeedstobeSent();
-	
+    public Long insertEmailDatailstoDB(Email email);
+
+    public List getEntriesTowhichEmailNeedstobeSent();
+
 }

@@ -10,181 +10,183 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name = "email_notification")
 public class Email {
 
-	
-	@Id
-    @Column(name="id")
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long Id;
-	
-	private Long userID;
-		
-	private String emailId;
-		
-	// key-value pair from application.properties
-	private String emailTemplateId;
-	
-	
-	private String emailMessageSent;
-		
-	// true = Yes. Need to send email
-	// false = No. Already sent. 
-	private boolean needtoSendEmail;
- 	
-	private String emailresponse;
-	
-	
-	private Date updatedDate;
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
 
-	private String updatedBy;
+    private Long userID;
 
-	private Date creationDate;
+    private String emailId;
 
-	private String createdBy;
-	
-	/**
-	 * @return the updatedDate
-	 */
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
+    // key-value pair from application.properties
+    private String emailTemplateId;
 
-	/**
-	 * @param updatedDate the updatedDate to set
-	 */
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
-	}
+    private String emailMessageSent;
 
-	/**
-	 * @return the updatedBy
-	 */
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    // true = Yes. Need to send email
+    // false = No. Already sent.
+    private boolean needtoSendEmail;
 
-	/**
-	 * @param updatedBy the updatedBy to set
-	 */
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    private String emailresponse;
 
-	/**
-	 * @return the creationDate
-	 */
-	public Date getCreationDate() {
-		return creationDate;
-	}
+    private Date updatedDate;
 
-	/**
-	 * @param creationDate the creationDate to set
-	 */
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
+    private String updatedBy;
 
-	/**
-	 * @return the createdBy
-	 */
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    private Date creationDate;
 
-	/**
-	 * @param createdBy the createdBy to set
-	 */
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    private String createdBy;
 
-	/**
-	 * @return the userID
-	 */
-	public Long getUserID() {
-		return userID;
-	}
+    /**
+     * @return the updatedDate
+     */
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
 
-	/**
-	 * @param userID the userID to set
-	 */
-	public void setUserID(Long userID) {
-		this.userID = userID;
-	}
+    /**
+     * @param updatedDate
+     *            the updatedDate to set
+     */
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
 
-	/**
-	 * @return the emailId
-	 */
-	public String getEmailId() {
-		return emailId;
-	}
+    /**
+     * @return the updatedBy
+     */
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
 
-	/**
-	 * @param emailId the emailId to set
-	 */
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
-	}
+    /**
+     * @param updatedBy
+     *            the updatedBy to set
+     */
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	/**
-	 * @return the emailTemplateId
-	 */
-	public String getEmailTemplateId() {
-		return emailTemplateId;
-	}
+    /**
+     * @return the creationDate
+     */
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
-	/**
-	 * @param emailTemplateId the emailTemplateId to set
-	 */
-	public void setEmailTemplateId(String emailTemplateId) {
-		this.emailTemplateId = emailTemplateId;
-	}
+    /**
+     * @param creationDate
+     *            the creationDate to set
+     */
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 
+    /**
+     * @return the createdBy
+     */
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
+    /**
+     * @param createdBy
+     *            the createdBy to set
+     */
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
+    /**
+     * @return the userID
+     */
+    public Long getUserID() {
+        return userID;
+    }
 
+    /**
+     * @param userID
+     *            the userID to set
+     */
+    public void setUserID(Long userID) {
+        this.userID = userID;
+    }
 
-	/**
-	 * @return the needtoSendEmail
-	 */
-	public boolean isNeedtoSendEmail() {
-		return needtoSendEmail;
-	}
+    /**
+     * @return the emailId
+     */
+    public String getEmailId() {
+        return emailId;
+    }
 
-	/**
-	 * @param needtoSendEmail the needtoSendEmail to set
-	 */
-	public void setNeedtoSendEmail(boolean needtoSendEmail) {
-		this.needtoSendEmail = needtoSendEmail;
-	}
+    /**
+     * @param emailId
+     *            the emailId to set
+     */
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
 
-	/**
-	 * @return the emailresponse
-	 */
-	public String getEmailresponse() {
-		return emailresponse;
-	}
+    /**
+     * @return the emailTemplateId
+     */
+    public String getEmailTemplateId() {
+        return emailTemplateId;
+    }
 
-	/**
-	 * @param emailresponse the emailresponse to set
-	 */
-	public void setEmailresponse(String emailresponse) {
-		this.emailresponse = emailresponse;
-	}
+    /**
+     * @param emailTemplateId
+     *            the emailTemplateId to set
+     */
+    public void setEmailTemplateId(String emailTemplateId) {
+        this.emailTemplateId = emailTemplateId;
+    }
 
-	public String getEmailMessageSent() {
-		return emailMessageSent;
-	}
+    /**
+     * @return the needtoSendEmail
+     */
+    public boolean isNeedtoSendEmail() {
+        return needtoSendEmail;
+    }
 
-	public void setEmailMessageSent(String emailMessageSent) {
-		this.emailMessageSent = emailMessageSent;
-	}
+    /**
+     * @param needtoSendEmail
+     *            the needtoSendEmail to set
+     */
+    public void setNeedtoSendEmail(boolean needtoSendEmail) {
+        this.needtoSendEmail = needtoSendEmail;
+    }
 
+    /**
+     * @return the emailresponse
+     */
+    public String getEmailresponse() {
+        return emailresponse;
+    }
 
+    /**
+     * @param emailresponse
+     *            the emailresponse to set
+     */
+    public void setEmailresponse(String emailresponse) {
+        this.emailresponse = emailresponse;
+    }
 
+    public String getEmailMessageSent() {
+        return emailMessageSent;
+    }
+
+    public void setEmailMessageSent(String emailMessageSent) {
+        this.emailMessageSent = emailMessageSent;
+    }
+
+    public Long getId() {
+        return Id;
+    }
 
 }
