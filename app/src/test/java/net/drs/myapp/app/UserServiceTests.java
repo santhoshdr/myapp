@@ -58,13 +58,11 @@ public class UserServiceTests {
         assertEquals(response.getStatusCode(), HttpStatus.OK);
     }
 
-    
     @Test
     public void updateMyProfile() {
 
         UserDTO userDTO = new UserDTO();
         userDTO.setUserId(120L);
-
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization",
                 "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMTIiLCJpYXQiOjE1NjMyNTQ4NjEsImV4cCI6MTU2Mzg1OTY2MX0.I-4LZ5mU7cQ7zFqpJ1QG3s8zuV40Kb0fama2Fk4s5X9lcgrGyEY1rGNah1dOZwbw_vACcuDNDnMoczEZOGpv-Q");
@@ -74,20 +72,16 @@ public class UserServiceTests {
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         UserDTO userDTOFromResponse = response.getBody();
         userDTOFromResponse.setFirstName("UpdatedFirstName123");
-        
+
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization",
                 "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyMTIiLCJpYXQiOjE1NjMyNTQ4NjEsImV4cCI6MTU2Mzg1OTY2MX0.I-4LZ5mU7cQ7zFqpJ1QG3s8zuV40Kb0fama2Fk4s5X9lcgrGyEY1rGNah1dOZwbw_vACcuDNDnMoczEZOGpv-Q");
 
         HttpEntity<UserDTO> entity1 = new HttpEntity<UserDTO>(userDTOFromResponse, headers);
         ResponseEntity<Boolean> response1 = restTemplate.exchange(createURLWithPort("/user/updateMyProfile"), HttpMethod.POST, entity1, Boolean.class);
-        assertEquals(response1.getStatusCode(), HttpStatus.OK); 
-        
-        
+        assertEquals(response1.getStatusCode(), HttpStatus.OK);
+
     }
-    
-    
-    
 
     private String createURLWithPort(String uri) {
         return "http://localhost:" + port + uri;

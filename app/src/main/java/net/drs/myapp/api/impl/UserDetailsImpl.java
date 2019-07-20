@@ -39,15 +39,16 @@ public class UserDetailsImpl implements IUserDetails {
     public List<UserServiceDTO> getAllUsers(int numberofUsers) {
 
         List<UserServiceDTO> userDTO = new ArrayList<UserServiceDTO>();
+        System.out.println("uploadImageLocation ====> "  +uploadImageLocation );
+        
         File directory = new File(uploadImageLocation);
 
         List<User> users = userDAO.getAllUsers(numberofUsers);
         users.forEach(user -> {
-            File[] files = directory.listFiles();
+            File[] files = null;
             UserServiceDTO udto = new UserServiceDTO();
-            files = directory.listFiles((FileFilter) new PrefixFileFilter(user.getId().toString() + "--", IOCase.SENSITIVE));
-
-            if (files.length > 0) {
+                files = directory.listFiles((FileFilter) new PrefixFileFilter(user.getId().toString() + "--", IOCase.SENSITIVE));
+            if (files!=null && files.length > 0) {
                 udto.setImage(files[0]);
             }
             modelMapper.map(user, udto);

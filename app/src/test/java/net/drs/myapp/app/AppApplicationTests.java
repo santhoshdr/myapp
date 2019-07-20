@@ -116,8 +116,7 @@ public class AppApplicationTests {
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization",
-                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjciLCJpYXQiOjE1NjI2NTIyODcsImV4cCI6MTU2MzI1NzA4N30.bn6RxZbL5q0jtE95U49nw2owsTwMb31d-25xj4HsOhXCSk4hpkTtVFGrVz2QO7dtfUlbAog9mSp93YFkNextYQ");
-
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzkiLCJpYXQiOjE1NjMyNjgxMjAsImV4cCI6MTU2Mzg3MjkyMH0._FL_9a8b8-0UxH3ilorBg9qMoQLgXZbcbtUZI9zpWvHQXIfyb2xe4SZgSa8gLKETIbXCP_F7gOCUNno2reP52g");
         userDTO.setEmailAddress("one" + emailid);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
@@ -154,11 +153,11 @@ public class AppApplicationTests {
 
         UserDTO userDTO = new UserDTO();
         headers.add("Authorization",
-                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMjciLCJpYXQiOjE1NjI2NTIyODcsImV4cCI6MTU2MzI1NzA4N30.bn6RxZbL5q0jtE95U49nw2owsTwMb31d-25xj4HsOhXCSk4hpkTtVFGrVz2QO7dtfUlbAog9mSp93YFkNextYQ");
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzkiLCJpYXQiOjE1NjMyNjgxMjAsImV4cCI6MTU2Mzg3MjkyMH0._FL_9a8b8-0UxH3ilorBg9qMoQLgXZbcbtUZI9zpWvHQXIfyb2xe4SZgSa8gLKETIbXCP_F7gOCUNno2reP52g");
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
-        ResponseEntity<List> response = restTemplate.exchange(createURLWithPort("/admin/getAllUsers"), HttpMethod.GET, entity, List.class);
-        List<UserServiceDTO> list = response.getBody();
+        ResponseEntity<?> response = restTemplate.exchange(createURLWithPort("/admin/getAllUsers"), HttpMethod.GET, entity, Object.class);
+        List<?> list = (List<?>) response.getBody();
         for (Object item : list) {
             UserServiceDTO u = objectMapper.convertValue(item, UserServiceDTO.class);
             System.out.println("FirstName" + u.getId() + " -- " + "Image" + u.getImage());
