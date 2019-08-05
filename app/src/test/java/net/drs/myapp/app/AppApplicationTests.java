@@ -6,6 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.List;
 
+import net.drs.myapp.dto.LoginRequest;
+import net.drs.myapp.dto.LoginResponse;
+import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 
@@ -37,6 +40,8 @@ public class AppApplicationTests {
     TestRestTemplate restTemplate = new TestRestTemplate();
 
     HttpHeaders headers = new HttpHeaders();
+    
+    private static LoginResponse adminLoginResponse;
 
     @Before
     public void generateUniqueEmailid() {
@@ -51,6 +56,10 @@ public class AppApplicationTests {
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     }
 
+    
+   
+
+    
     @Test
     public void resetPassword() {
 
@@ -66,24 +75,7 @@ public class AppApplicationTests {
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     }
 
-    @Test
-    public void createUser() {
-        UserDTO userDTO = new UserDTO();
-        userDTO.setFirstName("FirstName");
-        userDTO.setLastName("LastName");
-        userDTO.setEmailAddress(emailid);
-        userDTO.setMobileNumber("9999999999");
-        userDTO.setPassword("password");
-        userDTO.setAddress("address");
-
-        HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
-        // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
-        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-
-        ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
-        assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
-    }
+   
 
     @Test
     public void createUserWithImage() {
@@ -105,7 +97,7 @@ public class AppApplicationTests {
     }
 
     @Test
-    public void createAdmin() {
+    public void createAndLoginAdmin() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
         userDTO.setLastName("LastName");
@@ -116,7 +108,7 @@ public class AppApplicationTests {
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization",
-                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxNzkiLCJpYXQiOjE1NjMyNjgxMjAsImV4cCI6MTU2Mzg3MjkyMH0._FL_9a8b8-0UxH3ilorBg9qMoQLgXZbcbtUZI9zpWvHQXIfyb2xe4SZgSa8gLKETIbXCP_F7gOCUNno2reP52g");
+                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyODciLCJpYXQiOjE1NjQxMjAxNDEsImV4cCI6MTU2NDcyNDk0MX0.78eRnWgsjBeXRVlabvzi_58BV9iBbua33OP8xSlgtMWOsgOH8NkNu41EQrqHlV5p07tznJ4kB2CiqNiIndFGfQ");
         userDTO.setEmailAddress("one" + emailid);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
@@ -126,6 +118,17 @@ public class AppApplicationTests {
         ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
 
+        
+        LoginRequest loginReq = new LoginRequest();
+        loginReq.setUsernameOrEmail(userDTO.getEmailAddress());
+        loginReq.setPassword(userDTO.getPassword());
+        HttpEntity<LoginRequest> loginEntity = new HttpEntity<LoginRequest>(loginReq, headers);
+        ResponseEntity<LoginResponse> loginResponse = restTemplate.exchange(createURLWithPort("/api/auth/signin"), HttpMethod.POST, loginEntity, LoginResponse.class);
+        adminLoginResponse = loginResponse.getBody();
+        assertEquals(loginResponse.getStatusCode(), HttpStatus.OK);
+
+        
+        
         HttpHeaders badTokenHeader = new HttpHeaders();
         badTokenHeader.add("Authorization", "Bearer badtoken");
         userDTO.setEmailAddress("badtoken" + emailid);

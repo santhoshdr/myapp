@@ -10,6 +10,7 @@ import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.EmailDTO;
+import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.mqservice.NotificationRequest;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/guest")
 @RestController
-public class RegistrationResource {
+public class RegistrationResource extends GenericService{
 
     @Autowired
     IRegistrationService registrationService;
@@ -101,6 +102,8 @@ public class RegistrationResource {
             return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
     }
+    
+   
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
@@ -113,7 +116,7 @@ public class RegistrationResource {
             }
 
             registrationService.resetPassword(userDTO);
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Password Resetted Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

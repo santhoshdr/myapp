@@ -1,5 +1,7 @@
 package net.drs.myapp.utils;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 public class AppUtils {
 
     public static String generateRandomString() {
@@ -17,4 +19,8 @@ public class AppUtils {
         return sb.toString();
     }
 
+    public static String encryptPassword(String password){
+    	return new BCryptPasswordEncoder().encode(password);
+    }
+    
 }

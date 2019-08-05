@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import net.drs.myapp.dao.IRegistrationDAO;
+import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.model.CompleteUserDetails;
 import net.drs.myapp.model.Fotographer;
 import net.drs.myapp.model.Role;
@@ -175,5 +176,6 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         }
         return false;
     }
+
 
 }
