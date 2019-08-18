@@ -83,7 +83,7 @@ public class AppApplicationTests {
         userDTO.setMobileNumber("9999999999");
         userDTO.setPassword("password");
         userDTO.setAddress("address");
-        userDTO.setImage(new File("C:\\Users\\srajanna\\Desktop\\male-upload-md.png"));
+        userDTO.setImage(new File("imagesourcefolder/male.png"));
 
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);

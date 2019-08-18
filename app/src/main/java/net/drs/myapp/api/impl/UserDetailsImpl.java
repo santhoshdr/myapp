@@ -159,7 +159,7 @@ public class UserDetailsImpl implements IUserDetails {
         // deal with images:
         Long wedId = storedWed.getId();
 
-        final String wedUploadImagePath = wedDirectory + File.separator + addedBy + File.separator + wedId + File.separator + "images";
+        final String wedUploadImagePath = "imageuploadfolder" + File.separator + addedBy + File.separator + wedId + File.separator + "images";
         final String wedUploadDocumentsPath = wedDirectory + File.separator + addedBy + File.separator + wedId + File.separator + "documents";
         boolean wedImagedir = new File(wedUploadImagePath).exists() ? true : new File(wedUploadImagePath).mkdirs();
         boolean wedDocdir = new File(wedUploadDocumentsPath).exists() ? true : new File(wedUploadDocumentsPath).mkdirs();
