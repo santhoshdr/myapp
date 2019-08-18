@@ -1,0 +1,318 @@
+root@blrlrnd3003:~/fallbacktocheckin/service-deployment-manager# cd service/
+root@blrlrnd3003:~/fallbacktocheckin/service-deployment-manager/service# mvn wildfly:deploy -s ../settings.xml 
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Deployment Manager - Service                                       [pom]
+[INFO] Deployment Manager - Service - Common Module                       [ejb]
+[INFO] Deployment Manager - Service - EJB Module                          [ejb]
+[INFO] Deployment Manager - Service - Batch Module                        [ejb]
+[INFO] Deployment Manager - Service - WAR Module                          [war]
+[INFO] Deployment Manager - Service - EAR Module                          [ear]
+[INFO] Deployment Manager - Service - ITs Module                          [jar]
+[INFO] 
+[INFO] --------< com.amadeus.swb.services:deployment-manager-service >---------
+[INFO] Building Deployment Manager - Service 1.0-SNAPSHOT                 [1/7]
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service ---
+[INFO] 
+[INFO] -----< com.amadeus.swb.services:deployment-manager-service-common >-----
+[INFO] Building Deployment Manager - Service - Common Module 1.0-SNAPSHOT [2/7]
+[INFO] --------------------------------[ ejb ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service-common >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service-common ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ deployment-manager-service-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ deployment-manager-service-common ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ deployment-manager-service-common ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-common/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ deployment-manager-service-common ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.0:test (default-test) @ deployment-manager-service-common ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-ejb-plugin:2.3:ejb (default-ejb) @ deployment-manager-service-common ---
+[INFO] Building EJB deployment-manager-service-common with EJB version 3.1
+[INFO] Building jar: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-common/target/deployment-manager-service-common.jar
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-common/pom.xml already added, skipping
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-common/pom.properties already added, skipping
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service-common <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service-common ---
+[INFO] 
+[INFO] ------< com.amadeus.swb.services:deployment-manager-service-ejb >-------
+[INFO] Building Deployment Manager - Service - EJB Module 1.0-SNAPSHOT    [3/7]
+[INFO] --------------------------------[ ejb ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service-ejb >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service-ejb ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ deployment-manager-service-ejb ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ deployment-manager-service-ejb ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ deployment-manager-service-ejb ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-ejb/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ deployment-manager-service-ejb ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.0:test (default-test) @ deployment-manager-service-ejb ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-ejb-plugin:2.3:ejb (default-ejb) @ deployment-manager-service-ejb ---
+[INFO] Building EJB deployment-manager-service-ejb with EJB version 3.1
+[INFO] Building jar: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-ejb/target/deployment-manager-service-ejb.jar
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-ejb/pom.xml already added, skipping
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-ejb/pom.properties already added, skipping
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service-ejb <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service-ejb ---
+[INFO] 
+[INFO] -----< com.amadeus.swb.services:deployment-manager-service-batch >------
+[INFO] Building Deployment Manager - Service - Batch Module 1.0-SNAPSHOT  [4/7]
+[INFO] --------------------------------[ ejb ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service-batch >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service-batch ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ deployment-manager-service-batch ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 8 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ deployment-manager-service-batch ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ deployment-manager-service-batch ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ deployment-manager-service-batch ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.0:test (default-test) @ deployment-manager-service-batch ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.amadeus.swb.services.deployment.manager.batch.loadflow.LoadOrderBatchletTest
+[INFO] Tests run: 14, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.24 s - in com.amadeus.swb.services.deployment.manager.batch.loadflow.LoadOrderBatchletTest
+[INFO] Running com.amadeus.swb.services.deployment.manager.batch.listener.ChangeViewerNotifierTest
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: COMPLETED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-job: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message SUCCESS: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message for status: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message ${transientData}: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-job: COMPLETED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message ltc-mock: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message ltc-mock: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-job: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-step: COMPLETED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: my-job: COMPLETED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message ${ltcResponse}: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message lu_id: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message lu_id: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message for timing: STARTED
+2019-05-14 16:58:17 DEBUG ChangeViewerNotifierTest - notifyActionToChangeViewer called with the following actionType: My nice custom message with some user data: STARTED
+[INFO] Tests run: 36, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.202 s - in com.amadeus.swb.services.deployment.manager.batch.listener.ChangeViewerNotifierTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 50, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-ejb-plugin:2.3:ejb (default-ejb) @ deployment-manager-service-batch ---
+[INFO] Building EJB deployment-manager-service-batch with EJB version 3.1
+[INFO] Building jar: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-batch/target/deployment-manager-service-batch.jar
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-batch/pom.xml already added, skipping
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-batch/pom.properties already added, skipping
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service-batch <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service-batch ---
+[INFO] 
+[INFO] ------< com.amadeus.swb.services:deployment-manager-service-web >-------
+[INFO] Building Deployment Manager - Service - WAR Module 1.0-SNAPSHOT    [5/7]
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service-web >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service-web ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ deployment-manager-service-web ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-web/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ deployment-manager-service-web ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ deployment-manager-service-web ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-web/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ deployment-manager-service-web ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.0:test (default-test) @ deployment-manager-service-web ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.amadeus.swb.services.deployment.manager.model.DeploymentStatusDtoTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.026 s - in com.amadeus.swb.services.deployment.manager.model.DeploymentStatusDtoTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-war-plugin:2.5:war (default-war) @ deployment-manager-service-web ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [deployment-manager-service-web] in [/home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-web/target/deployment-manager-service-web]
+[INFO] Processing war project
+[INFO] Copying webapp resources [/home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-web/src/main/webapp]
+[INFO] Webapp assembled in [75 msecs]
+[INFO] Building war: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-web/target/deployment-manager-service-web.war
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service-web <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service-web ---
+[INFO] 
+[INFO] ------< com.amadeus.swb.services:deployment-manager-service-ear >-------
+[INFO] Building Deployment Manager - Service - EAR Module 1.0-SNAPSHOT    [6/7]
+[INFO] --------------------------------[ ear ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service-ear >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service-ear ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true
+[INFO] 
+[INFO] --- maven-ear-plugin:2.10:generate-application-xml (default-generate-application-xml) @ deployment-manager-service-ear ---
+[INFO] Generating application.xml
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ deployment-manager-service-ear ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-ear/src/main/resources
+[INFO] 
+[INFO] --- maven-ear-plugin:2.10:ear (default-ear) @ deployment-manager-service-ear ---
+[INFO] Could not find manifest file: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-ear/target/deployment-manager-service-ear/META-INF/MANIFEST.MF - Generating one
+[INFO] Building jar: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-ear/target/deployment-manager-service-ear.ear
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service-ear <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service-ear ---
+May 14, 2019 4:58:21 PM org.jboss.remoting3.EndpointImpl <clinit>
+INFO: JBoss Remoting version 5.0.0.Final
+May 14, 2019 4:58:21 PM org.xnio.Xnio <clinit>
+INFO: XNIO version 3.5.1.Final
+May 14, 2019 4:58:21 PM org.xnio.nio.NioXnio <clinit>
+INFO: XNIO NIO Implementation Version 3.5.1.Final
+May 14, 2019 4:58:21 PM org.wildfly.security.Version <clinit>
+INFO: ELY00001: WildFly Elytron version 1.1.0.Final
+[INFO] 
+[INFO] ------< com.amadeus.swb.services:deployment-manager-service-its >-------
+[INFO] Building Deployment Manager - Service - ITs Module 1.0-SNAPSHOT    [7/7]
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) > package @ deployment-manager-service-its >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.3:prepare-agent (agent) @ deployment-manager-service-its ---
+[INFO] argLine set to -javaagent:/root/.m2/repository/org/jacoco/org.jacoco.agent/0.8.3/org.jacoco.agent-0.8.3-runtime.jar=destfile=/home/srajanna/fallbacktocheckin/service-deployment-manager/service/target/jacoco.exec,append=true,port=6300
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:resources (default-resources) @ deployment-manager-service-its ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-its/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:compile (default-compile) @ deployment-manager-service-its ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:2.6:testResources (default-testResources) @ deployment-manager-service-its ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 6 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.1:testCompile (default-testCompile) @ deployment-manager-service-its ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.0:test (default-test) @ deployment-manager-service-its ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- maven-jar-plugin:2.4:jar (default-jar) @ deployment-manager-service-its ---
+[INFO] Building jar: /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-its/target/deployment-manager-service-its-1.0-SNAPSHOT.jar
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-its/pom.xml already added, skipping
+[INFO] META-INF/maven/com.amadeus.swb.services/deployment-manager-service-its/pom.properties already added, skipping
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.1.1:copy (default) @ deployment-manager-service-its ---
+[INFO] Configured Artifact: org.jacoco:org.jacoco.agent:0.8.3:jar
+[INFO] org.jacoco:org.jacoco.agent:0.8.3:jar already exists in /home/srajanna/fallbacktocheckin/service-deployment-manager/service/service-its/src/test/resources/wildfly
+[INFO] 
+[INFO] <<< wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) < package @ deployment-manager-service-its <<<
+[INFO] 
+[INFO] 
+[INFO] --- wildfly-maven-plugin:1.2.1.Final:deploy (default-cli) @ deployment-manager-service-its ---
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for Deployment Manager - Service 1.0-SNAPSHOT:
+[INFO] 
+[INFO] Deployment Manager - Service ....................... SUCCESS [  0.841 s]
+[INFO] Deployment Manager - Service - Common Module ....... SUCCESS [  0.938 s]
+[INFO] Deployment Manager - Service - EJB Module .......... SUCCESS [  0.178 s]
+[INFO] Deployment Manager - Service - Batch Module ........ SUCCESS [  6.890 s]
+[INFO] Deployment Manager - Service - WAR Module .......... SUCCESS [  1.723 s]
+[INFO] Deployment Manager - Service - EAR Module .......... SUCCESS [  5.298 s]
+[INFO] Deployment Manager - Service - ITs Module .......... SUCCESS [  1.087 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  17.583 s
+[INFO] Finished at: 2019-05-14T16:58:26+05:30
+[INFO] ------------------------------------------------------------------------
+
