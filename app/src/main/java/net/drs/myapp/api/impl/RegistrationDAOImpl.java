@@ -65,7 +65,7 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     @Override
     public boolean checkIfUserExistbyEmailId(User user) throws Exception {
         try {
-            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 and isActive='true'").setParameter(1, user.getEmailAddress()).getResultList();
+            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 and isActive='1'").setParameter(1, user.getEmailAddress()).getResultList();
             if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
                 throw new Exception("UserName Already present. Try with different username");
             }
@@ -176,6 +176,5 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         }
         return false;
     }
-
 
 }

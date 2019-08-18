@@ -32,10 +32,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class WedTests extends GenericAbstractTests{
+public class WedTests extends GenericAbstractTests {
 
-
-	@LocalServerPort
+    @LocalServerPort
     private int port;
 
     private TestRestTemplate restTemplate = new TestRestTemplate();
@@ -44,8 +43,8 @@ public class WedTests extends GenericAbstractTests{
 
     @Test
     public void acreateWedUserWithAuthorizedUser() {
-    	
-    	LoginResponse loginresponse = adminLoginResponse;
+
+        LoginResponse loginresponse = adminLoginResponse;
         WedDTO wed = new WedDTO();
 
         String timeString = "9:05:30";
@@ -82,8 +81,7 @@ public class WedTests extends GenericAbstractTests{
         wed.setWedJataka(jatakaList);
 
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization",loginresponse.getTokenType()+ " " + loginresponse.getAccessToken()); 
-        
+        headers.add("Authorization", loginresponse.getTokenType() + " " + loginresponse.getAccessToken());
 
         HttpEntity<WedDTO> entity = new HttpEntity<WedDTO>(wed, headers);
         ResponseEntity<WedDTO> response = restTemplate.exchange(createURLWithPort("/user/createWedProfile"), HttpMethod.POST, entity, WedDTO.class);
@@ -104,7 +102,7 @@ public class WedTests extends GenericAbstractTests{
         wed.setWedRaashi("Vrishaba");
         wed.setMakePublic(true);
 
-        File image1 = new File("C:\\Users\\srajanna\\Desktop\\DeploymentManager\\166male-upload-md.png");
+        File image1 = new File("classpath:/abc");
         File image2 = new File("C:\\Users\\srajanna\\Desktop\\DeploymentManager\\166male-upload-md.png");
 
         File[] imageList = new File[10];
@@ -132,11 +130,11 @@ public class WedTests extends GenericAbstractTests{
 
     @Test
     public void fetchWedUserWithAuthorizedUser() {
-    	
-    	LoginResponse loginresponse = userLoginResponse;
 
-    	headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization",loginresponse.getTokenType()+ " " + loginresponse.getAccessToken()); 
+        LoginResponse loginresponse = userLoginResponse;
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", loginresponse.getTokenType() + " " + loginresponse.getAccessToken());
         HttpEntity<WedDTO> entity = new HttpEntity<WedDTO>(null, headers);
         ResponseEntity<Object> response = restTemplate.exchange(createURLWithPort("/user/fetchWedProfile"), HttpMethod.GET, entity, Object.class);
 
@@ -148,12 +146,12 @@ public class WedTests extends GenericAbstractTests{
 
     @Test
     public void updateWedUserWithAuthorizedUser() {
-    	
-    	LoginResponse loginresponse = userLoginResponse;
-    	
+
+        LoginResponse loginresponse = userLoginResponse;
+
         ObjectMapper objectMapper = new ObjectMapper();
-    	headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization",loginresponse.getTokenType()+ " " + loginresponse.getAccessToken()); 
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("Authorization", loginresponse.getTokenType() + " " + loginresponse.getAccessToken());
         HttpEntity<WedDTO> entity = new HttpEntity<WedDTO>(null, headers);
         ResponseEntity<List> response = restTemplate.exchange(createURLWithPort("/user/fetchWedProfile"), HttpMethod.GET, entity, List.class);
         assertEquals(response.getStatusCode(), HttpStatus.OK);

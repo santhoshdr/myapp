@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/guest")
 @RestController
-public class RegistrationResource extends GenericService{
+public class RegistrationResource extends GenericService {
 
     @Autowired
     IRegistrationService registrationService;
@@ -44,6 +44,34 @@ public class RegistrationResource extends GenericService{
 
     @Autowired
     RabbitMqService rabbitMqService;
+
+    // this is just for test case purpose. This should not be used by external
+    // calls
+    @PostMapping("/addAdmin")
+    public ResponseEntity<?> addAdmin(@AuthenticationPrincipal Principal principal, @RequestBody UserDTO userDTO, BindingResult bindingResult) {
+        java.util.Date uDate = new java.util.Date();
+        userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));
+        userDTO.setLastUpdated(new java.sql.Date(uDate.getTime()));
+        try {
+            Set<Role> roles = new HashSet();
+            Role role = new Role();
+            role.setRole(ApplicationConstants.ROLE_ADMIN);
+            roles.add(role);
+
+            Role role1 = new Role();
+            role1.setRole(ApplicationConstants.ROLE_USER);
+            roles.add(role1);
+            boolean result = registrationService.adduser(userDTO, roles);
+
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+
+            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
+            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        }
+    }
 
     @PostMapping("/addUser")
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
@@ -102,8 +130,6 @@ public class RegistrationResource extends GenericService{
             return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
     }
-    
-   
 
     @PostMapping("/resetPassword")
     public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
