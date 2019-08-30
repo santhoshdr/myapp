@@ -19,8 +19,22 @@ public class AppUtils {
         return sb.toString();
     }
 
-    public static String encryptPassword(String password){
-    	return new BCryptPasswordEncoder().encode(password);
+    public static Boolean enableAccountExpiry() {
+        return false;
     }
-    
+
+    public static String encryptPassword(String password) {
+        return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public static int getAccountValidityExpiryAfterDays() {
+        // get the value 30 from Database
+        return 30;
+    }
+
+    // after 10 mins, the activation string is no more valid
+    public static long getActivationStringExpiryTimeInMilliseconds() {
+        return 600000L;
+    }
+
 }

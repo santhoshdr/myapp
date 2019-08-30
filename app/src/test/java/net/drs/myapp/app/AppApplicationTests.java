@@ -89,8 +89,22 @@ public class AppApplicationTests {
         ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 
-        ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
-        assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
+        // the user with same email id can be inserted until the user is active,
+        // ResponseEntity<UserDTO> response1 =
+        // restTemplate.exchange(createURLWithPort("/guest/addUser"),
+        // HttpMethod.POST, entity, UserDTO.class);
+        // assertEquals(response1.getStatusCode(), HttpStatus.CREATED);
+        //
+        // activate user...
+
+        UserDTO userDTOtoactivateUser = new UserDTO();
+        userDTOtoactivateUser.setEmailAddress(emailid);
+        userDTOtoactivateUser.setTemporaryActivationString("zoom123");
+        HttpEntity<UserDTO> entityToactivateUser = new HttpEntity<UserDTO>(userDTOtoactivateUser, headers);
+
+        ResponseEntity<UserDTO> response2 = restTemplate.exchange(createURLWithPort("/guest/activateUser"), HttpMethod.POST, entityToactivateUser, UserDTO.class);
+        assertEquals(response2.getStatusCode(), HttpStatus.CREATED);
+
     }
 
     @Test

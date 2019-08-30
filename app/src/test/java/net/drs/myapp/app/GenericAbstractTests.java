@@ -17,32 +17,30 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 public abstract class GenericAbstractTests {
-	
+
     @LocalServerPort
     private int port = 8085;
 
-	protected static LoginResponse adminLoginResponse;
+    protected static LoginResponse adminLoginResponse;
 
-	protected static LoginResponse userLoginResponse;
+    protected static LoginResponse userLoginResponse;
 
-	private String emailid;
-	
+    private String emailid;
+
     TestRestTemplate restTemplate = new TestRestTemplate();
 
     HttpHeaders headers = new HttpHeaders();
 
+    public String generateUniqueEmailid() {
+        this.emailid = System.nanoTime() + "@email.com";
+        return this.emailid;
+    }
 
-	public String generateUniqueEmailid() {
-		this.emailid =  System.nanoTime() + "@email.com";
-		return this.emailid;
-	}
+    GenericAbstractTests() {
+        acreateAdminUser();
+        acreateUser();
+    }
 
-	GenericAbstractTests() {
-		acreateAdminUser();
-		acreateUser();
-	}
-
-   
     public void acreateAdminUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
@@ -59,20 +57,31 @@ public abstract class GenericAbstractTests {
 
         ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
-       
-        //http://localhost:8085/api/auth/signin
-        
+
+        // Activate User:
+
+        UserDTO userDTOtoactivateUser = new UserDTO();
+        userDTOtoactivateUser.setEmailAddress(emailid);
+        userDTOtoactivateUser.setTemporaryActivationString("zoom123");
+        HttpEntity<UserDTO> entityToactivateUser = new HttpEntity<UserDTO>(userDTOtoactivateUser, headers);
+
+        ResponseEntity<UserDTO> response2 = restTemplate.exchange(createURLWithPort("/guest/activateUser"), HttpMethod.POST, entityToactivateUser, UserDTO.class);
+        assertEquals(response2.getStatusCode(), HttpStatus.CREATED);
+
+        // http://localhost:8085/api/auth/signin
+
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail(emailid);
         loginRequest.setPassword("password");
-        
+
         HttpEntity<LoginRequest> loginEntity = new HttpEntity<LoginRequest>(loginRequest, headers);
-        ResponseEntity<LoginResponse> signinResponse= restTemplate.exchange(createURLWithPort("/api/auth/signin"), HttpMethod.POST, loginEntity, LoginResponse.class);
+        ResponseEntity<LoginResponse> signinResponse = restTemplate.exchange(createURLWithPort("/api/auth/signin"), HttpMethod.POST, loginEntity, LoginResponse.class);
         adminLoginResponse = signinResponse.getBody();
-        assertNotNull(signinResponse.getBody());
-        
+        assertNotNull(signinResponse.getBody().getAccessToken());
+        assertNotNull(signinResponse.getBody().getTokenType());
+
     }
-    
+
     public void acreateUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
@@ -89,20 +98,20 @@ public abstract class GenericAbstractTests {
 
         ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
-       
-        //http://localhost:8085/api/auth/signin
-        
+
+        // http://localhost:8085/api/auth/signin
+
         LoginRequest loginRequest = new LoginRequest();
         loginRequest.setUsernameOrEmail(emailid);
         loginRequest.setPassword("password");
-        
+
         HttpEntity<LoginRequest> loginEntity = new HttpEntity<LoginRequest>(loginRequest, headers);
-        ResponseEntity<LoginResponse> signinResponse= restTemplate.exchange(createURLWithPort("/api/auth/signin"), HttpMethod.POST, loginEntity, LoginResponse.class);
+        ResponseEntity<LoginResponse> signinResponse = restTemplate.exchange(createURLWithPort("/api/auth/signin"), HttpMethod.POST, loginEntity, LoginResponse.class);
         userLoginResponse = signinResponse.getBody();
         assertNotNull(signinResponse.getBody());
-        
+
     }
-    
+
     private String createURLWithPort(String uri) {
         return "http://localhost:" + port + uri;
     }

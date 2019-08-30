@@ -1,7 +1,8 @@
 package net.drs.myapp.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -16,8 +17,8 @@ import javax.persistence.Transient;
 @Table(name = "userdetail")
 public class User implements Serializable {
     /**
-	 * 
-	 */
+     * 
+     */
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +35,7 @@ public class User implements Serializable {
 
     private String address;
 
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     private Date dateOfCreation;
 
@@ -50,7 +51,20 @@ public class User implements Serializable {
     @Transient
     private Set<Role> roles;
 
+    // Date on which the account creation.
     private Date creationDate;
+
+    // Example : after 30 days from the day of activation, the user will be
+    // active
+    private Date accountValidTill;
+
+    // When the temporary Activation date was sent..
+    private long temporaryActivationSentDate;
+
+    // Example : Temporary Activation is valid of 5 minutes
+    private int temporaryActivationvalidforInMinutes;
+
+    private String temporaryActivationString;
 
     private String createdBy;
 
@@ -201,6 +215,38 @@ public class User implements Serializable {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public Date getAccountValidTill() {
+        return accountValidTill;
+    }
+
+    public void setAccountValidTill(Date accountValidTill) {
+        this.accountValidTill = accountValidTill;
+    }
+
+    public String getTemporaryActivationString() {
+        return temporaryActivationString;
+    }
+
+    public void setTemporaryActivationString(String temporaryActivationString) {
+        this.temporaryActivationString = temporaryActivationString;
+    }
+
+    public int getTemporaryActivationvalidforInMinutes() {
+        return temporaryActivationvalidforInMinutes;
+    }
+
+    public void setTemporaryActivationvalidforInMinutes(int temporaryActivationvalidforInMinutes) {
+        this.temporaryActivationvalidforInMinutes = temporaryActivationvalidforInMinutes;
+    }
+
+    public long getTemporaryActivationSentDate() {
+        return temporaryActivationSentDate;
+    }
+
+    public void setTemporaryActivationSentDate(long temporaryActivationSentDate) {
+        this.temporaryActivationSentDate = temporaryActivationSentDate;
     }
 
     private String updatedBy;

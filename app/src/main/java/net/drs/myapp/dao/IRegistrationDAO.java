@@ -18,7 +18,13 @@ public interface IRegistrationDAO {
 
     boolean checkIfUserExistbyName(User user) throws Exception;
 
+    // checks email id and is active...
     boolean checkIfUserExistbyEmailId(User user) throws Exception;
+    
+    
+    // check just email id is present or not...
+    boolean checkIfUserEmailIdExists(User user) throws Exception;
+    
 
     boolean checkifUserExistbyPhoneNumber(User user) throws Exception;
 
@@ -31,6 +37,10 @@ public interface IRegistrationDAO {
     Users checkIfUserPhoneisPresentandVerified(String emailorphoneNumber) throws Exception;
 
     boolean updateUserWithTemperoryPassword(Users users);
+    
+    User getTemporaryActivationTokenforUser(String emailidorphonenumber) throws Exception;
+    
+    boolean activateUserIftemporaryPasswordMatches(User user);
 
     boolean resetPassword(Users users);
 

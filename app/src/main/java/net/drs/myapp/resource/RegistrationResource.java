@@ -5,19 +5,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.drs.myapp.api.INotifyByEmail;
-import net.drs.myapp.api.IRegistrationService;
-import net.drs.myapp.constants.ApplicationConstants;
-import net.drs.myapp.dto.CompleteRegistrationDTO;
-import net.drs.myapp.dto.EmailDTO;
-import net.drs.myapp.dto.ResetPasswordDTO;
-import net.drs.myapp.dto.UserDTO;
-import net.drs.myapp.model.Role;
-import net.drs.myapp.mqservice.NotificationRequest;
-import net.drs.myapp.mqservice.RabbitMqService;
-import net.drs.myapp.response.handler.ExeceptionHandler;
-import net.drs.myapp.response.handler.SuccessMessageHandler;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +20,24 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.drs.myapp.api.INotifyByEmail;
+import net.drs.myapp.api.IRegistrationService;
+import net.drs.myapp.constants.ApplicationConstants;
+import net.drs.myapp.dto.CompleteRegistrationDTO;
+import net.drs.myapp.dto.EmailDTO;
+import net.drs.myapp.dto.UserDTO;
+import net.drs.myapp.model.Role;
+import net.drs.myapp.mqservice.NotificationRequest;
+import net.drs.myapp.mqservice.RabbitMqService;
+import net.drs.myapp.response.handler.ExeceptionHandler;
+import net.drs.myapp.response.handler.SuccessMessageHandler;
+
 @CrossOrigin
 @RequestMapping("/guest")
 @RestController
 public class RegistrationResource extends GenericService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RegistrationResource.class);
 
     @Autowired
     IRegistrationService registrationService;
@@ -104,10 +107,27 @@ public class RegistrationResource extends GenericService {
                 emailDto.setNeedtoSendEmail(true);
                 notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
 
-                NotificationRequest notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), "TEMPLATE");
+                NotificationRequest notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), "TEMPLATE", "message");
                 rabbitMqService.publishSMSMessage(notificationReq);
             }
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
+                    "User Added Successfully. Email Sent to the provided Email id. " + "Please activate the account by clicking the link that is sent", "");
+            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
+            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/activateUser")
+    public ResponseEntity<?> activateAccount(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+
+        logger.debug("Activating the user for the email id " + userDTO.getEmailAddress());
+        try {
+            registrationService.activateUserAccount(userDTO);
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
+                    "User Added Successfully. Email Sent to the provided Email id. " + "Please activate the account by clicking the link that is sent", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +139,6 @@ public class RegistrationResource extends GenericService {
     @PostMapping("/forgotPassword")
     public ResponseEntity<?> forgotPassword(@RequestBody String emailId, BindingResult bindingResult) {
 
-        java.util.Date uDate = new java.util.Date();
         try {
             registrationService.forgotPassword(emailId);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");

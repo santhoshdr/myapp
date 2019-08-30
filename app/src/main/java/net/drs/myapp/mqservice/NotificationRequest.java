@@ -15,13 +15,16 @@ public class NotificationRequest  implements Serializable{
     private String emailid;
     
     private String template;
+    
+    private String messageContent;
 
     
-    public NotificationRequest(Long notificationId, String emailid, String template) {
+    public NotificationRequest(Long notificationId, String emailid, String template,String messageContent) {
         super();
         this.notificationId = notificationId;
         this.emailid = emailid;
         this.template = template;
+        this.messageContent=messageContent;
     }
 
     public String getEmailid() {
@@ -47,6 +50,14 @@ public class NotificationRequest  implements Serializable{
 
     public void setNotificationId(Long notificationId) {
         this.notificationId = notificationId;
+    }
+
+    public String getMessageContent() {
+        return messageContent;
+    }
+
+    public void setMessageContent(String messageContent) {
+        this.messageContent = messageContent;
     }
     
 

@@ -65,7 +65,8 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     @Override
     public boolean checkIfUserExistbyEmailId(User user) throws Exception {
         try {
-            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 and isActive='1'").setParameter(1, user.getEmailAddress()).getResultList();
+            // and isActive='1'
+            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 ").setParameter(1, user.getEmailAddress()).getResultList();
             if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
                 throw new Exception("UserName Already present. Try with different username");
             }
@@ -141,13 +142,18 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         Users users = new Users();
         try {
             users.setEmail(user.getEmailAddress());
-            users.setActive(1);
+            // setting Active as 0. Once email is verified, the active will get
+            // updated to 1. It means, since then
+            // the account is active.
+            users.setActive(0);
             users.setRoles(roles);
             users.setName(user.getFirstName());
             users.setPassword(user.getPassword());
             users.setLastName(user.getLastName());
+            // String in User Table
             entityManager.persist(users);
             user.setUserId(users.getId());
+            // Storing in userdetail table
             entityManager.merge(user);
         } catch (Exception e) {
             // throw exception
@@ -177,4 +183,32 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         return false;
     }
 
+    @Override
+    public User getTemporaryActivationTokenforUser(String emailidorphonenumber) throws Exception {
+        return (User) entityManager.createQuery("from User  WHERE emailAddress=:emailid").setParameter("emailid", emailidorphonenumber).getSingleResult();
+
+    }
+
+    @Override
+    public boolean activateUserIftemporaryPasswordMatches(User user) {
+
+        User storedUser = entityManager.find(User.class, user.getId());
+        storedUser.setAccountValidTill(user.getAccountValidTill());
+        storedUser.setActive(true);
+        entityManager.persist(storedUser);
+        return true;
+    }
+
+    @Override
+    public boolean checkIfUserEmailIdExists(User user) throws Exception {
+        try {
+            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1").setParameter(1, user.getEmailAddress()).getResultList();
+            if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
+                return true;
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return false;
+    }
 }

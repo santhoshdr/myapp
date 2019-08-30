@@ -26,4 +26,6 @@ public interface IRegistrationService {
 	// boolean addAdministrator(UserDTO userDTO) throws Exception;
 
 	boolean addFotographer(Fotographer fotographer);
+	
+	boolean activateUserAccount(UserDTO userDTO) throws Exception;
 }

@@ -31,8 +31,7 @@ public class UserDetailsService extends GenericService {
 
     @Autowired
     IUserDetails userDetails;
-    
-   
+
     @PostMapping("/getMyProfile")
     public ResponseEntity<User> getMyProfile(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
         return new ResponseEntity<>(userDetails.getUserById(userDTO.getUserId()), HttpStatus.OK);
@@ -51,7 +50,7 @@ public class UserDetailsService extends GenericService {
         return new ResponseEntity<>(userDetails.updateUserDetails(user), HttpStatus.OK);
 
     }
-    
+
     /**
      * User must be a logged in user to change the password
      * 
@@ -64,16 +63,16 @@ public class UserDetailsService extends GenericService {
 
         java.util.Date uDate = new java.util.Date();
         try {
-        	
-        	final UserPrincipal loggedInUser = getLoggedInUser();
-        	final String storedPasswoed = AppUtils.encryptPassword(passwordDTO.getCurrentPassword());
-        	
-        	if(storedPasswoed.equalsIgnoreCase(loggedInUser.getPassword())){
-        		throw new Exception ("Entered Password doesnt match with entered password");
-        	}
-        	passwordDTO.setUserId(loggedInUser.getId());
-        	passwordDTO.setEncryptedPassword(AppUtils.encryptPassword(passwordDTO.getNewPassword()));
-        	userDetails.changePassword(passwordDTO);
+
+            final UserPrincipal loggedInUser = getLoggedInUser();
+            final String storedPasswoed = AppUtils.encryptPassword(passwordDTO.getCurrentPassword());
+
+            if (storedPasswoed.equalsIgnoreCase(loggedInUser.getPassword())) {
+                throw new Exception("Entered Password doesnt match with entered password");
+            }
+            passwordDTO.setUserId(loggedInUser.getId());
+            passwordDTO.setEncryptedPassword(AppUtils.encryptPassword(passwordDTO.getNewPassword()));
+            userDetails.changePassword(passwordDTO);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {

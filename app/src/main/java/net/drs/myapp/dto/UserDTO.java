@@ -6,8 +6,8 @@ import java.sql.Date;
 
 public class UserDTO implements Serializable {
     /**
-	 * 
-	 */
+     * 
+     */
     private static final long serialVersionUID = 6811026592389788897L;
 
     public String getFirstName() {
@@ -124,7 +124,7 @@ public class UserDTO implements Serializable {
 
     private String address;
 
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     private Date dateOfCreation;
 
@@ -139,6 +139,9 @@ public class UserDTO implements Serializable {
     private String password;
 
     private String confirmPassword;
+
+    // used for validating string sent in email
+    private String temporaryActivationString;
 
     // this is used at the time of resetting of password
     private String temperoryPassword;
@@ -183,6 +186,14 @@ public class UserDTO implements Serializable {
 
     public void setUpdatedBy(String updatedBy) {
         this.updatedBy = updatedBy;
+    }
+
+    public String getTemporaryActivationString() {
+        return temporaryActivationString;
+    }
+
+    public void setTemporaryActivationString(String temporaryActivationString) {
+        this.temporaryActivationString = temporaryActivationString;
     }
 
     private String createdBy;

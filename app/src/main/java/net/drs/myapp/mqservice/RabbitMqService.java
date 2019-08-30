@@ -23,22 +23,19 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 
-
 @Component
 @Repository("rabbitMqService")
 @Transactional
 public class RabbitMqService implements IRabbitMqService {
 
     private static final Logger LOG = LoggerFactory.getLogger(RabbitMqService.class);
-    
+
     private static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-    
 
     private static final String EXCHANGE_NAME = "pub-sub-queue";
 
     private static final String MQ_HOST = "localhost";
-    
-    
+
     @PostConstruct
     private void postConsrtuct() {
 
@@ -50,7 +47,7 @@ public class RabbitMqService implements IRabbitMqService {
             }
         });
     }
-    
+
     public void initializeMq() {
         try {
             receiveSMSMQMessage();
@@ -61,7 +58,6 @@ public class RabbitMqService implements IRabbitMqService {
 
     @Override
     public void publishSMSMessage(NotificationRequest notificationReq) {
-        
 
         byte[] data = null;
         try {
@@ -74,8 +70,8 @@ public class RabbitMqService implements IRabbitMqService {
         factory.setHost(MQ_HOST);
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
-                channel.basicPublish(EXCHANGE_NAME, "", null, data);
-        } catch (IOException | TimeoutException e ) {
+            channel.basicPublish(EXCHANGE_NAME, "", null, data);
+        } catch (IOException | TimeoutException e) {
             LOG.error("Exception Occurred while creating MQ connection");
             e.printStackTrace();
         }
@@ -128,7 +124,7 @@ public class RabbitMqService implements IRabbitMqService {
     public static void main(String args[]) {
 
         RabbitMqService mq = new RabbitMqService();
-        mq.publishSMSMessage(new NotificationRequest(123L ,"abc@sdjfd.com", "Registrationtemplate"));
+        mq.publishSMSMessage(new NotificationRequest(123L, "abc@sdjfd.com", "Registrationtemplate", "notificationMessage"));
     }
 
 }
