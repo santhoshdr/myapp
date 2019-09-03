@@ -5,7 +5,7 @@
 
 	<groupId>net.drs.myapp</groupId>
 	<artifactId>app</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>app</version>
 	<packaging>jar</packaging>
 
 	<name>app</name>
@@ -15,7 +15,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.4.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<properties>
@@ -26,28 +26,40 @@
 	</properties>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jjwt.version}</version>
 		</dependency>
-	
-<!--	<dependency>
+
+		<!-- <dependency> <groupId>com.h2database</groupId> <artifactId>h2</artifactId> 
+			<scope>runtime</scope> </dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
+			<version>1.4.196</version>
+		
 		</dependency>
 
--->
+		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
 
-<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+
+<!--  my sql driver  -->
+<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 <dependency>
-    <groupId>com.h2database</groupId>
-    <artifactId>h2</artifactId>
-    <version>1.4.196</version>
-   <scope>runtime</scope>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.17</version>
 </dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -61,13 +73,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
-		
-		<!--  DTO to ENtity conversion -->
+
+		<!-- DTO to ENtity conversion -->
 		<dependency>
-		    <groupId>org.modelmapper</groupId>
-		    <artifactId>modelmapper</artifactId>
-		    <version>0.7.4</version>
-		</dependency>		
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>0.7.4</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -78,25 +90,32 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--  Session management 
-		 http://www.sedooe.com/2016/04/rest-authentication-using-spring-security-and-spring-session/
-		 -->
-		  <dependency>
-            <groupId>org.springframework.session</groupId>
-            <artifactId>spring-session</artifactId>
-            <version>1.0.0.RELEASE</version>
-        </dependency>
-		
+		<!-- Session management http://www.sedooe.com/2016/04/rest-authentication-using-spring-security-and-spring-session/ -->
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session</artifactId>
+			<version>1.0.0.RELEASE</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-batch</artifactId>
 		</dependency>
+
+		<!-- Rabbit mq -->
+		<!-- https://mvnrepository.com/artifact/com.rabbitmq/amqp-client -->
+		<dependency>
+			<groupId>com.rabbitmq</groupId>
+			<artifactId>amqp-client</artifactId>
+			<version>5.5.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
