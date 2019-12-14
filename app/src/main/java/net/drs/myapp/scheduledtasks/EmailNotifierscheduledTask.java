@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class EmailNotifierscheduledTask {
 
 
@@ -26,11 +26,11 @@ public class EmailNotifierscheduledTask {
     @Autowired
     INotifyByEmail notificationByEmailService;
     
-    @Autowired
+   // @Autowired
     private JobLauncher jobLauncher;
     
     
-    @Autowired
+   // @Autowired
     Job processJob;
     
     

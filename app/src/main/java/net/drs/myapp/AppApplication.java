@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableBatchProcessing
+//@EnableBatchProcessing
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
 public class AppApplication {
 

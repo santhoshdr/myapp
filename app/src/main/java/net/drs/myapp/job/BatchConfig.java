@@ -24,7 +24,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
-@Configuration
+//@Configuration
 public class BatchConfig {
 
 	@Autowired

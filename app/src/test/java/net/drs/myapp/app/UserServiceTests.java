@@ -48,12 +48,12 @@ public class UserServiceTests {
 
     protected static String staticEmailid;
 
-    @Test
+    //@Test
     public void acreateAdminUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
         userDTO.setLastName("LastName");
-        userDTO.setEmailAddress(emailid);
+        userDTO.setEmailAddress("sdfsdfdfsddddddddddd");
         userDTO.setMobileNumber("9999999999");
         userDTO.setPassword("password");
         userDTO.setAddress("address");
