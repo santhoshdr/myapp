@@ -80,7 +80,7 @@ public class RegistrationResource extends GenericService {
     public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
 
         java.util.Date uDate = new java.util.Date();
-        Set<Role> roles = new HashSet();
+        Set<Role> roles = new HashSet<>();
         Long notificationId = 0L;
 
         userDTO.setDateOfCreation(new java.sql.Date(uDate.getTime()));

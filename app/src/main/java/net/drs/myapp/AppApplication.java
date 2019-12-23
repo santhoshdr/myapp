@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-//@EnableBatchProcessing
+// @EnableBatchProcessing
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
 public class AppApplication {
 
@@ -52,7 +52,8 @@ public class AppApplication {
      * 
      * docker run -p 8085:8085 app-11
      * 
-     * cd C:\Program Files (x86)\H2\bin java -jar h2-1.4.196.jar -webAllowOthers -tcpAllowOthers
+     * cd C:\Program Files (x86)\H2\bin java -jar h2-1.4.196.jar -webAllowOthers
+     * -tcpAllowOthers
      * 
      * 
      */

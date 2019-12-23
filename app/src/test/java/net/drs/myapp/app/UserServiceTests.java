@@ -48,7 +48,7 @@ public class UserServiceTests {
 
     protected static String staticEmailid;
 
-    //@Test
+    // @Test
     public void acreateAdminUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");

@@ -35,12 +35,12 @@ import net.jodah.lyra.config.ConfigurableConnection;
 import net.jodah.lyra.config.RecoveryPolicies;
 import net.jodah.lyra.config.RetryPolicies;
 
-@Component
-@Repository("rabbitMqService")
-@Transactional
-public class RabbitMqService implements IRabbitMqService {
+//@Component
+//@Repository("rabbitMqService")
+//@Transactional
+public class RabbitMqService2 implements IRabbitMqService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RabbitMqService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(RabbitMqService2.class);
 
     private static final ObjectMapper DEFAULT_OBJECT_MAPPER = new ObjectMapper().disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
@@ -68,17 +68,14 @@ public class RabbitMqService implements IRabbitMqService {
         });
     }
 
-    protected void manageChannelStartup() throws Exception {
-
+    protected void manageChannelStartup() throws IOException {
         Channel oneChannel = getOneChannel();
         oneChannel.queueDeclare(NOTIFICATION_QUEUE, MqStatics.DURABLE, MqStatics.EXCLUSIVE, MqStatics.AUTO_DELETE, MqStatics.QUEUE_DLX_ARGS);
         oneChannel.exchangeDeclare(NOTIFICATION_QUEUE, MqStatics.TYPE, MqStatics.DURABLE);
-
         for (Channel channel : channels) {
             channel.basicQos(MqStatics.PREFETCH_COUNT, MqStatics.PREFETCH_GLOBAL);
             channel.basicConsume(MqStatics.NOTIFICATION_QUEUE, MqStatics.AUTO_ACK, new DmMqBatchResponseConsumer(channel));
         }
-
     }
 
     /**
@@ -87,7 +84,7 @@ public class RabbitMqService implements IRabbitMqService {
      * @return one channel
      * @throws Exception
      */
-    private Channel getOneChannel() throws Exception {
+    private Channel getOneChannel() throws IOException {
         Iterator<Channel> iterator = channels.iterator();
         while (iterator.hasNext()) {
             Channel channel = iterator.next();
@@ -95,7 +92,7 @@ public class RabbitMqService implements IRabbitMqService {
                 return channel;
             }
         }
-        throw new Exception("Cannot get one active RabbitMQ Channel.");
+        throw new IOException("Cannot get one active RabbitMQ Channel.");
     }
 
     public void initializeMq() throws Exception {
@@ -223,7 +220,7 @@ public class RabbitMqService implements IRabbitMqService {
 
     public static void main(String args[]) {
 
-        RabbitMqService mq = new RabbitMqService();
+        RabbitMqService2 mq = new RabbitMqService2();
         mq.publishSMSMessage(new NotificationRequest(123L, "abc@sdjfd.com", "Registrationtemplate", "notificationMessage"));
     }
 
