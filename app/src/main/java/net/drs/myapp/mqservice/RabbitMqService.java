@@ -126,7 +126,7 @@ public class RabbitMqService implements IRabbitMqService {
             executorService = Executors.newFixedThreadPool(10);
             cf.setSharedExecutor(executorService);
 
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 2; i++) {
                 ConfigurableConnection connection = Connections.create(cf, config);
                 for (int j = 0; j < 5; j++) {
                     channels.add(connection.createChannel());

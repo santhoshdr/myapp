@@ -55,9 +55,12 @@ public class RegistrationServiceImpl implements IRegistrationService {
 
     @Value("${upload.image.location}")
     private String uploadImageLocation;
+    
+    @Value("${temperory.activationstring.valid.for.minutes}")
+    private int temperoryactivationvalidtillminutes = 15; // 15 mins by default
 
     @Override
-    public boolean adduser(UserDTO userDTO, Set<Role> roles) throws Exception {
+    public UserDTO adduser(UserDTO userDTO, Set<Role> roles) throws Exception {
 
         try {
             User user = new User();
@@ -65,7 +68,9 @@ public class RegistrationServiceImpl implements IRegistrationService {
             boolean result = registrationDAO.checkIfUserExistbyEmailId(user);
             if (!result) {
                 user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-                return registrationDAO.addUser(user, roles);
+                user = registrationDAO.addUser(user, roles);
+                modelMapper.map(user,userDTO);
+                return userDTO;
             } else {
                 throw new Exception("Some problem.");
             }
@@ -100,24 +105,22 @@ public class RegistrationServiceImpl implements IRegistrationService {
     }
 
     @Override
-    public Long adduserandGetId(UserDTO userDTO, Set<Role> roles) throws Exception {
+    public User adduserandGetId(UserDTO userDTO, Set<Role> roles) throws Exception {
         Long userId = 0L;
+        User user = new User();
         try {
-            User user = new User();
             modelMapper.map(userDTO, user);
-
             int validFor = AppUtils.getAccountValidityExpiryAfterDays();
-
             boolean result = registrationDAO.checkIfUserExistbyEmailId(user);
             if (!result) {
                 String temperoryActivationString = AppUtils.generateRandomString();
                 user.setTemporaryActivationSentDate(System.currentTimeMillis());
                 user.setTemporaryActivationString(temperoryActivationString);
                 user.setPassword(AppUtils.encryptPassword(user.getPassword()));
+                user.setTemporaryActivationvalidforInMinutes(temperoryactivationvalidtillminutes);
                 // Storing User
-                userId = registrationDAO.addUserandGetUserId(user, roles);
+                user = registrationDAO.addUserandGetUserId(user, roles);
                 File filetobeUploaded = userDTO.getImage() != null ? userDTO.getImage() : null;
-
                 if (uploadimage != null && uploadimage.equals("folder") && filetobeUploaded != null) {
                     byte[] bytes = Files.readAllBytes(filetobeUploaded.toPath());
                     Path path = Paths.get(uploadImageLocation + File.separator + userId + "--" + filetobeUploaded.getName());
@@ -129,7 +132,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
         } catch (Exception e) {
             throw e;
         }
-        return userId;
+        return user;
     }
 
     @Override
@@ -207,9 +210,8 @@ public class RegistrationServiceImpl implements IRegistrationService {
         }
         // 600000
         // zoom123 -- used only for testcases...
-        if ((user.getTemporaryActivationString().equalsIgnoreCase(userDTO.getTemporaryActivationString()) || userDTO.getTemporaryActivationString().equalsIgnoreCase("zoom123"))
-                && (System.currentTimeMillis() - user.getTemporaryActivationSentDate()) < AppUtils.getActivationStringExpiryTimeInMilliseconds())
-            ;
+        if ((user.getTemporaryActivationString().equalsIgnoreCase(userDTO.getTemporaryActivationString()) 
+                && (System.currentTimeMillis() - user.getTemporaryActivationSentDate()) < AppUtils.getActivationStringExpiryTimeInMilliseconds()))
         // time at which temporaryActivationString sent - Current time must be
         // less than 10 mins ( which is the value set as standard )
         {
@@ -237,6 +239,8 @@ public class RegistrationServiceImpl implements IRegistrationService {
                 user.setAccountValidTill(cal.getTime());
             }
             registrationDAO.activateUserIftemporaryPasswordMatches(user);
+        }else {
+            throw new Exception("Password doesnt match or Activation Duration is expired. Please try after some time...");
         }
         return false;
     }

@@ -5,26 +5,27 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceContextType;
+
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import net.drs.myapp.dao.IRegistrationDAO;
-import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.model.CompleteUserDetails;
 import net.drs.myapp.model.Fotographer;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
 
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
-
 @Repository("registrationDAO")
 @Transactional
 public class RegistrationDAOImpl implements IRegistrationDAO {
 
-    @PersistenceContext
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
-
-    public boolean addUser(User user, Set<Role> roles) {
+    
+    
+    public User addUser(User user, Set<Role> roles) {
         try {
             Users users = new Users();
             users.setEmail(user.getEmailAddress());
@@ -35,11 +36,10 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             users.setLastName(user.getLastName());
             entityManager.persist(users);
             user.setUserId(users.getId());
-            entityManager.merge(user);
-            return true;
+            return entityManager.merge(user);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
     }
 
@@ -137,7 +137,7 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     }
 
     @Override
-    public Long addUserandGetUserId(User user, Set<Role> roles) {
+    public User addUserandGetUserId(User user, Set<Role> roles) {
 
         Users users = new Users();
         try {
@@ -159,7 +159,7 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             // throw exception
             e.printStackTrace();
         }
-        return users.getId();
+        return user;
     }
 
     @Override
@@ -190,12 +190,17 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     }
 
     @Override
-    public boolean activateUserIftemporaryPasswordMatches(User user) {
+    public boolean activateUserIftemporaryPasswordMatches(User user) throws Exception {
 
         User storedUser = entityManager.find(User.class, user.getId());
         storedUser.setAccountValidTill(user.getAccountValidTill());
         storedUser.setActive(true);
-        entityManager.persist(storedUser);
+        entityManager.merge(storedUser);
+        
+        Users users = entityManager.find(Users.class, user.getId());
+        users.setActive(1);
+        entityManager.persist(users);
+        
         return true;
     }
 

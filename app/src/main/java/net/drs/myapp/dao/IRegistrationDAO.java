@@ -12,9 +12,9 @@ import net.drs.myapp.model.Users;
 public interface IRegistrationDAO {
 
     // normal User
-    boolean addUser(User user, Set<Role> roles);
+    User addUser(User user, Set<Role> roles);
 
-    Long addUserandGetUserId(User user, Set<Role> roles);
+    User addUserandGetUserId(User user, Set<Role> roles);
 
     boolean checkIfUserExistbyName(User user) throws Exception;
 
@@ -40,7 +40,7 @@ public interface IRegistrationDAO {
     
     User getTemporaryActivationTokenforUser(String emailidorphonenumber) throws Exception;
     
-    boolean activateUserIftemporaryPasswordMatches(User user);
+    boolean activateUserIftemporaryPasswordMatches(User user) throws Exception;
 
     boolean resetPassword(Users users);
 

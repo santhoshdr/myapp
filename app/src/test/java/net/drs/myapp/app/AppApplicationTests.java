@@ -27,6 +27,7 @@ import net.drs.myapp.dto.LoginRequest;
 import net.drs.myapp.dto.LoginResponse;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
+import net.drs.myapp.response.handler.ExeceptionHandler;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -99,10 +100,10 @@ public class AppApplicationTests {
 
         UserDTO userDTOtoactivateUser = new UserDTO();
         userDTOtoactivateUser.setEmailAddress(emailid);
-        userDTOtoactivateUser.setTemporaryActivationString("zoom123");
+        userDTOtoactivateUser.setTemporaryActivationString("LprBe08V");
         HttpEntity<UserDTO> entityToactivateUser = new HttpEntity<UserDTO>(userDTOtoactivateUser, headers);
 
-        ResponseEntity<UserDTO> response2 = restTemplate.exchange(createURLWithPort("/guest/activateUser"), HttpMethod.POST, entityToactivateUser, UserDTO.class);
+        ResponseEntity<ExeceptionHandler> response2 = restTemplate.exchange(createURLWithPort("/guest/activateUser"), HttpMethod.POST, entityToactivateUser, ExeceptionHandler.class);
         assertEquals(response2.getStatusCode(), HttpStatus.CREATED);
 
     }

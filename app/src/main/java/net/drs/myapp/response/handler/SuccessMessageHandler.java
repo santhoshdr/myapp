@@ -2,7 +2,7 @@ package net.drs.myapp.response.handler;
 
 import java.util.Date;
 
-public class SuccessMessageHandler {
+public class SuccessMessageHandler extends MessageHandler{
 	  private Date timestamp;
 	  private String message;
 	  private String details;

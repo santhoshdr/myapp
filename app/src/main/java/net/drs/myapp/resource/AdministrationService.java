@@ -60,7 +60,7 @@ public class AdministrationService {
             Role role1 = new Role();
             role1.setRole(ApplicationConstants.ROLE_USER);
             roles.add(role1);
-            boolean result = registrationService.adduser(userDTO, roles);
+            userDTO = registrationService.adduser(userDTO, roles);
 
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
 
