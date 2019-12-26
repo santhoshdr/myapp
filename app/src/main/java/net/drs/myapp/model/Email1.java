@@ -12,7 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "email_notification")
-public class Email {
+public class Email1 {
 
     @Id
     @Column(name = "id")
