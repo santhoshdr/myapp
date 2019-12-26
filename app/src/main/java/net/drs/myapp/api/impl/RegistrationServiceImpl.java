@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.drs.common.notifier.NotificationRequest;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
@@ -28,7 +29,6 @@ import net.drs.myapp.model.Fotographer;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
-import net.drs.myapp.mqservice.NotificationRequest;
 import net.drs.myapp.mqservice.RabbitMqService;
 import net.drs.myapp.utils.AppUtils;
 
@@ -162,7 +162,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
         emailDto.setNeedtoSendEmail(true);
         Long notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
 
-        rabbitMqService.publishSMSMessage(new NotificationRequest(notificationId, emailId, "FORGOTPASSWORD_EMAIL", "notificationmessage"));
+   //     rabbitMqService.publishSMSMessage(new NotificationRequest(notificationId, emailId, "FORGOTPASSWORD_EMAIL", "notificationmessage"));
         return "SUCCESS";
     }
 

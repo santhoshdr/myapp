@@ -13,9 +13,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +26,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.DeliverCallback;
 import com.rabbitmq.client.Envelope;
 
+import net.drs.common.notifier.NotificationRequest;
 import net.jodah.lyra.Connections;
 import net.jodah.lyra.config.Config;
 import net.jodah.lyra.config.ConfigurableConnection;
@@ -221,7 +219,7 @@ public class RabbitMqService2 implements IRabbitMqService {
     public static void main(String args[]) {
 
         RabbitMqService2 mq = new RabbitMqService2();
-        mq.publishSMSMessage(new NotificationRequest(123L, "abc@sdjfd.com", "Registrationtemplate", "notificationMessage"));
+    //    mq.publishSMSMessage(new NotificationRequest(123L, "abc@sdjfd.com", "Registrationtemplate", "notificationMessage"));
     }
 
 }

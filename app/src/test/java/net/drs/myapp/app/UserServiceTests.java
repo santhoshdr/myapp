@@ -48,6 +48,22 @@ public class UserServiceTests {
 
     protected static String staticEmailid;
 
+    @Test
+    public void acreateOneUser() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setFirstName("FirstName");
+        userDTO.setLastName("LastName");
+        userDTO.setEmailAddress(emailid);
+        userDTO.setMobileNumber("9999999999");
+        userDTO.setPassword("password");
+        userDTO.setAddress("address");
+
+        HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
+        // http://localhost:8085/guest/addUser
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+    }
+
     // @Test
     public void acreateAdminUser() {
         UserDTO userDTO = new UserDTO();

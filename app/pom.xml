@@ -29,6 +29,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>common</groupId>
+			<artifactId>app.common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
 			<version>${jjwt.version}</version>

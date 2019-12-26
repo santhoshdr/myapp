@@ -2,7 +2,9 @@ package net.drs.myapp.resource;
 
 import java.security.Principal;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -20,6 +22,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import net.drs.common.notifier.NotificationDataConstants;
+import net.drs.common.notifier.NotificationRequest;
+import net.drs.common.notifier.NotificationTemplate;
+import net.drs.common.notifier.NotificationType;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
@@ -27,7 +33,6 @@ import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
-import net.drs.myapp.mqservice.NotificationRequest;
 import net.drs.myapp.mqservice.RabbitMqService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
@@ -91,6 +96,8 @@ public class RegistrationResource extends GenericService {
         userDTO.setUpdatedDate(new java.sql.Date(uDate.getTime()));
 
         try {
+            NotificationRequest notificationReq = null;
+            Map<String, String> data = new HashMap<String, String>();
             Role role = new Role();
             role.setRole(ApplicationConstants.ROLE_USER);
             roles.add(role);
@@ -106,9 +113,17 @@ public class RegistrationResource extends GenericService {
                 emailDto.setUserID(new Long(123));
                 emailDto.setNeedtoSendEmail(true);
                 notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
+                data.put(NotificationDataConstants.USER_NAME, userDTO.getFirstName());
 
-                NotificationRequest notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), "TEMPLATE", "message");
+                // ifsend email then ..
+                notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.NEW_REGISTRATION, NotificationType.EMAIL);
+                // else if send sms then
+                // notificationReq = new NotificationRequest(notificationId,
+                // null,"999999999", data,NotificationTemplate.NEW_REGISTRATION,
+                // NotificationType.SMS);
+
                 rabbitMqService.publishSMSMessage(notificationReq);
+
             }
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
                     "User Added Successfully. Email Sent to the provided Email id. " + "Please activate the account by clicking the link that is sent", "");

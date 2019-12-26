@@ -29,6 +29,7 @@ import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.DeliverCallback;
 import com.rabbitmq.client.Envelope;
 
+import net.drs.common.notifier.NotificationRequest;
 import net.jodah.lyra.Connections;
 import net.jodah.lyra.config.Config;
 import net.jodah.lyra.config.ConfigurableConnection;
@@ -76,7 +77,7 @@ public class RabbitMqService implements IRabbitMqService {
 
         for (Channel channel : channels) {
             channel.basicQos(MqStatics.PREFETCH_COUNT, MqStatics.PREFETCH_GLOBAL);
-            channel.basicConsume(MqStatics.NOTIFICATION_QUEUE, MqStatics.AUTO_ACK, new DmMqBatchResponseConsumer(channel));
+      //      channel.basicConsume(MqStatics.NOTIFICATION_QUEUE, MqStatics.AUTO_ACK, new DmMqBatchResponseConsumer(channel));
         }
 
     }
@@ -224,7 +225,7 @@ public class RabbitMqService implements IRabbitMqService {
     public static void main(String args[]) {
 
         RabbitMqService mq = new RabbitMqService();
-        mq.publishSMSMessage(new NotificationRequest(123L, "abc@sdjfd.com", "Registrationtemplate", "notificationMessage"));
+   ///     mq.publishSMSMessage(new NotificationRequest(123L, "abc@sdjfd.com", "Registrationtemplate", "notificationMessage"));
     }
 
 }
