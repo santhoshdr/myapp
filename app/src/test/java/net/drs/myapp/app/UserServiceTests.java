@@ -26,7 +26,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserServiceTests {
+public class UserServiceTests extends GenericAbstractTests {
 
     private String emailid;
 
@@ -37,10 +37,6 @@ public class UserServiceTests {
 
     HttpHeaders headers = new HttpHeaders();
 
-    @Before
-    public void generateUniqueEmailid() {
-        emailid = System.nanoTime() + "@email.com";
-    }
 
     protected static LoginResponse userLoginResponse;
 
@@ -221,8 +217,5 @@ public class UserServiceTests {
 
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
 
 }

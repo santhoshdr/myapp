@@ -30,6 +30,11 @@ public abstract class GenericAbstractTests {
     TestRestTemplate restTemplate = new TestRestTemplate();
 
     HttpHeaders headers = new HttpHeaders();
+    
+    
+    protected String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
+    }
 
     public String generateUniqueEmailid() {
         this.emailid = System.nanoTime() + "@email.com";
@@ -42,10 +47,13 @@ public abstract class GenericAbstractTests {
     }
 
     public void acreateAdminUser() {
+        
+        String userEmailid = generateUniqueEmailid();
+        
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
         userDTO.setLastName("LastName");
-        userDTO.setEmailAddress(generateUniqueEmailid());
+        userDTO.setEmailAddress(userEmailid);
         userDTO.setMobileNumber("9999999999");
         userDTO.setPassword("password");
         userDTO.setAddress("address");
@@ -61,7 +69,7 @@ public abstract class GenericAbstractTests {
         // Activate User:
 
         UserDTO userDTOtoactivateUser = new UserDTO();
-        userDTOtoactivateUser.setEmailAddress(emailid);
+        userDTOtoactivateUser.setEmailAddress(userEmailid);
         userDTOtoactivateUser.setTemporaryActivationString("zoom123");
         HttpEntity<UserDTO> entityToactivateUser = new HttpEntity<UserDTO>(userDTOtoactivateUser, headers);
 
@@ -112,7 +120,5 @@ public abstract class GenericAbstractTests {
 
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
+ 
 }

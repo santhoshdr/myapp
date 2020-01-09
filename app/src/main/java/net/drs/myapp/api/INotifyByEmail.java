@@ -1,6 +1,7 @@
 package net.drs.myapp.api;
 
 import net.drs.myapp.dto.EmailDTO;
+import net.drs.myapp.dto.SMSDTO;
 
 public interface INotifyByEmail {
 
@@ -10,5 +11,9 @@ public interface INotifyByEmail {
 
     // read values from DB and send notification..
     boolean sendNotofication();
+    
+    // for SMS
+    
+    SMSDTO insertDatatoDBforNotification(SMSDTO smsDTO);
 
 }

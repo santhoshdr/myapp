@@ -10,6 +10,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -32,6 +33,7 @@ import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.EmailDTO;
+import net.drs.myapp.dto.SMSDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
@@ -54,6 +56,10 @@ public class RegistrationResource extends GenericService {
 
     @Autowired
     RabbitMqService rabbitMqService;
+    
+    @Value("${notificationByEmail.or.SMS}")
+    private String notifyByEmailOrSMS;
+    
 
     // this is just for test case purpose. This should not be used by external
     // calls
@@ -100,7 +106,7 @@ public class RegistrationResource extends GenericService {
             role.setRole(ApplicationConstants.ROLE_USER);
             roles.add(role);
             User user = registrationService.adduserandGetId(userDTO, roles);
-            if (user != null && user.getUserId() > 0) {
+            if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.EMAIL.getNotificationType())) {
                 EmailDTO emailDto = new EmailDTO();
                 emailDto.setEmailId(userDTO.getEmailAddress());
                 emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
@@ -113,20 +119,19 @@ public class RegistrationResource extends GenericService {
                 notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
                 data.put(NotificationDataConstants.USER_NAME, userDTO.getFirstName());
                 data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, user.getTemporaryActivationString());
-                // ifsend email then ..
                 notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.NEW_REGISTRATION, NotificationType.EMAIL);
-                // else if send sms then
-                // notificationReq = new NotificationRequest(notificationId,
-                // null,"999999999", data,NotificationTemplate.NEW_REGISTRATION,
-                // NotificationType.SMS);
-                System.out.println("Reguest URL " + request.getContextPath());
                 rabbitMqService.publishSMSMessage(notificationReq);
+            }else if(user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())){
+                SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), "otp message");
+                smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
+                notificationReq = new NotificationRequest(smsDTO.getId(), null,userDTO.getMobileNumber() , data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
             }
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
-                    "User Added Successfully. Email Sent to the provided Email id. " + "Please activate the account by clicking the link that is sent", "");
+            rabbitMqService.publishSMSMessage(notificationReq);
+            String successMessage = String.format("User Added Successfully. Email Sent to the provided Email id: %s. "
+                    + "Activate your account by using code sent to your email ID", userDTO.getEmailAddress());
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),successMessage,"");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
             return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
