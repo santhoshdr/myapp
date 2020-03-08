@@ -1,1 +1,30 @@
+Rabbit MQ:
+https://hub.docker.com/r/bitnami/rabbitmq/
+
+docker pull bitnami/rabbitmq
+docker run --name rabbitmq -p 15672:15672 -p 5672:5672 bitnami/rabbitmq:latest
+login to localhost:15672 ( management console, 
+in the admin tag, create new user appuser with password appuser with role - administrator
+and set Can access virtual hosts to /
+ 
+
+
+Database: 
+https://remotemysql.com/databases.php
+
+Username: DcKZvYtSxK
+
+Database name: DcKZvYtSxK
+
+Password: md1SJ1Fwuo
+
+Server: remotemysql.com
+
+Port: 3306
+
+These are the username and password to log in to your database and phpMyAdmin
+
+
+
+
 docker build --rm -t santhoshdr/myappbuild1 .

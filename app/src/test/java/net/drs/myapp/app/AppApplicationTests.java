@@ -209,7 +209,7 @@ public class AppApplicationTests extends GenericAbstractTests{
         headers.add("Authorization", adminLoginResponse.getTokenType() + " " + adminLoginResponse.getAccessToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
-        ResponseEntity<?> response = restTemplate.exchange(createURLWithPort("/admin/getAllUsers"), HttpMethod.GET, entity, Object.class);
+        ResponseEntity<?> response = restTemplate.exchange(createURLWithPort("/v1/admin/getAllUsers"), HttpMethod.GET, entity, Object.class);
         List<?> list = (List<?>) response.getBody();
         for (Object item : list) {
             UserServiceDTO user = objectMapper.convertValue(item, UserServiceDTO.class);

@@ -65,10 +65,62 @@ public class User implements Serializable {
     private int temporaryActivationvalidforInMinutes;
 
     private String temporaryActivationString;
+    
+    private String paymentDetails;
 
     private String createdBy;
 
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+
+    public String getGotram() {
+        return gotram;
+    }
+
+    public void setGotram(String gotram) {
+        this.gotram = gotram;
+    }
+
+    public String getClassofMembershipDesired() {
+        return classofMembershipDesired;
+    }
+
+    public void setClassofMembershipDesired(String classofMembershipDesired) {
+        this.classofMembershipDesired = classofMembershipDesired;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public String getModeofPayment() {
+        return modeofPayment;
+    }
+
+    public void setModeofPayment(String modeofPayment) {
+        this.modeofPayment = modeofPayment;
+    }
+
     private Date updatedDate;
+
+    private String relation;
+
+    private String gotram;
+
+    private String classofMembershipDesired;
+
+    private Double amount;
+
+    private String modeofPayment;
 
     public User() {
 
@@ -247,6 +299,14 @@ public class User implements Serializable {
 
     public void setTemporaryActivationSentDate(long temporaryActivationSentDate) {
         this.temporaryActivationSentDate = temporaryActivationSentDate;
+    }
+
+    public String getPaymentDetails() {
+        return paymentDetails;
+    }
+
+    public void setPaymentDetails(String paymentDetails) {
+        this.paymentDetails = paymentDetails;
     }
 
     private String updatedBy;

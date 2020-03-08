@@ -119,6 +119,61 @@ public class UserDTO implements Serializable {
     private String lastName;
 
     private String mobileNumber;
+    
+    private String relation;
+    
+    private String gotram;
+    
+    private String classofMembershipDesired;
+    
+    private Double amount;
+    
+    private String modeofPayment;
+    
+    private String paymentDetails;
+    
+    private int age;
+    
+    
+    public String getClassofMembershipDesired() {
+        return classofMembershipDesired;
+    }
+
+    public void setClassofMembershipDesired(String classofMembershipDesired) {
+        this.classofMembershipDesired = classofMembershipDesired;
+    }
+
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public String getModeofPayment() {
+        return modeofPayment;
+    }
+
+    public void setModeofPayment(String modeofPayment) {
+        this.modeofPayment = modeofPayment;
+    }
+
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+
+    public String getGotram() {
+        return gotram;
+    }
+
+    public void setGotram(String gotram) {
+        this.gotram = gotram;
+    }
 
     private String emailAddress;
 
@@ -194,6 +249,22 @@ public class UserDTO implements Serializable {
 
     public void setTemporaryActivationString(String temporaryActivationString) {
         this.temporaryActivationString = temporaryActivationString;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getPaymentDetails() {
+        return paymentDetails;
+    }
+
+    public void setPaymentDetails(String paymentDetails) {
+        this.paymentDetails = paymentDetails;
     }
 
     private String createdBy;

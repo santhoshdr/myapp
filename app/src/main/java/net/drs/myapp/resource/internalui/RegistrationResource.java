@@ -1,4 +1,4 @@
-package net.drs.myapp.resource;
+package net.drs.myapp.resource.internalui;
 
 import java.security.Principal;
 import java.util.Date;
@@ -38,12 +38,13 @@ import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.mqservice.RabbitMqService;
+import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 
 @CrossOrigin
-@RequestMapping("/guest")
-//@RestController
+@RequestMapping("/v1/guest")
+@RestController
 public class RegistrationResource extends GenericService {
 
     private static final Logger logger = LoggerFactory.getLogger(RegistrationResource.class);

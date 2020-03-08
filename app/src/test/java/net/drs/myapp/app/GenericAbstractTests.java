@@ -42,8 +42,8 @@ public abstract class GenericAbstractTests {
     }
 
     GenericAbstractTests() {
-        acreateAdminUser();
-        acreateUser();
+        //acreateAdminUser();
+        //acreateUser();
     }
 
     public void acreateAdminUser() {
