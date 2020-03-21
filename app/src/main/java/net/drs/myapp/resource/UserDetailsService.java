@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 //@RestController
 @RequestMapping("/user")
-@PreAuthorize("hasAnyRole('ROLE_USER')")
+//@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class UserDetailsService extends GenericService {
 
     @Autowired

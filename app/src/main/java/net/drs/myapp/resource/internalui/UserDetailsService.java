@@ -28,7 +28,7 @@ import net.drs.myapp.utils.AppUtils;
 
 @RestController
 @RequestMapping("/v1/user")
-@PreAuthorize("hasAnyRole('ROLE_USER')")
+//@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class UserDetailsService extends GenericService {
 
     @Autowired

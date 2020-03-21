@@ -117,7 +117,7 @@ public class AppApplicationTests extends GenericAbstractTests{
         userDTO.setEmailAddress("one" + emailid);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/v1/guest/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 
         LoginRequest loginReq = new LoginRequest();

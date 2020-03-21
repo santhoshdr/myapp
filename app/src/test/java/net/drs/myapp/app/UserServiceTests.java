@@ -63,7 +63,7 @@ public class UserServiceTests extends GenericAbstractTests {
 
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/v1/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     }
     
@@ -80,7 +80,7 @@ public class UserServiceTests extends GenericAbstractTests {
 
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/v1//guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     }
 

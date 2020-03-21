@@ -29,7 +29,7 @@ public class HelloResource {
         return "Secured Hello";
     }
 
-    @PreAuthorize("hasAnyRole('USER1')")
+  //  @PreAuthorize("hasAnyRole('USER1')")
     @GetMapping("/secured/alternate")
     public String alternate() {
         return "alternate";

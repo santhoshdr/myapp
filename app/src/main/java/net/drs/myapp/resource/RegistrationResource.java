@@ -42,7 +42,7 @@ import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 
 @CrossOrigin
-@RequestMapping("/guest")
+@RequestMapping("/v1/guest")
 //@RestController
 public class RegistrationResource extends GenericService {
 
@@ -56,10 +56,9 @@ public class RegistrationResource extends GenericService {
 
     @Autowired
     RabbitMqService rabbitMqService;
-    
+
     @Value("${notificationByEmail.or.SMS}")
     private String notifyByEmailOrSMS;
-    
 
     // this is just for test case purpose. This should not be used by external
     // calls
@@ -121,15 +120,15 @@ public class RegistrationResource extends GenericService {
                 data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, user.getTemporaryActivationString());
                 notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.NEW_REGISTRATION, NotificationType.EMAIL);
                 rabbitMqService.publishSMSMessage(notificationReq);
-            }else if(user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())){
+            } else if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())) {
                 SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), "otp message");
                 smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
-                notificationReq = new NotificationRequest(smsDTO.getId(), null,userDTO.getMobileNumber() , data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
+                notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumber(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
             }
             rabbitMqService.publishSMSMessage(notificationReq);
-            String successMessage = String.format("User Added Successfully. Email Sent to the provided Email id: %s. "
-                    + "Activate your account by using code sent to your email ID", userDTO.getEmailAddress());
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),successMessage,"");
+            String successMessage = String.format("User Added Successfully. Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID",
+                    userDTO.getEmailAddress());
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
@@ -218,7 +217,7 @@ public class RegistrationResource extends GenericService {
     }
 
     @GetMapping("/all")
-    @PreAuthorize("hasAnyRole('USER')")
+  //  @PreAuthorize("hasAnyRole('USER')")
     public String hello(@AuthenticationPrincipal Principal principal) {
 
         principal.getName();
