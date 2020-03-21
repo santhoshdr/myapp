@@ -1,0 +1,61 @@
+Rabbit MQ:
+https://hub.docker.com/r/bitnami/rabbitmq/
+
+docker pull bitnami/rabbitmq
+docker run -d --name rabbitmq -p 15672:15672 -p 5672:5672 bitnami/rabbitmq:latest
+username: user
+password: bitnami
+https://hub.docker.com/r/bitnami/rabbitmq/
+
+docker start -d --name rabbitmq -p 15672:15672 -p 5672:5672 bitnami/rabbitmq:latest
+login to localhost:15672 ( management console, 
+in the admin tag, create new user appuser with password appuser with role - administrator
+and set Can access virtual hosts to /
+ 
+ 
+ Setting up database: 
+ https://medium.com/@dilsimchandrasena/how-to-deploy-and-use-a-mysql-docker-container-in-ubuntu-4ace7c893982
+ 
+ 
+ 
+
+
+Database: 
+https://remotemysql.com/databases.php
+
+Username: DcKZvYtSxK
+
+Database name: DcKZvYtSxK
+
+Password: md1SJ1Fwuo
+
+Server: remotemysql.com
+
+Port: 3306
+
+These are the username and password to log in to your database and phpMyAdmin
+
+
+
+
+docker build --rm -t santhoshdr/myappbuild1 .
+
+
+
+DB Setup:
+
+sudo docker pull mysql/mysql-server:5.7
+sudo docker -d run --name=mysqlCon -p 3306:3306 -d mysql/mysql-server:5.7
+docker logs mysqlCon
+( copy the password from the logs )
+
+docker exec -it mysqlCon mysql -u root -p
+EnterPassword: <enter copied password>
+
+mssql>ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+
+GRANT ALL PRIVILEGES ON *.* to root@'%' IDENTIFIED BY 'root';
+
+
+
+

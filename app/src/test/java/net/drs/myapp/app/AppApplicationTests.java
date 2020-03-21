@@ -31,7 +31,7 @@ import net.drs.myapp.response.handler.ExeceptionHandler;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class AppApplicationTests {
+public class AppApplicationTests extends GenericAbstractTests{
 
     private String emailid;
 
@@ -46,10 +46,6 @@ public class AppApplicationTests {
 
     private static String emailIdUsedForTestCases;
 
-    @Before
-    public void generateUniqueEmailid() {
-        emailid = System.nanoTime() + "@email.com";
-    }
 
     @Test
     public void forgotPassword() {
@@ -121,7 +117,7 @@ public class AppApplicationTests {
         userDTO.setEmailAddress("one" + emailid);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/v1/guest/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
 
         LoginRequest loginReq = new LoginRequest();
@@ -135,15 +131,14 @@ public class AppApplicationTests {
         emailIdUsedForTestCases = userDTO.getEmailAddress();
 
         HttpHeaders badTokenHeader = new HttpHeaders();
-        badTokenHeader.add("Authorization", "Bearer badtoken");
+        badTokenHeader.add("Authorization", adminLoginResponse.getTokenType()+" "+adminLoginResponse.getAccessToken());
         userDTO.setEmailAddress("badtoken" + emailid);
         entity = new HttpEntity<UserDTO>(userDTO, badTokenHeader);
 
-        // throws exception . Response is not sent back.. Need to check this.
-        // ResponseEntity<UserDTO> response2 =
-        // restTemplate.exchange(createURLWithPort("/admin/addAdmin"),
-        // HttpMethod.POST, entity, UserDTO.class);
-        // assertEquals(response2.getStatusCode(), HttpStatus.BAD_REQUEST);
+         ResponseEntity<UserDTO> response2 =
+         restTemplate.exchange(createURLWithPort("/admin/addAdmin"),
+         HttpMethod.POST, entity, UserDTO.class);
+         assertEquals(response2.getStatusCode(), HttpStatus.BAD_REQUEST);
 
         // Empty Token
         // headers.add("Authorization","" );
@@ -156,7 +151,6 @@ public class AppApplicationTests {
     }
 
     @Test
-    @Ignore
     public void createAndLoginAdmin() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
@@ -172,11 +166,11 @@ public class AppApplicationTests {
         userDTO.setEmailAddress("one" + emailid);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
-        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-
-        ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
-        assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
+//        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
+//        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+//
+//        ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
+//        assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
 
         LoginRequest loginReq = new LoginRequest();
         loginReq.setUsernameOrEmail(userDTO.getEmailAddress());
@@ -215,7 +209,7 @@ public class AppApplicationTests {
         headers.add("Authorization", adminLoginResponse.getTokenType() + " " + adminLoginResponse.getAccessToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
-        ResponseEntity<?> response = restTemplate.exchange(createURLWithPort("/admin/getAllUsers"), HttpMethod.GET, entity, Object.class);
+        ResponseEntity<?> response = restTemplate.exchange(createURLWithPort("/v1/admin/getAllUsers"), HttpMethod.GET, entity, Object.class);
         List<?> list = (List<?>) response.getBody();
         for (Object item : list) {
             UserServiceDTO user = objectMapper.convertValue(item, UserServiceDTO.class);
@@ -224,8 +218,6 @@ public class AppApplicationTests {
         assertTrue(list.size() > 0);
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
+
 
 }

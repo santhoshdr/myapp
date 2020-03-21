@@ -47,7 +47,7 @@ public class RabbitMqService implements IRabbitMqService {
 
     private static final String EXCHANGE_NAME = "pub-sub-queue";
 
-    private static final String MQ_HOST = "142.93.223.247";
+    private static final String MQ_HOST = "localhost";
 
     private static final String NOTIFICATION_QUEUE = "sms-email";
 

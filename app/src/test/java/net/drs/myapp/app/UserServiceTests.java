@@ -9,6 +9,7 @@ import net.drs.myapp.dto.UserDTO;
 
 import org.junit.Before;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -26,7 +27,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class UserServiceTests {
+public class UserServiceTests extends GenericAbstractTests {
 
     private String emailid;
 
@@ -37,10 +38,6 @@ public class UserServiceTests {
 
     HttpHeaders headers = new HttpHeaders();
 
-    @Before
-    public void generateUniqueEmailid() {
-        emailid = System.nanoTime() + "@email.com";
-    }
 
     protected static LoginResponse userLoginResponse;
 
@@ -48,6 +45,29 @@ public class UserServiceTests {
 
     protected static String staticEmailid;
 
+    @Test
+    public void acreateOneUserAsPerOriginalApplication() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setFirstName("FirstName");
+        userDTO.setLastName("LastName");
+        userDTO.setEmailAddress(emailid);
+        userDTO.setMobileNumber("9999999999");
+        userDTO.setPassword("password");;
+        userDTO.setAddress("address");
+        userDTO.setGotram("gotram");
+        userDTO.setRelation("S/O Satyamurty");
+        userDTO.setAge(34);
+        userDTO.setClassofMembershipDesired("Life Member");
+        userDTO.setAmount(250.5);
+        userDTO.setModeofPayment("Online");
+
+        HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
+        // http://localhost:8085/guest/addUser
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/v1/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+    }
+    
+    
     @Test
     public void acreateOneUser() {
         UserDTO userDTO = new UserDTO();
@@ -60,11 +80,12 @@ public class UserServiceTests {
 
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
+        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/v1//guest/addUser"), HttpMethod.POST, entity, UserDTO.class);
         assertEquals(response.getStatusCode(), HttpStatus.CREATED);
     }
 
-    // @Test
+    @Test
+    @Ignore
     public void acreateAdminUser() {
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
@@ -221,8 +242,5 @@ public class UserServiceTests {
 
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
 
 }

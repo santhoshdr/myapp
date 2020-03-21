@@ -1,4 +1,4 @@
-package net.drs.myapp.resource;
+package net.drs.myapp.resource.internalui;
 
 import java.security.Principal;
 import java.util.Date;
@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,12 +39,13 @@ import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.mqservice.RabbitMqService;
+import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 
 @CrossOrigin
-@RequestMapping("/v1/guest")
-//@RestController
+@RequestMapping("/guest")
+@Controller
 public class RegistrationResource extends GenericService {
 
     private static final Logger logger = LoggerFactory.getLogger(RegistrationResource.class);
@@ -224,4 +226,12 @@ public class RegistrationResource extends GenericService {
         return "Hello Youtube";
     }
 
+    
+    //check SecurityConfig. An entry is there for /v1/guest/
+    @GetMapping("/test")
+   // @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public String test() {
+       return "welcome";
+    }
+    
 }

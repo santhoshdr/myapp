@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/rest/hello")
+//@RequestMapping("/rest/hello")
 @RestController
 public class HelloResource {
 
@@ -29,7 +29,7 @@ public class HelloResource {
         return "Secured Hello";
     }
 
-    @PreAuthorize("hasAnyRole('USER1')")
+  //  @PreAuthorize("hasAnyRole('USER1')")
     @GetMapping("/secured/alternate")
     public String alternate() {
         return "alternate";

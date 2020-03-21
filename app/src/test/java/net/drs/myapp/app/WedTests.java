@@ -179,8 +179,4 @@ public class WedTests extends GenericAbstractTests {
 
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
-
 }

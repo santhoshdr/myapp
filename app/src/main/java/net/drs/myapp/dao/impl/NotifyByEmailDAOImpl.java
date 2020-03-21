@@ -8,6 +8,7 @@ import javax.persistence.PersistenceContext;
 
 import net.drs.myapp.dao.INotifyByEmailDAO;
 import net.drs.myapp.model.Email;
+import net.drs.myapp.model.SMS;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,5 +45,9 @@ public class NotifyByEmailDAOImpl implements INotifyByEmailDAO {
         return listofEntriestowhichEmailtobeSent;
 
     }
+
+    @Override
+    public SMS insertEmailDatailstoDB(SMS sms) {
+        return entityManager.merge(sms);    }
 
 }
