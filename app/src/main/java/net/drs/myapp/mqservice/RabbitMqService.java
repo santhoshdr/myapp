@@ -151,6 +151,8 @@ public class RabbitMqService implements IRabbitMqService {
         }
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(MQ_HOST);
+        factory.setUsername("appuser");
+        factory.setPassword("appuser");
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
             channel.basicPublish(EXCHANGE_NAME, "", null, data);

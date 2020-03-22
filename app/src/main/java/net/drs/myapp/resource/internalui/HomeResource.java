@@ -1,21 +1,24 @@
-package net.drs.myapp.resource;
+package net.drs.myapp.resource.internalui;
 
 import java.security.Principal;
 
-import net.drs.myapp.api.IUserDetails;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-//@RequestMapping("/rest/hello")
-//@RestController
-public class HelloResource {
+import net.drs.myapp.api.IUserDetails;
+
+@Controller
+public class HomeResource {
 
     @Autowired
     IUserDetails userDetails;
+
+    @GetMapping(value = { "", "/", "/guest"})
+    public String showHome() {
+        return "welcome";
+    }
 
     @GetMapping("/all")
     public String hello() {
@@ -29,7 +32,7 @@ public class HelloResource {
         return "Secured Hello";
     }
 
-  //  @PreAuthorize("hasAnyRole('USER1')")
+    // @PreAuthorize("hasAnyRole('USER1')")
     @GetMapping("/secured/alternate")
     public String alternate() {
         return "alternate";

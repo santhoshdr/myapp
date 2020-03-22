@@ -7,6 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -195,9 +196,11 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         User storedUser = entityManager.find(User.class, user.getId());
         storedUser.setAccountValidTill(user.getAccountValidTill());
         storedUser.setActive(true);
+        
         entityManager.merge(storedUser);
         
         Users users = entityManager.find(Users.class, user.getId());
+        users.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         users.setActive(1);
         entityManager.persist(users);
         

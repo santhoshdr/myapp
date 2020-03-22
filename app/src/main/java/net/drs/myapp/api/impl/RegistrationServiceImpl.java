@@ -116,7 +116,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
                 String temperoryActivationString = AppUtils.generateRandomString();
                 user.setTemporaryActivationSentDate(System.currentTimeMillis());
                 user.setTemporaryActivationString(temperoryActivationString);
-                user.setPassword(AppUtils.encryptPassword(user.getPassword()));
+           //    user.setPassword(AppUtils.encryptPassword(user.getPassword()));
                 user.setTemporaryActivationvalidforInMinutes(temperoryactivationvalidtillminutes);
                 // Storing User
                 user = registrationDAO.addUserandGetUserId(user, roles);
@@ -203,24 +203,27 @@ public class RegistrationServiceImpl implements IRegistrationService {
             throw new Exception("Email if doesnt not exist. Please check your email id");
         }
 
-        user = registrationDAO.getTemporaryActivationTokenforUser(user.getEmailAddress());
+        User storedUser = registrationDAO.getTemporaryActivationTokenforUser(userDTO.getEmailAddress());
 
-        if (user.getTemporaryActivationString() == null) {
-            throw new Exception("Try resetting password again...");
+        if (storedUser.getTemporaryActivationString() == null) {
+            // this means, there is no temporary password set in db
+            throw new Exception("Error while resetting password. Please contact administrator");
         }
         // 600000
         // zoom123 -- used only for testcases...
-        if ((user.getTemporaryActivationString().equalsIgnoreCase(userDTO.getTemporaryActivationString()) 
-                && (System.currentTimeMillis() - user.getTemporaryActivationSentDate()) < AppUtils.getActivationStringExpiryTimeInMilliseconds()))
+        if ((storedUser.getTemporaryActivationString().equalsIgnoreCase(userDTO.getTemporaryActivationString()) 
+                && (System.currentTimeMillis() - storedUser.getTemporaryActivationSentDate()) < AppUtils.getActivationStringExpiryTimeInMilliseconds()))
         // time at which temporaryActivationString sent - Current time must be
         // less than 10 mins ( which is the value set as standard )
         {
+            
+            storedUser.setPassword(userDTO.getPassword());
+            
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             // Getting current date
             Calendar cal = Calendar.getInstance();
             // is account expiry is set.
             if (AppUtils.enableAccountExpiry()) {
-
                 // Displaying current date in the desired format
                 System.out.println("Current Date: " + sdf.format(cal.getTime()));
                 cal.add(Calendar.DAY_OF_MONTH, AppUtils.getAccountValidityExpiryAfterDays());
@@ -228,17 +231,16 @@ public class RegistrationServiceImpl implements IRegistrationService {
                 cal.set(Calendar.MINUTE, 59);
                 cal.set(Calendar.SECOND, 58);
                 // Date after adding the days to the current date
-                user.setAccountValidTill(cal.getTime());
-
+                storedUser.setAccountValidTill(cal.getTime());
             } else {
                 // infinate
                 cal.set(2100, 12, 30);
                 cal.set(Calendar.HOUR_OF_DAY, 23);
                 cal.set(Calendar.MINUTE, 59);
                 cal.set(Calendar.SECOND, 58);
-                user.setAccountValidTill(cal.getTime());
+                storedUser.setAccountValidTill(cal.getTime());
             }
-            registrationDAO.activateUserIftemporaryPasswordMatches(user);
+            registrationDAO.activateUserIftemporaryPasswordMatches(storedUser);
         }else {
             throw new Exception("Password doesnt match or Activation Duration is expired. Please try after some time...");
         }

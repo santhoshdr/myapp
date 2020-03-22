@@ -1,5 +1,8 @@
 package net.drs.myapp.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class AppUtils {
@@ -36,5 +39,17 @@ public class AppUtils {
     public static long getActivationStringExpiryTimeInMilliseconds() {
         return 600000L;
     }
+    
+    public static boolean isPhoneNumber(String enteredValue) {
+        Pattern p = Pattern.compile("^\\+(?:[0-9] ?){6,14}[0-9]$"); 
+        Matcher m = p.matcher(enteredValue); 
+        return (m.find() && m.group().equals(enteredValue));
+    }
 
+    public static boolean isEmailId(String enteredValue) {
+        String regex = "^[\\w-_\\.+]*[\\w-_\\.]\\@([\\w]+\\.)+[\\w]+[\\w]$";
+        return enteredValue.matches(regex);
+        
+    }
+    
 }

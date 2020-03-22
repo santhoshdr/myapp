@@ -4,7 +4,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-	<!-- Navigation -->
+
+LOGGED IN SUCCESS	<!-- Navigation -->
 	<%@ include file="nav.jsp"%>
 	<%@ include file="header.jsp"%>
 	<%@ include file="body.jsp"%>

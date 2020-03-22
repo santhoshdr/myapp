@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -22,8 +21,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import net.drs.common.notifier.NotificationDataConstants;
 import net.drs.common.notifier.NotificationRequest;
@@ -42,6 +41,7 @@ import net.drs.myapp.mqservice.RabbitMqService;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
+import net.drs.myapp.utils.AppUtils;
 
 @CrossOrigin
 @RequestMapping("/guest")
@@ -88,7 +88,9 @@ public class RegistrationResource extends GenericService {
     }
 
     @PostMapping("/addUser")
-    public ResponseEntity<?> addUser(@RequestBody UserDTO userDTO, BindingResult bindingResult, WebRequest request) {
+    public ModelAndView addUser(UserDTO userDTO, BindingResult bindingResult, WebRequest request) {
+
+        ModelAndView modelandView = new ModelAndView();
 
         java.util.Date uDate = new java.util.Date();
         Set<Role> roles = new HashSet<>();
@@ -106,8 +108,18 @@ public class RegistrationResource extends GenericService {
             Role role = new Role();
             role.setRole(ApplicationConstants.ROLE_USER);
             roles.add(role);
+
+            if (AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
+                userDTO.setEmailAddress(userDTO.getMobileNumberOrEmail());
+            } else if (AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
+                userDTO.setMobileNumber(userDTO.getMobileNumberOrEmail());
+            } else {
+                throw new Exception("Enter valid phone number or email id");
+            }
             User user = registrationService.adduserandGetId(userDTO, roles);
-            if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.EMAIL.getNotificationType())) {
+            if (user != null && 
+                user.getUserId() > 0 && 
+                AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
                 EmailDTO emailDto = new EmailDTO();
                 emailDto.setEmailId(userDTO.getEmailAddress());
                 emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
@@ -121,42 +133,52 @@ public class RegistrationResource extends GenericService {
                 data.put(NotificationDataConstants.USER_NAME, userDTO.getFirstName());
                 data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, user.getTemporaryActivationString());
                 notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.NEW_REGISTRATION, NotificationType.EMAIL);
-                rabbitMqService.publishSMSMessage(notificationReq);
-            } else if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())) {
+              //  rabbitMqService.publishSMSMessage(notificationReq);
+            
+                notificationByEmailService.sendNotoficationDirectly(notificationReq);
+            
+            } else if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())
+                    && AppUtils.isPhoneNumber(userDTO.getMobileNumberOrEmail())) {
                 SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), "otp message");
                 smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
-                notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumber(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
+                notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumberOrEmail(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
             }
-            rabbitMqService.publishSMSMessage(notificationReq);
-            String successMessage = String.format("User Added Successfully. Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID",
-                    userDTO.getEmailAddress());
+         //   rabbitMqService.publishSMSMessage(notificationReq);
+            String successMessage = String.format("An Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID", userDTO.getEmailAddress());
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");
-            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+            modelandView.addObject("registrationSuccess", true);
+            modelandView.addObject("message", successMessage);
+            modelandView.addObject("userEmailId", userDTO.getEmailAddress());
+            modelandView.setViewName("registrationSuccess");
+            return modelandView;
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
-            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+            modelandView.addObject("message", e.getMessage());
+            modelandView.addObject("registrationSuccess", false);
+            modelandView.setViewName("loginFailure");
+            return modelandView;
         }
     }
 
     @PostMapping("/activateUser")
-    public ResponseEntity<?> activateAccount(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    public ModelAndView activateAccount(UserDTO userDTO, BindingResult bindingResult) {
 
-        logger.debug("Activating the user for the email id " + userDTO.getEmailAddress());
+        logger.debug("Activating the user for the email id " + userDTO.getMobileNumberOrEmail());
         try {
             registrationService.activateUserAccount(userDTO);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
                     "User Added Successfully. Email Sent to the provided Email id. " + "Please activate the account by clicking the link that is sent", "");
-            return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+            return new ModelAndView("loginSuccess").addObject("message", "Congratulation!. Your account is active. You can login now");
         } catch (Exception e) {
-            e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
-            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+            return new ModelAndView("loginFailure").addObject("message", e.getMessage());
         }
     }
 
+    
+    // for ajax call
     @PostMapping("/forgotPassword")
-    public ResponseEntity<?> forgotPassword(@RequestBody String emailId, BindingResult bindingResult) {
-
+    public ResponseEntity<?> forgotPassword(String emailId) {
         try {
             registrationService.forgotPassword(emailId);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
@@ -219,19 +241,18 @@ public class RegistrationResource extends GenericService {
     }
 
     @GetMapping("/all")
-  //  @PreAuthorize("hasAnyRole('USER')")
+    // @PreAuthorize("hasAnyRole('USER')")
     public String hello(@AuthenticationPrincipal Principal principal) {
 
         principal.getName();
         return "Hello Youtube";
     }
 
-    
-    //check SecurityConfig. An entry is there for /v1/guest/
+    // check SecurityConfig. An entry is there for /v1/guest/
     @GetMapping("/test")
-   // @PreAuthorize("hasAnyRole('ROLE_USER')")
+    // @PreAuthorize("hasAnyRole('ROLE_USER')")
     public String test() {
-       return "welcome";
+        return "welcome";
     }
-    
+
 }

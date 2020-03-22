@@ -1,5 +1,6 @@
 package net.drs.myapp;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import org.h2.tools.Server;
@@ -9,7 +10,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
@@ -17,8 +17,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 // @EnableBatchProcessing
 @EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class })
 // SpringBootServletInitializer -- to use JSP
-//@ComponentScan
-public class AppApplication{
+// @ComponentScan
+public class AppApplication {
 
     @Value("${db.port.h2}")
     private String dbport;
@@ -27,8 +27,6 @@ public class AppApplication{
         SpringApplication.run(AppApplication.class, args);
     }
 
-
-    
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2Server() throws SQLException {
 
