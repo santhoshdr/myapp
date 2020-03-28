@@ -1,17 +1,19 @@
 package net.drs.myapp.resource;
 
+import javax.servlet.http.HttpSession;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import net.drs.myapp.config.JwtTokenProvider;
 import net.drs.myapp.dto.LoginRequest;
@@ -22,8 +24,12 @@ import net.drs.myapp.repositpry.UsersRepository;
  */
 @Controller
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController extends GenericService{
 
+    
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    
+    
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -39,22 +45,66 @@ public class AuthController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    /*
+     * @PostMapping("/signin") public ModelAndView authenticateUser(LoginRequest
+     * loginRequest) { try { Authentication authentication =
+     * authenticationManager.authenticate(new
+     * UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(),
+     * loginRequest.getPassword()));
+     * SecurityContextHolder.getContext().setAuthentication(authentication);
+     * String jwt = tokenProvider.generateToken(authentication); ModelAndView
+     * modelAndView = new ModelAndView("loginSuccess");
+     * modelAndView.addObject("login", true); return modelAndView; } catch
+     * (Exception e) { ModelAndView modelAndView = new
+     * ModelAndView("loginFailure"); modelAndView.addObject("login", false);
+     * return modelAndView; } }
+     */
+
+    
+
     @PostMapping("/signin")
-    public ModelAndView authenticateUser(LoginRequest loginRequest) {
+    public String authenticateUser(LoginRequest loginRequest,HttpSession httpSession) {
         try {
+            
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            
             String jwt = tokenProvider.generateToken(authentication);
-            ModelAndView modelAndView = new ModelAndView("loginSuccess");
-            modelAndView.addObject("login", true);
-            return modelAndView;
+            httpSession.setAttribute("userloggedin", jwt);
+            httpSession.setMaxInactiveInterval(180); // 3 minutes
+            logger.info("New Session Created: " + httpSession.getId());
+            
+            return "redirect:/user/loginHome";
         } catch (Exception e) {
-            ModelAndView modelAndView = new ModelAndView("loginFailure");
-                    modelAndView.addObject("login", false);
-                    return modelAndView;
+            return "redirect:/";
         }
     }
-
+    
+    
+    @GetMapping("/logout")
+    public String logout(HttpSession httpSession) {
+        try {
+            
+            logger.info(" This session was Created at : " + httpSession.getCreationTime());
+            logger.info(" This session was Last accessed at : " + httpSession.getLastAccessedTime());
+            logger.info(" Session Destroyed : " + httpSession.getId());
+            httpSession.getId();
+            httpSession.invalidate();
+            return "redirect:/";
+        } catch (Exception e) {
+            return "redirect:/showData";
+        }
+    }
+    
+    @GetMapping("/showData")
+    public String showData(LoginRequest loginRequest) {
+        try {
+           
+            return "wonderful";
+        } catch (Exception e) {
+            return "redirect:/showData";
+        }
+    }
     /*
      * @PostMapping("/signup") public ResponseEntity<?> registerUser(@Valid
      * 

@@ -3,16 +3,19 @@ package net.drs.myapp.resource.internalui;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import net.drs.myapp.api.IUserDetails;
@@ -26,26 +29,37 @@ import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 import net.drs.myapp.utils.AppUtils;
 
-@RestController
-@RequestMapping("/v1/user")
-//@PreAuthorize("hasAnyRole('ROLE_USER')")
+@Controller
+@RequestMapping("/user")
+@PreAuthorize("hasAnyRole('ROLE_USER')")
 public class UserDetailsService extends GenericService {
 
     @Autowired
     IUserDetails userDetails;
 
-    @PostMapping("/hello")
-    public ModelAndView hello(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    @GetMapping("/loginHome")
+    public ModelAndView hello(HttpSession session) {
+        ModelAndView modelandView = new ModelAndView();
+        setValueInUserSession(session,getLoggedInUserName());
+        modelandView.setViewName("loginSuccess");
+        return modelandView;
+    }
+    
+    
+    @GetMapping("/hello")
+    public ModelAndView loginHome() {
         ModelAndView h = new ModelAndView();
         h.setViewName("hh.jsp");
         return h;
 
     }
     
-    @PostMapping("/getMyProfile")
-    public ResponseEntity<User> getMyProfile(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        return new ResponseEntity<>(userDetails.getUserById(userDTO.getUserId()), HttpStatus.OK);
-
+    
+    
+    @GetMapping("/getMyProfile")
+    public ModelAndView getMyProfile() {
+        return new ModelAndView("viewProfile").
+                addObject("data",userDetails.getUserById(getLoggedInUserId()));
     }
 
     @PostMapping("/updateMyProfile")
@@ -68,25 +82,22 @@ public class UserDetailsService extends GenericService {
      * @param bindingResult
      * @return
      */
+    
     @PostMapping("/changePassword")
-    public ResponseEntity<?> changePassword(@RequestBody ResetPasswordDTO passwordDTO, BindingResult bindingResult) {
-
+    public ResponseEntity<?> changePassword(ResetPasswordDTO passwordDTO, BindingResult bindingResult) {
         java.util.Date uDate = new java.util.Date();
         try {
-
             final UserPrincipal loggedInUser = getLoggedInUser();
-            final String storedPasswoed = AppUtils.encryptPassword(passwordDTO.getCurrentPassword());
-
-            if (storedPasswoed.equalsIgnoreCase(loggedInUser.getPassword())) {
+            if (!BCrypt.checkpw(passwordDTO.getCurrentPassword(), loggedInUser.getPassword())) {
                 throw new Exception("Entered Password doesnt match with entered password");
             }
             passwordDTO.setUserId(loggedInUser.getId());
             passwordDTO.setEncryptedPassword(AppUtils.encryptPassword(passwordDTO.getNewPassword()));
             userDetails.changePassword(passwordDTO);
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Password has been changed successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
+            
         } catch (Exception e) {
-            e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
             return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }

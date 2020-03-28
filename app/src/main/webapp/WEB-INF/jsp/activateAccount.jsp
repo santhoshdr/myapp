@@ -13,7 +13,19 @@
 			</button>
 		</div>
 	</c:if>
-
+	
+	
+		<c:if test="${!actionResult && not empty actionResult}">
+		<div id="loginFailure"
+			class="alert alert-danger alert-dismissible fade show"
+			style="top: 50px;" role="alert">
+			<strong>${message}</strong>
+			<button type="button" class="close" data-dismiss="alert"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</c:if>
  <c:choose>
          
          <c:when test = "${registrationSuccess && not empty registrationSuccess}">
@@ -70,7 +82,7 @@
 		<div class="container">
 			<h3>Enter the temporary password sent to your email</h3>
 					<form id="registrationForm" action="/guest/activateUser" method="post">
-					<input type="text" hidden="" name="emailAddress" value='<c:out value="${userEmailId}"></c:out>'>
+					<input type="text"class="form-control" placeholder="Email ID" id="unverifiedEmailId" name="emailAddress" value='<c:out value="${userEmailId}"></c:out>'>
 					<div class="form-group">
 						<label for="Temporary Password">Temporary Password</label> 
 						<input type="password" name="temporaryActivationString" class="form-control"

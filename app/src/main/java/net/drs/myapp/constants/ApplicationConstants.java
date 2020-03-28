@@ -12,4 +12,6 @@ public class ApplicationConstants {
 
     public static final String ROLE_DUMMY = "DUMMY";
 
+    public static final String LOGGED_IN_USER_NAME = "loggedInUserName";
+    
 }

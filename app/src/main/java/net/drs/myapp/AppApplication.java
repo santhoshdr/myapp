@@ -1,6 +1,5 @@
 package net.drs.myapp;
 
-import java.io.File;
 import java.sql.SQLException;
 
 import org.h2.tools.Server;
@@ -22,11 +21,9 @@ public class AppApplication {
 
     @Value("${db.port.h2}")
     private String dbport;
-
     public static void main(String[] args) {
         SpringApplication.run(AppApplication.class, args);
     }
-
     @Bean(initMethod = "start", destroyMethod = "stop")
     public Server h2Server() throws SQLException {
 

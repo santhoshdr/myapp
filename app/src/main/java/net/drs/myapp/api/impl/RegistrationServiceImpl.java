@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
@@ -15,7 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.drs.common.notifier.NotificationDataConstants;
 import net.drs.common.notifier.NotificationRequest;
+import net.drs.common.notifier.NotificationTemplate;
+import net.drs.common.notifier.NotificationType;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
@@ -152,7 +157,9 @@ public class RegistrationServiceImpl implements IRegistrationService {
         if (!result) {
             throw new Exception("Unable to Reset Password. Kindly Try after some time. OR Contact Administrator.");
         }
-
+        NotificationRequest notificationReq = null;
+        Map<String, String> data = new HashMap<String, String>();
+        
         EmailDTO emailDto = new EmailDTO();
         java.util.Date uDate = new java.util.Date();
         emailDto.setEmailId(emailId);
@@ -163,8 +170,14 @@ public class RegistrationServiceImpl implements IRegistrationService {
         emailDto.setEmailTemplateId("FORGOTPASSWORD_EMAIL");
         emailDto.setUserID(new Long(123));
         emailDto.setNeedtoSendEmail(true);
+        data.put(NotificationDataConstants.USER_EMAILID, emailId);
+        data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, temperoryPassword);
         Long notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
-
+        notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.FORGOT_PASSWORD, NotificationType.EMAIL);
+        
+        
+        notificationByEmailService.sendNotoficationDirectly(notificationReq);
+        
    //     rabbitMqService.publishSMSMessage(new NotificationRequest(notificationId, emailId, "FORGOTPASSWORD_EMAIL", "notificationmessage"));
         return "SUCCESS";
     }

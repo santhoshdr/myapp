@@ -87,6 +87,11 @@ public class RegistrationResource extends GenericService {
         }
     }
 
+    @GetMapping("/verifyEmail")
+    public ModelAndView verifyEmail(String emailId) {
+        return new ModelAndView("registrationSuccess").addObject("userEmailId", emailId);
+    }
+
     @PostMapping("/addUser")
     public ModelAndView addUser(UserDTO userDTO, BindingResult bindingResult, WebRequest request) {
 
@@ -117,9 +122,7 @@ public class RegistrationResource extends GenericService {
                 throw new Exception("Enter valid phone number or email id");
             }
             User user = registrationService.adduserandGetId(userDTO, roles);
-            if (user != null && 
-                user.getUserId() > 0 && 
-                AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
+            if (user != null && user.getUserId() > 0 && AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
                 EmailDTO emailDto = new EmailDTO();
                 emailDto.setEmailId(userDTO.getEmailAddress());
                 emailDto.setCreatedBy(ApplicationConstants.USER_SYSTEM);
@@ -133,17 +136,17 @@ public class RegistrationResource extends GenericService {
                 data.put(NotificationDataConstants.USER_NAME, userDTO.getFirstName());
                 data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, user.getTemporaryActivationString());
                 notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.NEW_REGISTRATION, NotificationType.EMAIL);
-              //  rabbitMqService.publishSMSMessage(notificationReq);
-            
+                // rabbitMqService.publishSMSMessage(notificationReq);
+
                 notificationByEmailService.sendNotoficationDirectly(notificationReq);
-            
+
             } else if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())
                     && AppUtils.isPhoneNumber(userDTO.getMobileNumberOrEmail())) {
                 SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), "otp message");
                 smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
                 notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumberOrEmail(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
             }
-         //   rabbitMqService.publishSMSMessage(notificationReq);
+            // rabbitMqService.publishSMSMessage(notificationReq);
             String successMessage = String.format("An Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID", userDTO.getEmailAddress());
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");
             modelandView.addObject("registrationSuccess", true);
@@ -167,21 +170,23 @@ public class RegistrationResource extends GenericService {
         try {
             registrationService.activateUserAccount(userDTO);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
-                    "User Added Successfully. Email Sent to the provided Email id. " + "Please activate the account by clicking the link that is sent", "");
-            return new ModelAndView("loginSuccess").addObject("message", "Congratulation!. Your account is active. You can login now");
+                    "Congratulations!. Your account is active. You can login.", "");
+            return new ModelAndView("welcome").addObject("actionResult", true).addObject("message", "Congratulation!. Your account is active. You can login now");
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
-            return new ModelAndView("loginFailure").addObject("message", e.getMessage());
+            return new ModelAndView("registrationSuccess").addObject("actionResult", false).addObject("message", e.getMessage());
         }
     }
 
-    
     // for ajax call
     @PostMapping("/forgotPassword")
     public ResponseEntity<?> forgotPassword(String emailId) {
         try {
+            if (org.springframework.util.StringUtils.isEmpty(emailId)) {
+                throw new Exception("Please enter valid email id");
+            }
             registrationService.forgotPassword(emailId);
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Temperory Password has been sent to your Email id. " + "Use it to reset your password", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

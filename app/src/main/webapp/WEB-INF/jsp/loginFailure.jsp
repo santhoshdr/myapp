@@ -5,7 +5,7 @@
 <html lang="en">
 <body>
 
-LOGGED IN SUCCESS	<!-- Navigation -->
+<!-- Navigation -->
 	<%@ include file="nav.jsp"%>
 	<%@ include file="header.jsp"%>
 	<%@ include file="body.jsp"%>

@@ -19,7 +19,13 @@
 				<li class="nav-item">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#login">Login</button>
+				</li>&nbsp;&nbsp;
+			    <form id="verifyEmail" action="/guest/verifyEmail">
+				<li class="nav-item">
+					<button type="submit" class="btn btn-primary">Activate my Account</button>
 				</li>
+				</form>
+
 			</ul>
 		</div>
 	</div>
@@ -42,7 +48,7 @@
 					<div class="form-group">
 						<label for="exampleInputEmail1">Email address</label> <input
 							type="email" name="usernameOrEmail" class="form-control"
-							id="emailId" aria-describedby="emailHelp"
+							id="loginemailId" aria-describedby="emailHelp"
 							placeholder="Enter email">
 					</div>
 					<div class="form-group">
@@ -118,7 +124,6 @@
 <div class="modal" id="forgotPassword">
 	<div class="modal-dialog">
 		<div class="modal-content">
-
 			<!-- Modal Header -->
 			<div class="modal-header">
 				<h4 class="modal-title">Forgot Password</h4>
@@ -128,19 +133,45 @@
 			<!-- Modal body -->
 			<div class="modal-body">
 				<div id="failure" style="display:none" class="alert alert-danger" role="alert"></div>
+				<div id="success" style="display:none" class="alert alert-success" role="alert"></div>
 
-				<div class="form-group">
+				<div id ="forgotPasswordGroup" class="form-group">
 					<label for="First Name">Enter Your Email ID</label> <input
 						type="text" name="mobileNumberOrEmail" class="form-control"
 						id="forgotEmailId" aria-describedby="emailHelp"
 						placeholder="Enter Your Email ID">
 				</div>
 				
+				    <div id ="setPasswordGroup"  class="form-group">
+				    <label for="temperoryPassword">Enter Email ID : </label> <input
+                        type="text" name="emailId" class="form-control"
+                        id="forgotEmailIdNew" aria-describedby="emailHelp"
+                        placeholder="Email Id">
+				    
+				    
+                    <label for="temperoryPassword">Enter Temperory Password : </label> <input
+                        type="text" name="mobileNumberOrEmail" class="form-control"
+                        id="tempPassword" aria-describedby="emailHelp"
+                        placeholder="Enter Temperory Password you have received">
+                        
+                      <label for="newPassword">Enter New Password : </label> <input
+                        type="text" name="newPassword" class="form-control"
+                        id="newPassword" aria-describedby="emailHelp"
+                        placeholder="Enter new Password">
+                        
+                        <label for="temperoryPassword">Confirm  Password : </label> <input
+                        type="text" name="confirmPassword" class="form-control"
+                        id="confirmPassword" aria-describedby="emailHelp"
+                        placeholder="Confirm New Password">
+                </div>
+				
+				
 				<!-- Modal footer -->
 				<div class="modal-footer">
-				<button id="forgotPasswordButton" type="button"
-					class="btn btn-primary">Submit</button>
-					<button type="button" class="btn btn-danger" data-dismiss="modal" id="buttonClose">Close</button>
+				<button id="forgotPasswordButton" type="button" class="btn btn-primary">Send Temperory Password</button>
+				<button id="setPermanentPasswordButton" type="button" class="btn btn-primary">Have Permanent Password ?</button>
+				<button id="resetPasswordButton" style="display:none"  type="button" class="btn btn-primary">Reset Password</button>
+				<button type="button" class="btn btn-danger" data-dismiss="modal" id="buttonClose">Close</button>
 				</div>
 			</div>
 
@@ -176,18 +207,31 @@
 
 $( document ).ready(function() {
 	$("#failure").hide();
+	  $("#success").hide();
+	  $("#setPasswordGroup").hide();
 	  $( "#forgotPasswordButton" ).click(function() {
+		  $("#failure").hide();
+		  $("#setPasswordGroup").hide();
+		  $("#success").hide();
 		  var forgotEmailId = "emailId="+$("#forgotEmailId").val();
 	    $.ajax({
 	        url: '/guest/forgotPassword',
 	        type: "POST",
 	        data: forgotEmailId,
-	        success: function(data, textStatus, jqXHR){
-	            console.log("================" + textStatus);
+	        success: function(response, textStatus, jqXHR){
+	        	var result = JSON.stringify(response.message, null, 4)
+				   $('#success').html(result);
+	        	$("#setPasswordGroup").show();
+	        	$("#forgotPasswordGroup").hide();
+	        	$("#forgotPasswordButton").hide();
+	        	$("#setPermanentPasswordButton").hide();
+	        	$("#resetPasswordButton").show();
+	        	alert("huh" + forgotEmailId)
+	        	$("#forgotEmailIdNew").val($("#forgotEmailId").val()); 
+		    	$("#success").show();
 	        },
 	        error: function (response, textStatus, errorThrown)
 	         {
-	    	   
 	    	   var result = JSON.stringify(response.responseJSON.message, null, 4)
 			   $('#failure').html(result);
 	    	   $("#failure").show();
@@ -196,11 +240,31 @@ $( document ).ready(function() {
 	  }),
 	  $( "#buttonClose").click(function() {
 		  $("#failure").hide();
+		  $("#success").hide();
 		  $('#forgotEmailId').val("");
-	  })
+	  }),
+      $( "#setPermanentPasswordButton").click(function() {
+          $("#setPasswordGroup").show();
+          $("#forgotPasswordGroup").hide();
+          $("#forgotPasswordButton").hide();
+          $("#setPermanentPasswordButton").hide();
+          $("#resetPasswordButton").show();
+          $("#success").hide();
+          $("#failure").hide();
+          $('#forgotEmailId').val("");
+      }),
+      $('#forgotPassword').on('hidden.bs.modal', function () {
+    	  $("#setPasswordGroup").hide();
+    	  $("#forgotPasswordGroup").show();
+    	}),$('#forgotPassword').on('show.bs.modal', function () {
+    		$("#forgotPasswordButton").show();
+    		$("#setPermanentPasswordButton").show();
+    		$("#resetPasswordButton").hide();
+    	})
 	});
-
+	
+	
+	
 </script>
 
-<script type="text/javascript"
-	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+

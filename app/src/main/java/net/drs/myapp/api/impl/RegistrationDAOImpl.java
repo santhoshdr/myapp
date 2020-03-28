@@ -129,11 +129,13 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     @Override
     public Users checkIfUserPhoneisPresentandVerified(String phoneNumberoremailid) throws Exception {
         Users users = null;
-        try {
-            users = (Users) entityManager.createQuery("from Users WHERE EMAIL=:email and ACTIVE='1'").setParameter("email", phoneNumberoremailid).getSingleResult();
-        } catch (Exception e) {
-            throw new Exception("Exception in fetching details for the user ");
-        }
+            users = (Users) entityManager.createQuery("from Users WHERE EMAIL=:email").setParameter("email", phoneNumberoremailid).getSingleResult();
+            if(users == null ) {
+                throw new Exception("Provided Email Id does not exist. Please provide valid email id");
+            }
+            if(users.getActive() != 1 ) {
+                throw new Exception("Your account is not active. Please activate by clicking activate link ");
+            }
         return users;
     }
 

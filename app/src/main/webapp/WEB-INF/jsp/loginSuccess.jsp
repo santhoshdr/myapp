@@ -4,7 +4,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <body>
-	<%@ include file="nav.jsp"%>
+	<%@ include file="loggedInNav.jsp"%>
 	<%@ include file="header.jsp"%>
 	<%@ include file="loggedInBody.jsp"%>
 	<%@ include file="footer.jsp"%>

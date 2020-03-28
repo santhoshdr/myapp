@@ -67,6 +67,8 @@ public class SendNotificationImpl implements ISendNotification {
             notificationRequest.setEmailContent(emailmessage);
             break;
         case FORGOT_PASSWORD:
+            emailmessage = String.format(forgotPasswordMessage, notificationRequest.getEmailid(), temperoryActivationString);
+            notificationRequest.setEmailContent(emailmessage);
             break;
         case CHANGE_PASSWORD:
             break;
