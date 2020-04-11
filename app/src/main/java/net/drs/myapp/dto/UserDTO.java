@@ -277,10 +277,20 @@ public class UserDTO implements Serializable {
         this.mobileNumberOrEmail = mobileNumberOrEmail;
     }
     
+    public Long getMemberAddedBy() {
+        return memberAddedBy;
+    }
+
+    public void setMemberAddedBy(Long memberAddedBy) {
+        this.memberAddedBy = memberAddedBy;
+    }
+
     private String createdBy;
 
     private Date updatedDate;
 
     private String updatedBy;
 
+    private Long memberAddedBy;
 }
+

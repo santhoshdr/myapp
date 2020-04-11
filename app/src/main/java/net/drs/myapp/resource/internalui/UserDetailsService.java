@@ -22,12 +22,16 @@ import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.config.UserPrincipal;
 import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.dto.UserDTO;
+import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.model.User;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 import net.drs.myapp.utils.AppUtils;
+import net.drs.myapp.utils.ClassOfMembership;
+import net.drs.myapp.utils.Gotras;
+import net.drs.myapp.utils.ModeOfPayment;
 
 @Controller
 @RequestMapping("/user")
@@ -41,6 +45,7 @@ public class UserDetailsService extends GenericService {
     public ModelAndView hello(HttpSession session) {
         ModelAndView modelandView = new ModelAndView();
         setValueInUserSession(session,getLoggedInUserName());
+        modelandView.addObject("pageName", "loginHome");
         modelandView.setViewName("loginSuccess");
         return modelandView;
     }
@@ -54,12 +59,40 @@ public class UserDetailsService extends GenericService {
 
     }
     
+    @GetMapping("/getAllActiveMembers")
+    public ModelAndView getAllActiveMembers() {
+        try {
+            // 10 is not used any where as of now.. Need to use this if
+            // performance degrades
+            List<User> userDTO = userDetails.getAllActiveMembers();
+            return new ModelAndView("loginSuccess").addObject("listofusers",userDTO)
+                                            .addObject("pageName","viewMembers");
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
+        }
+    }
+    
+    
+    @GetMapping("/viewMember")
+    public ResponseEntity<?> viewMember(Long userId) {
+        try {
+            // 10 is not used any where as of now.. Need to use this if
+            // performance degrades
+            User user = userDetails.getMemberById(userId);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ResponseEntity<>(errorDetails, HttpStatus. BAD_REQUEST);
+            }
+    }
+    
     
     
     @GetMapping("/getMyProfile")
     public ModelAndView getMyProfile() {
         return new ModelAndView("viewProfile").
-                addObject("data",userDetails.getUserById(getLoggedInUserId()));
+                addObject("data",userDetails.getMemberById(getLoggedInUserId()));
     }
 
     @PostMapping("/updateMyProfile")
@@ -141,5 +174,45 @@ public class UserDetailsService extends GenericService {
         }
         return null;
     }
+    
+    
+    // get add member page
+    @GetMapping("/addMember")
+    public ModelAndView addMember() {
+        try {
+            Gotras[] listofGotram  = Gotras.values();
+            ClassOfMembership[] list = ClassOfMembership.values();
+            ModeOfPayment[] modeofPayments = ModeOfPayment.values();
+            ModelAndView mv = new ModelAndView("loginSuccess");
+            mv.addObject("pageName", "addMember");
+            mv.addObject("gotrams", listofGotram);
+            mv.addObject("classOfMembership", list);
+            mv.addObject("modeOfPayment", modeofPayments);
+            return mv;
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+    
+    @PostMapping("/saveMember")
+    public ResponseEntity<UserDTO> saveMember(UserDTO user) {
+        try {
+            user.setMemberAddedBy(getLoggedInUserId());
+            user.setCreatedBy(Long.toString(getLoggedInUserId()));
+            user.setCreationDate(AppUtils.getCurrentDate());
+            user.setUpdatedDate(AppUtils.getCurrentDate());
+            user.setUpdatedBy(Long.toString(getLoggedInUserId()));
+            
+            UserDTO userdto = userDetails.addMember(user);
+            return new ResponseEntity<UserDTO>(userdto, HttpStatus.OK);
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+    
+    
+    
 
 }

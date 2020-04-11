@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import net.drs.myapp.config.JwtTokenProvider;
 import net.drs.myapp.dto.LoginRequest;
@@ -24,12 +25,10 @@ import net.drs.myapp.repositpry.UsersRepository;
  */
 @Controller
 @RequestMapping("/api/auth")
-public class AuthController extends GenericService{
+public class AuthController extends GenericService {
 
-    
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
-    
-    
+
     @Autowired
     AuthenticationManager authenticationManager;
 
@@ -60,31 +59,30 @@ public class AuthController extends GenericService{
      * return modelAndView; } }
      */
 
-    
-
     @PostMapping("/signin")
-    public String authenticateUser(LoginRequest loginRequest,HttpSession httpSession) {
+    public ModelAndView authenticateUser(LoginRequest loginRequest, HttpSession httpSession) {
         try {
-            
+
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            
-            String jwt = tokenProvider.generateToken(authentication);
-            httpSession.setAttribute("userloggedin", jwt);
-            httpSession.setMaxInactiveInterval(180); // 3 minutes
-            logger.info("New Session Created: " + httpSession.getId());
-            
-            return "redirect:/user/loginHome";
+            if (authentication.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String jwt = tokenProvider.generateToken(authentication);
+                httpSession.setAttribute("userloggedin", jwt);
+                httpSession.setMaxInactiveInterval(180); // 3 minutes
+                logger.info("New Session Created: " + httpSession.getId());
+                return new ModelAndView("redirect:/user/loginHome");
+            } else {
+                return new ModelAndView("redirect:/home/guest");
+            }
         } catch (Exception e) {
-            return "redirect:/";
+            return new ModelAndView("redirect:/home/guest").addObject("message", e.getMessage());
         }
     }
-    
-    
+
     @GetMapping("/logout")
     public String logout(HttpSession httpSession) {
         try {
-            
+
             logger.info(" This session was Created at : " + httpSession.getCreationTime());
             logger.info(" This session was Last accessed at : " + httpSession.getLastAccessedTime());
             logger.info(" Session Destroyed : " + httpSession.getId());
@@ -95,11 +93,10 @@ public class AuthController extends GenericService{
             return "redirect:/showData";
         }
     }
-    
+
     @GetMapping("/showData")
     public String showData(LoginRequest loginRequest) {
         try {
-           
             return "wonderful";
         } catch (Exception e) {
             return "redirect:/showData";

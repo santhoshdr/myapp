@@ -52,6 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests().antMatchers("/", "/favicon.ico", "/**/*.png", "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html", "/**/*.css", "/**/*.js")
                 .permitAll().antMatchers("/guest/**")
+                .permitAll().antMatchers("/home/guest/**")
                 .permitAll().antMatchers("/admin/**")
                 .permitAll().antMatchers("/rest/hello/secured/alternate/**")
                 .permitAll().antMatchers("/api/auth/**")

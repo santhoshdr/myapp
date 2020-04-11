@@ -140,24 +140,24 @@ public class RegistrationServiceImpl implements IRegistrationService {
         return user;
     }
 
+    
+    // reset and send email
     @Override
     public String forgotPassword(String emailId) throws Exception {
 
         // check if user exist and is active
-        Users users = registrationDAO.checkIfUserPhoneisPresentandVerified(emailId);
-        if (users == null) {
+        User user = registrationDAO.checkIfUserEmailisPresentandVerified(emailId);
+        if (user == null) {
             throw new Exception("Email Id Not found ...");
         }
         System.out.println("Resetting password");
         String temperoryPassword = AppUtils.generateRandomString();
-        users.setEmail(emailId);
-        users.setPassword(temperoryPassword);
-        users.setId(users.getId());
-        boolean result = registrationDAO.updateUserWithTemperoryPassword(users);
-        if (!result) {
-            throw new Exception("Unable to Reset Password. Kindly Try after some time. OR Contact Administrator.");
-        }
-        NotificationRequest notificationReq = null;
+        user.setEmailAddress(emailId);
+        user.setTemporaryActivationString(temperoryPassword);
+       registrationDAO.updateUserWithTemperoryPassword(user);
+
+       
+       NotificationRequest notificationReq = null;
         Map<String, String> data = new HashMap<String, String>();
         
         EmailDTO emailDto = new EmailDTO();
@@ -189,6 +189,8 @@ public class RegistrationServiceImpl implements IRegistrationService {
         if (users == null) {
             throw new Exception("Email Id Not found ...");
         }
+        
+        userDetails.getMemberById(users.getId());
         users.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         registrationDAO.resetPassword(users);
         return true;

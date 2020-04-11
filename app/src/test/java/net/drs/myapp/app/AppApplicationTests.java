@@ -155,36 +155,36 @@ public class AppApplicationTests extends GenericAbstractTests{
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
         userDTO.setLastName("LastName");
-        userDTO.setEmailAddress(emailid);
+        userDTO.setEmailAddress("admin@admin.com");
         userDTO.setMobileNumber("9999999999");
         userDTO.setPassword("password");
         userDTO.setAddress("address");
 
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization",
-                "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyODciLCJpYXQiOjE1NjQxMjAxNDEsImV4cCI6MTU2NDcyNDk0MX0.78eRnWgsjBeXRVlabvzi_58BV9iBbua33OP8xSlgtMWOsgOH8NkNu41EQrqHlV5p07tznJ4kB2CiqNiIndFGfQ");
-        userDTO.setEmailAddress("one" + emailid);
         HttpEntity<UserDTO> entity = new HttpEntity<UserDTO>(userDTO, headers);
         // http://localhost:8085/guest/addUser
-//        ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
-//        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
-//
-//        ResponseEntity<UserDTO> response1 = restTemplate.exchange(createURLWithPort("/admin/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
-//        assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
-
-        LoginRequest loginReq = new LoginRequest();
-        loginReq.setUsernameOrEmail(userDTO.getEmailAddress());
-        loginReq.setPassword(userDTO.getPassword());
-        HttpEntity<LoginRequest> loginEntity = new HttpEntity<LoginRequest>(loginReq, headers);
-        ResponseEntity<LoginResponse> loginResponse = restTemplate.exchange(createURLWithPort("/api/auth/signin"), HttpMethod.POST, loginEntity, LoginResponse.class);
-        adminLoginResponse = loginResponse.getBody();
-        assertEquals(loginResponse.getStatusCode(), HttpStatus.OK);
-
-        HttpHeaders badTokenHeader = new HttpHeaders();
-        badTokenHeader.add("Authorization", "Bearer badtoken");
-        userDTO.setEmailAddress("badtoken" + emailid);
-        entity = new HttpEntity<UserDTO>(userDTO, badTokenHeader);
-
+      ResponseEntity<UserDTO> response = restTemplate.exchange(createURLWithPort("/guest/addAdmin"), HttpMethod.POST, entity, UserDTO.class);
+        assertEquals(response.getStatusCode(), HttpStatus.CREATED);
+        /*
+         * ResponseEntity<UserDTO> response1 =
+         * restTemplate.exchange(createURLWithPort("/admin/addAdmin"),
+         * HttpMethod.POST, entity, UserDTO.class);
+         * assertEquals(response1.getStatusCode(), HttpStatus.BAD_REQUEST);
+         * 
+         * LoginRequest loginReq = new LoginRequest();
+         * loginReq.setUsernameOrEmail(userDTO.getEmailAddress());
+         * loginReq.setPassword(userDTO.getPassword()); HttpEntity<LoginRequest>
+         * loginEntity = new HttpEntity<LoginRequest>(loginReq, headers);
+         * ResponseEntity<LoginResponse> loginResponse =
+         * restTemplate.exchange(createURLWithPort("/api/auth/signin"),
+         * HttpMethod.POST, loginEntity, LoginResponse.class);
+         * adminLoginResponse = loginResponse.getBody();
+         * assertEquals(loginResponse.getStatusCode(), HttpStatus.OK);
+         * 
+         * HttpHeaders badTokenHeader = new HttpHeaders();
+         * badTokenHeader.add("Authorization", "Bearer badtoken");
+         * userDTO.setEmailAddress("badtoken" + emailid); entity = new
+         * HttpEntity<UserDTO>(userDTO, badTokenHeader);
+         */
         // throws exception . Response is not sent back.. Need to check this.
         // ResponseEntity<UserDTO> response2 =
         // restTemplate.exchange(createURLWithPort("/admin/addAdmin"),

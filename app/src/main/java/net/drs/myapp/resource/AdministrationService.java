@@ -129,7 +129,7 @@ public class AdministrationService {
 
             userDTO.setUpdatedBy(updatedBy);
             userDTO.setUpdatedDate(new java.sql.Date(uDate.getTime()));
-            userDetails.deactiveUser(userDTO);
+       //     userDetails.deactiveUser(userDTO);
             return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,7 +174,6 @@ public class AdministrationService {
 
     @GetMapping("/secured/all")
     public String securedHello(Principal princi) {
-        userDetails.activeteUser(new Long(123));
         return "Secured Hello";
     }
 

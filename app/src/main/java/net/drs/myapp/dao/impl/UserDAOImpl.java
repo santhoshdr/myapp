@@ -34,13 +34,10 @@ public class UserDAOImpl implements IUserDAO {
     private EntityManager entityManager;
 
     public List<User> getAllUsers(int numberofUsers) {
-
         List tempList = new ArrayList();
         List<User> userList = new ArrayList<User>();
         tempList = entityManager.createQuery("from Users us , User u where us.id=u.userId").getResultList();
-
         Object[] items = tempList.toArray();
-
         for (Object item : items) {
             Object[] arr = (Object[]) item;
             Users users = (Users) arr[0];
@@ -48,7 +45,6 @@ public class UserDAOImpl implements IUserDAO {
             user.setRoles(users.getRoles());
             userList.add(user);
         }
-
         return userList;
     }
 
@@ -137,16 +133,20 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public boolean activateUser(Long userId) {
-        entityManager.createQuery("from User").getResultList();
-        return false;
+    public boolean activateUser(User user) {
+        User userfromdDB = entityManager.find(User.class, user.getUserId());
+        userfromdDB.setActive(user.isActive());
+        userfromdDB.setUpdatedBy(user.getUpdatedBy());
+        userfromdDB.setUpdatedDate(user.getUpdatedDate());
+        entityManager.persist(userfromdDB);
+        return true;
     }
 
     @Override
     public boolean deactivateUser(User user) {
 
         User userfromdDB = entityManager.find(User.class, user.getUserId());
-        userfromdDB.setActive(false);
+        userfromdDB.setActive(user.isActive());
         userfromdDB.setUpdatedBy(user.getUpdatedBy());
         userfromdDB.setUpdatedDate(user.getUpdatedDate());
         entityManager.persist(userfromdDB);
@@ -265,18 +265,58 @@ public class UserDAOImpl implements IUserDAO {
         return wed;
     }
 
-	
     @Override
     public User getUser(String emailId) {
         return (User) entityManager.createQuery("from User where emailAddress=:emailId").setParameter("emailId", emailId).getSingleResult();
     }
 
-	@Override
-	public boolean changePassword(ResetPasswordDTO resetPassword) {
-		Users user = entityManager.find(Users.class, resetPassword.getUserId());
-		user.setPassword(resetPassword.getEncryptedPassword());
-		entityManager.persist(user);
-		entityManager.close();
-		return true;
-	}
+    @Override
+    public boolean changePassword(ResetPasswordDTO resetPassword) {
+        Users user = entityManager.find(Users.class, resetPassword.getUserId());
+        user.setPassword(resetPassword.getEncryptedPassword());
+        entityManager.persist(user);
+        entityManager.close();
+        return true;
+    }
+
+    @Override
+    public User addMember(User user) {
+        return entityManager.merge(user);
+    }
+
+    // whose is_Active=1
+    @Override
+    public List<User> getAllActiveMembers() {
+        return entityManager.createQuery("from User where isActive=true").getResultList();
+    }
+
+    @Override
+    public List<User> getAllMembers() {
+        return entityManager.createQuery("from User").getResultList();
+    }
+
+    @Override
+    public boolean makeorremoveAdmin(User user) {
+        Users storedUser = entityManager.find(Users.class, user.getUserId());
+        Role role = null; 
+        boolean isadmin = false;
+        Iterator it = storedUser.getRoles().iterator();
+        while(it.hasNext()) {
+            role = (Role)it.next();
+           if(role.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN) ){
+               storedUser.getRoles().remove(role);
+               isadmin=true;
+               break;
+           }
+        }
+        if(isadmin) {
+            entityManager.persist(storedUser);
+        }else {
+            Role  newrole = new Role();
+            newrole .setRole(ApplicationConstants.ROLE_ADMIN);
+            storedUser.getRoles().add(newrole);
+            entityManager.persist(storedUser);  
+        }
+        return true;
+    }
 }

@@ -34,7 +34,7 @@ public class UserDetailsService extends GenericService {
 
     @PostMapping("/getMyProfile")
     public ResponseEntity<User> getMyProfile(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        return new ResponseEntity<>(userDetails.getUserById(userDTO.getUserId()), HttpStatus.OK);
+        return new ResponseEntity<>(userDetails.getMemberById(userDTO.getUserId()), HttpStatus.OK);
 
     }
 

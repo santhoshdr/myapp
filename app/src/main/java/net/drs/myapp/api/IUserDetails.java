@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.drs.myapp.app.exception.RoleException;
 import net.drs.myapp.dto.ResetPasswordDTO;
+import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.model.User;
@@ -23,8 +24,14 @@ public interface IUserDetails {
     // performance issues
     List<UserServiceDTO> getAllUsers(int numberofUser);
 
+    List<User> getAllMembers(int numberofUser);
+    
+    //List<UserServiceDTO> getAllMembers();
+    
+    List<User> getAllActiveMembers();
+
     // get the information of specific user - based on user id
-    User getUserById(Long userid);
+    User getMemberById(Long userid);
 
     User getUserById(String emailId);
 
@@ -37,10 +44,12 @@ public interface IUserDetails {
     boolean isUserActive(Long userId);
 
     // Activate User
-    boolean activeteUser(Long userId);
+    boolean activeteUser(UserDTO userDTO);
 
     // Deactivate User / Delete User
-    boolean deactiveUser(UserServiceDTO userServiceDTO);
+    boolean deactiveUser(UserDTO userDTO);
+    
+    boolean makeorremoveAdmin(UserDTO userDTO);
 
     // if the user need to update the details..
     boolean updateUserDetails(User user);
@@ -54,4 +63,13 @@ public interface IUserDetails {
     WedDTO updateWedProfile(WedDTO wedDTO, Long addedBy) throws Exception;
 
     boolean changePassword(ResetPasswordDTO passwordDTO) throws Exception;
+
+    
+    /**
+     * Logged in user can add multiple members
+     * @param userDTO
+     * @return
+     * @throws Exception
+     */
+    UserDTO addMember(UserDTO userDTO) throws Exception;
 }

@@ -2,33 +2,42 @@ package net.drs.myapp.resource.internalui;
 
 import java.security.Principal;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
 import net.drs.myapp.api.IUserDetails;
+import net.drs.myapp.resource.GenericService;
 
 @Controller
-public class HomeResource {
+public class HomeResource  extends GenericService{
 
     @Autowired
     IUserDetails userDetails;
 
-    @GetMapping(value = { "", "/", "/guest"})
-    public String showHome() {
-        return "welcome";
+    @GetMapping(value = { "", "/", "/guest" })
+    public String showHome( HttpSession httpSession) {
+        httpSession.invalidate();
+        return "redirect:/home/guest";
     }
-
-    @GetMapping("/all")
-    public String hello() {
-        return "Hello Youtube";
+    /*
+     * @GetMapping("/home/guest") public String loadHomePage() { return
+     * "welcome"; }
+     */
+    @GetMapping("/home/guest")
+    public ModelAndView loadHomePage() {
+        return new ModelAndView("welcome");
     }
 
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/secured/all")
     public String securedHello(Principal princi) {
-        userDetails.activeteUser(new Long(123));
         return "Secured Hello";
     }
 

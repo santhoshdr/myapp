@@ -53,6 +53,10 @@ docker exec -it mysqlCon mysql -u root -p
 EnterPassword: <enter copied password>
 
 mssql>ALTER USER 'root'@'localhost' IDENTIFIED BY 'root';
+// if you dont do this, you will not be able to login using mysql client ( mysql-workbench)
+
+Then create new schema myapp. Application will not create. It will just create tables. Not scheme.
+
 
 GRANT ALL PRIVILEGES ON *.* to root@'%' IDENTIFIED BY 'root';
 

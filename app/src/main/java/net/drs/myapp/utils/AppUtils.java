@@ -1,5 +1,6 @@
 package net.drs.myapp.utils;
 
+import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,4 +53,17 @@ public class AppUtils {
         
     }
     
+    
+    
+    public static Date getCurrentDate() {
+        java.util.Date uDate = new java.util.Date();
+        return new java.sql.Date(uDate.getTime());
+    }
+ 
+    
+     public static Date getAccountValidFor100Years() {
+         java.util.Date uDate = new java.util.Date();
+         uDate.setYear(2120);
+         return new java.sql.Date(uDate.getTime());
+     }
 }

@@ -18,13 +18,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.app.exception.RoleException;
+import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IUserDAO;
 import net.drs.myapp.dto.ResetPasswordDTO;
+import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.dto.WedDTO;
+import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
 import net.drs.myapp.model.Wed;
+import net.drs.myapp.utils.AppUtils;
 
 @Repository("userDetails")
 @Transactional
@@ -67,6 +71,14 @@ public class UserDetailsImpl implements IUserDetails {
             if (files != null && files.length > 0) {
                 udto.setImage(files[0]);
             }
+            
+            user.getRoles().forEach( v -> {
+            if(v.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN)) {
+                udto.setAdmin(true);
+            }
+            });
+            
+         //   udto.setAdmin(user.getRoles().contains(ApplicationConstants.ROLE_ADMIN)?true:false);
             modelMapper.map(user, udto);
             userDTO.add(udto);
         });
@@ -75,7 +87,7 @@ public class UserDetailsImpl implements IUserDetails {
 
     // this returns user object no matter user is active or inactive
     @Override
-    public User getUserById(Long userId) {
+    public User getMemberById(Long userId) {
         return userDAO.getUser(userId);
     }
 
@@ -101,16 +113,19 @@ public class UserDetailsImpl implements IUserDetails {
     }
 
     @Override
-    public boolean activeteUser(Long userId) {
-        userDAO.activateUser(userId);
+    public boolean activeteUser(UserDTO userDTO) {
+        User user = new User();
+        modelMapper.map(userDTO, user);
+        
+        userDAO.activateUser(user);
         return false;
     }
 
     @Override
-    public boolean deactiveUser(UserServiceDTO userServiceDTO) {
+    public boolean deactiveUser(UserDTO userDTO) {
 
         User user = new User();
-        modelMapper.map(userServiceDTO, user);
+        modelMapper.map(userDTO, user);
         return userDAO.deactivateUser(user);
     }
 
@@ -221,5 +236,38 @@ public class UserDetailsImpl implements IUserDetails {
 	public User getUserById(String emailId) {
 		 return userDAO.getUser(emailId);
 	}
+
+    @Override
+    public UserDTO addMember(UserDTO userDTO) throws Exception {
+        User user = new User();
+        modelMapper.map(userDTO,user);
+        user.setAccountValidTill(AppUtils.getAccountValidFor100Years());
+        userDAO.addMember(user);
+        
+        modelMapper.map(user,userDTO);
+        
+        return userDTO ;
+    }
+
+    @Override
+    public List<User> getAllActiveMembers() {
+        return userDAO.getAllActiveMembers();
+    }
+
+    @Override
+    public List<User> getAllMembers(int numberofUser) {
+        return userDAO.getAllMembers();
+    }
+
+    @Override
+    public boolean makeorremoveAdmin(UserDTO userDTO) {
+        User user = new User();
+        modelMapper.map(userDTO,user);
+        user.setAccountValidTill(AppUtils.getAccountValidFor100Years());
+        userDAO.makeorremoveAdmin(user);
+        modelMapper.map(user,userDTO);
+       
+        return false;
+    }
 
 }

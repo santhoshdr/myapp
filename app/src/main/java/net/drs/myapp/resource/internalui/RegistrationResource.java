@@ -186,17 +186,16 @@ public class RegistrationResource extends GenericService {
                 throw new Exception("Please enter valid email id");
             }
             registrationService.forgotPassword(emailId);
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Temperory Password has been sent to your Email id. " + "Use it to reset your password", "");
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Temperory Password has been sent to your Email id. Use it to reset your password", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
-            e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
             return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<?> resetPassword(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
+    public ResponseEntity<?> resetPassword(UserDTO userDTO, BindingResult bindingResult) {
 
         try {
 

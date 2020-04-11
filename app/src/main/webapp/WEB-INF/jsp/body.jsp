@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<div class="container">
+<div class="container" style="margin-top: 55px;">
 	<c:if test="${!actionResult && not empty actionResult}">
 		<div id="loginFailure"
 			class="alert alert-danger alert-dismissible fade show"
@@ -14,10 +14,7 @@
 		</div>
 	</c:if>
 
-	
-	
-	
-		<c:if test="${!login && not empty login}">
+	<c:if test="${!login && not empty login}">
 		<div id="loginFailure"
 			class="alert alert-danger alert-dismissible fade show"
 			style="top: 50px;" role="alert">
@@ -29,76 +26,94 @@
 			</button>
 		</div>
 	</c:if>
-	
-	
-		<c:if test="${login && not empty login}">
-		<div id="loginFailure"
-			class="alert alert-success alert-dismissible fade show"
-			style="top: 50px;" role="alert">
-			<strong>Entered UserName or Password is wrong!. Please
-				provide correct credentials</strong>
-			<button type="button" class="close" data-dismiss="alert"
-				aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-	</c:if>
 
- <c:choose>
-         
-         <c:when test = "${registrationSuccess && not empty registrationSuccess}">
+<!-- login result  -->
+
+<c:if test="${not empty message}">
+	<c:choose>
+        <c:when test="${ message} eq 'inActive' ">
             <div id="registrationSuccess"
-			class="alert alert-success alert-dismissible fade show"
-			style="top: 50px;" role="alert">
-			<strong><c:out value="${message}"></c:out></strong>
-			<button type="button" class="close" data-dismiss="alert"
-				aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-         </c:when>
-         
-         <c:when test = "${!registrationSuccess && not empty registrationSuccess}">
+                class="alert alert-success alert-dismissible fade show"
+                style="top: 50px;" role="alert">
+                <strong>User is Inactive. Please Verify your email or Contact Administrator</strong>
+                <button type="button" class="close" data-dismiss="alert"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </c:when>
+
+        <c:when
+            test="${!registrationSuccess && not empty registrationSuccess}">
             <div id="registrationFailure"
-			class="alert alert-danger alert-dismissible fade show"
-			style="top: 50px;" role="alert">
-			<strong><c:out value="${message}"></c:out></strong>
-			<button type="button" class="close" data-dismiss="alert"
-				aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-            </c:when>
-      </c:choose>
+                class="alert alert-danger alert-dismissible fade show"
+                style="top: 50px;" role="alert">
+                <strong><c:out value="${message}"></c:out></strong>
+                <button type="button" class="close" data-dismiss="alert"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </c:when>
+    </c:choose>
+</c:if>
+
+	<c:choose>
+		<c:when test="${registrationSuccess && not empty registrationSuccess}">
+			<div id="registrationSuccess"
+				class="alert alert-success alert-dismissible fade show"
+				style="top: 50px;" role="alert">
+				<strong><c:out value="${message}"></c:out></strong>
+				<button type="button" class="close" data-dismiss="alert"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</c:when>
+
+		<c:when
+			test="${!registrationSuccess && not empty registrationSuccess}">
+			<div id="registrationFailure"
+				class="alert alert-danger alert-dismissible fade show"
+				style="top: 50px;" role="alert">
+				<strong><c:out value="${message}"></c:out></strong>
+				<button type="button" class="close" data-dismiss="alert"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</c:when>
+	</c:choose>
 
 
- <c:choose>
-         
-         <c:when test = "${registrationSuccess && not empty registrationSuccess}">
-            <div id="registrationSuccess"
-			class="alert alert-success alert-dismissible fade show"
-			style="top: 50px;" role="alert">
-			<strong><c:out value="${message}"></c:out></strong>
-			<button type="button" class="close" data-dismiss="alert"
-				aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-         </c:when>
-         
-         <c:when test = "${!registrationSuccess && not empty registrationSuccess}">
-            <div id="registrationFailure"
-			class="alert alert-danger alert-dismissible fade show"
-			style="top: 50px;" role="alert">
-			<strong><c:out value="${message}"></c:out></strong>
-			<button type="button" class="close" data-dismiss="alert"
-				aria-label="Close">
-				<span aria-hidden="true">&times;</span>
-			</button>
-		</div>
-            </c:when>
-      </c:choose>
-<%-- 
+	<c:choose>
+
+		<c:when test="${registrationSuccess && not empty registrationSuccess}">
+			<div id="registrationSuccess"
+				class="alert alert-success alert-dismissible fade show"
+				style="top: 50px;" role="alert">
+				<strong><c:out value="${message}"></c:out></strong>
+				<button type="button" class="close" data-dismiss="alert"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</c:when>
+
+		<c:when
+			test="${!registrationSuccess && not empty registrationSuccess}">
+			<div id="registrationFailure"
+				class="alert alert-danger alert-dismissible fade show"
+				style="top: 50px;" role="alert">
+				<strong><c:out value="${message}"></c:out></strong>
+				<button type="button" class="close" data-dismiss="alert"
+					aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</c:when>
+	</c:choose>
+	<%-- 
 	<c:if test="${registrationSuccess && not empty registrationSuccess}">
 		<div id="registrationSuccess"
 			class="alert alert-danger alert-dismissible fade show"
@@ -126,7 +141,7 @@
 
 	<div class="jumbotron">
 		<div class="container">
-			<h1 class="display-3">Hello, world!</h1>
+			<h1 class="display-3">message == ${message} Hello, world!</h1>
 			<p>This is a template for a simple marketing or informational
 				website. It includes a large callout called a jumbotron and three
 				supporting pieces of content. Use it as a starting point to create

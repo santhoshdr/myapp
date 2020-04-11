@@ -25,7 +25,6 @@ public class HelloResource {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/secured/all")
     public String securedHello(Principal princi) {
-        userDetails.activeteUser(new Long(123));
         return "Secured Hello";
     }
 

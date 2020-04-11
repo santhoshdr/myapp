@@ -1,8 +1,8 @@
-<%@ include file="base.jsp"%>
+     
 <nav
 	class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
 	<div class="container">
-		<a class="navbar-brand" href="index.html">Directory</a>
+		<a class="navbar-brand" href="/home/guest">Directory</a>
 		<button class="navbar-toggler navbar-toggler-right" type="button"
 			data-toggle="collapse" data-target="#navbarResponsive"
 			aria-controls="navbarResponsive" aria-expanded="false"
@@ -12,20 +12,22 @@
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
-					<!--             <a class="nav-link" href="about.html">Login</a> -->
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#register">Sign Up</button>
 				</li> &nbsp;&nbsp;
-				<li class="nav-item">
+				<!-- Split button -->
+				<div class="btn-group">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#login">Login</button>
-				</li>&nbsp;&nbsp;
-			    <form id="verifyEmail" action="/guest/verifyEmail">
-				<li class="nav-item">
-					<button type="submit" class="btn btn-primary">Activate my Account</button>
-				</li>
-				</form>
-
+					<button type="button" class="btn btn-primary dropdown-toggle px-3"
+						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					</button>
+					<div class="dropdown-menu">
+						<form id="verifyEmail" action="/guest/verifyEmail">
+							<button type="submit" class="btn">Activate my Account</button>
+						</form>
+					</div>
+				</div>
 			</ul>
 		</div>
 	</div>
@@ -63,7 +65,7 @@
 					<button type="submit" class="btn btn-primary">Submit</button>
 					<button type="button" class="btn btn-primary" data-toggle="modal"
 						data-target="#forgotPassword" data-dismiss="modal"
-						data-target="#login" >Forgot Password</button>
+						data-target="#login">Forgot Password</button>
 				</form>
 			</div>
 		</div>
@@ -132,46 +134,48 @@
 
 			<!-- Modal body -->
 			<div class="modal-body">
-				<div id="failure" style="display:none" class="alert alert-danger" role="alert"></div>
-				<div id="success" style="display:none" class="alert alert-success" role="alert"></div>
+				<div id="failure" style="display: none" class="alert alert-danger"
+					role="alert"></div>
+				<div id="success" style="display: none" class="alert alert-success"
+					role="alert"></div>
 
-				<div id ="forgotPasswordGroup" class="form-group">
+				<div id="forgotPasswordGroup" class="form-group">
 					<label for="First Name">Enter Your Email ID</label> <input
 						type="text" name="mobileNumberOrEmail" class="form-control"
 						id="forgotEmailId" aria-describedby="emailHelp"
 						placeholder="Enter Your Email ID">
 				</div>
-				
-				    <div id ="setPasswordGroup"  class="form-group">
-				    <label for="temperoryPassword">Enter Email ID : </label> <input
-                        type="text" name="emailId" class="form-control"
-                        id="forgotEmailIdNew" aria-describedby="emailHelp"
-                        placeholder="Email Id">
-				    
-				    
-                    <label for="temperoryPassword">Enter Temperory Password : </label> <input
-                        type="text" name="mobileNumberOrEmail" class="form-control"
-                        id="tempPassword" aria-describedby="emailHelp"
-                        placeholder="Enter Temperory Password you have received">
-                        
-                      <label for="newPassword">Enter New Password : </label> <input
-                        type="text" name="newPassword" class="form-control"
-                        id="newPassword" aria-describedby="emailHelp"
-                        placeholder="Enter new Password">
-                        
-                        <label for="temperoryPassword">Confirm  Password : </label> <input
-                        type="text" name="confirmPassword" class="form-control"
-                        id="confirmPassword" aria-describedby="emailHelp"
-                        placeholder="Confirm New Password">
-                </div>
-				
-				
+
+				<div id="setPasswordGroup" class="form-group">
+					<label for="temperoryPassword">Enter Email ID : </label> 
+					<input 	type="text" name="emailId" class="form-control"
+						id="forgotEmailIdNew" aria-describedby="emailHelp"
+						placeholder="Email Id"> 
+				   <label for="temperoryPassword">Enter Temperory Password : </label>
+				    <input type="text" name="temporaryActivationString" class="form-control" id="tempPassword"
+						aria-describedby="emailHelp" placeholder="Enter Temperory Password you have received">
+
+					<label for="newPassword">Enter New Password : </label> <input
+						type="text" name="newPassword" class="form-control"
+						id="newPassword" aria-describedby="emailHelp"
+						placeholder="Enter new Password"> <label
+						for="temperoryPassword">Confirm Password : </label> <input
+						type="text" name="confirmPassword" class="form-control"
+						id="confirmPassword" aria-describedby="emailHelp"
+						placeholder="Confirm New Password">
+				</div>
+
+
 				<!-- Modal footer -->
 				<div class="modal-footer">
-				<button id="forgotPasswordButton" type="button" class="btn btn-primary">Send Temperory Password</button>
-				<button id="setPermanentPasswordButton" type="button" class="btn btn-primary">Have Permanent Password ?</button>
-				<button id="resetPasswordButton" style="display:none"  type="button" class="btn btn-primary">Reset Password</button>
-				<button type="button" class="btn btn-danger" data-dismiss="modal" id="buttonClose">Close</button>
+					<button id="forgotPasswordButton" type="button"
+						class="btn btn-primary">Send Temperory Password</button>
+					<button id="setPermanentPasswordButton" type="button"
+						class="btn btn-primary">Have Temperory Password ?</button>
+					<button id="resetPasswordButton" style="display: none"
+						type="button" class="btn btn-primary">Reset Password</button>
+					<button type="button" class="btn btn-danger" data-dismiss="modal"
+						id="buttonClose">Close</button>
 				</div>
 			</div>
 
@@ -180,31 +184,7 @@
 	</div>
 </div>
 
-
-
-
 <script>
-
-/* $(document).ready(function(){
-    $("#forgotPassword").click(function(){
-        // Get value from input element on the page
-       var forgotEmailId = $("#forgotEmailId").val();
-       $.ajax({
-    		url : '/guest/forgotPassword',
-    		data : {
-    			emailId : $("#emailId").val()
-    		},
-    		success : function(responseText) {
-    			alert(responseText);
-    			
-    			$('#ajaxGetUserServletResponse').text(responseText);
-    		}
-    	});
-        
-    });
-}); */
-
-
 $( document ).ready(function() {
 	$("#failure").hide();
 	  $("#success").hide();
@@ -226,7 +206,6 @@ $( document ).ready(function() {
 	        	$("#forgotPasswordButton").hide();
 	        	$("#setPermanentPasswordButton").hide();
 	        	$("#resetPasswordButton").show();
-	        	alert("huh" + forgotEmailId)
 	        	$("#forgotEmailIdNew").val($("#forgotEmailId").val()); 
 		    	$("#success").show();
 	        },
@@ -260,11 +239,34 @@ $( document ).ready(function() {
     		$("#forgotPasswordButton").show();
     		$("#setPermanentPasswordButton").show();
     		$("#resetPasswordButton").hide();
-    	})
+    	}),$( "#resetPasswordButton").click(function() {
+           var datatosend = {
+                                            emailAddress:$("#forgotEmailIdNew").val(),
+                                            temporaryActivationString:$("#tempPassword").val(),
+        		                            password:$("#newPassword").val(),
+        		                            confirmPassword:$("#confirmPassword").val()
+        		                            };
+           $.ajax({
+               url: '/guest/resetPassword',
+               type: "POST",
+               data: datatosend,
+               success: function(response, textStatus, jqXHR){
+               var result = JSON.stringify(response.message, null, 4)
+                $('#success').html(result);
+                  $('#success').show();
+                  $('#failure').hide();
+               console.log("Success");
+               },
+               error: function (response, textStatus, errorThrown)
+                {
+            	  $('#failure').html(response.responseJSON.message);
+            	  $('#failure').show();
+            	  $('#success').hide();
+            	  console.log("Failure");
+            	  
+             }
+           })
+        })
 	});
-	
-	
-	
 </script>
-
 
