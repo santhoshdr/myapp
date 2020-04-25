@@ -1,5 +1,12 @@
 package net.drs.myapp.config;
 
+import java.io.IOException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,12 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
@@ -28,9 +29,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            
+            System.out.println("1111111 "+ request.getRequestURI() + "==" + jwt);
             jwt = (String)request.getSession().getAttribute("userloggedin");
-            if (jwt!=null && StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            
+            if(jwt== null) {
+            System.out.println("============="+ request.getRequestURI() + "==" + jwt);
+            
+            }if (jwt!=null && StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromJWT(jwt);
                 /*
                  * Note that you could also encode the user's username and roles

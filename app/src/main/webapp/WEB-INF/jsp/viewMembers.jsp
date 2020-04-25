@@ -3,23 +3,32 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 <head>
-<div class="container" style="margin-top: 65px;">
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
 
-<link rel="stylesheet"
-	href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
-<link
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
-	rel="stylesheet">
 <script
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<link rel="stylesheet"
-	href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+              src="https://code.jquery.com/jquery-3.5.0.min.js"
+              integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+              crossorigin="anonymous"></script>
 
+<link rel="stylesheet"
+    href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+
+<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
+    
+    <link rel="stylesheet"
+    href="/resources/css/dataTables.bootstrap4.min.css">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">   
+ <link rel="stylesheet" href="/resources/css/jquery.dataTables.min.css"></style>     
+    
+    
+
+
+<!-- <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style> -->
 <!-- <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
 </head>
-
-<body style="margin: 20px auto">
+<div class="container" style="margin-top: 65px;">
+<body>
 	<div class="container">
 		<table id="myTable" class="table table-striped">
 			<thead>
@@ -28,12 +37,8 @@
 					<th>First Name</th>
 					<th>Last Name</th>
 					<th>Phone Number</th>
-					<th>Emai ID</th>
-					<sec:authorize access="hasRole('ROLE_ADMIN') and isAuthenticated()">
-						<th class="col-3">Action</th>
-					</sec:authorize>
-					<th class="col-3"></th>
-					
+					<th>Email ID</th>
+     				<th class="col-3">Action</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -68,13 +73,11 @@
 <div class="modal" id=modal>
     <div class="modal-dialog">
         <div class="modal-content">
-
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title">Confirmation</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-
             <!-- Modal body -->
             <div class="modal-body">
                 <form id="loginForm" >

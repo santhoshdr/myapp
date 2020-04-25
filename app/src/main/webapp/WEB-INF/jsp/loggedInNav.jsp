@@ -2,30 +2,35 @@
 	class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
 	<div class="container">
 		<a class="navbar-brand" href="/user/loginHome">Directory</a>
-		<button class="navbar-toggler navbar-toggler-right" type="button"
-			data-toggle="collapse" data-target="#navbarResponsive"
-			aria-controls="navbarResponsive" aria-expanded="false"
-			aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarResponsive">
-			<ul class="navbar-nav ml-auto">
-				
-				<div class="dropdown">
-					<button class="btn btn-primary dropdown-toggle" type="button"
-						id="dropdownMenuButton" data-toggle="dropdown">
-						Welcome
-						<%=session.getAttribute("loggedInUserName") %>
-					</button>
-					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						<a class="dropdown-item" href="/user/getMyProfile">My Profile</a>
-						<button type="button" class="btn" data-toggle="modal"
-							data-target="#changePassword">Change Password</button>
-						<a class="dropdown-item" href="/api/auth/logout">Log Out</a>
-					</div>
-				</div>
-			</ul>
-		</div>
+		<div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                        Welcome <%=session.getAttribute("loggedInUserName") %>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user/getMyProfile">My Profile</a>
+                        <button type="button" class="btn" data-toggle="modal" data-target="#changePassword">Change Password</button>
+                        <a class="dropdown-item" href="/api/auth/logout">Log Out</a>
+                    </div>
+
+		    <!--   <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+             -->   
+              <%--  
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+                        Welcome <%=session.getAttribute("loggedInUserName") %>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="/user/getMyProfile">My Profile</a>
+                        <button type="button" class="btn" data-toggle="modal" data-target="#changePassword">Change Password</button>
+                        <a class="dropdown-item" href="/api/auth/logout">Log Out</a>
+                    </div>
+                </div> --%>
+<!--             </ul> -->
+
+        </div>
+		
+
 	</div>
 </nav>
 <div class="modal" id="changePassword">
@@ -64,7 +69,6 @@
 		</div>
 	</div>
 </div>
-
 <script>
 $(document).ready(function() {
                         $("#failure").hide();

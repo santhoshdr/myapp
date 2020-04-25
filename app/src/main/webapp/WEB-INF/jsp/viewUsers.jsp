@@ -5,12 +5,27 @@
 
 <html>
 <head>
+<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
+
+<script
+              src="https://code.jquery.com/jquery-3.5.0.min.js"
+              integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
+              crossorigin="anonymous"></script>
 
 <link rel="stylesheet"
     href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
+
 <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style>
+    
+    <link rel="stylesheet"
+    href="/resources/css/dataTables.bootstrap4.min.css">
+<link href="/resources/css/bootstrap.min.css" rel="stylesheet">   
+ <link rel="stylesheet" href="/resources/css/jquery.dataTables.min.css"></style>     
+    
+    
+
+
+<!-- <link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css"></style> -->
 <!-- <script type="text/javascript" src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
 </head>

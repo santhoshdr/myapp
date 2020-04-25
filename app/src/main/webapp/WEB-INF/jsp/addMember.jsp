@@ -1,10 +1,29 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="container">
 	<div class="container">
-		<h1 align="left">Add New Member</h1>
+		
 		<!-- Good Reference: 
 https://www.pair.com/support/kb/types-of-bootstrap-forms/
  -->
+ 
+<%String msg = (String)request.getParameter("addMember"); 
+if(msg != null && msg.equals("true")){
+ %>
+ <div class="alert alert-success" role="alert">
+  Member Added Successfully
+</div>
+<%   
+}
+%>
+
+<c:if test="${not empty errorMessage }">
+ <div class="alert alert-danger" role="alert">
+  ${errorMessage}
+</div>
+</c:if>
+
+<h1 align="left">Add New Member</h1>
+ 
 		<form id="addMemberForm"  action="/user/saveMember" method="post">
 			<div class="form-group row">
 				<label for="exampleInputEmail1" class="col-sm-2 col-form-label">Name</label>
@@ -30,7 +49,7 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
 				<label for="exampleInputPassword1" class="col-sm-2 col-form-label"></label>
 				<div class="col-sm-5">
 					<input type="text" class="form-control" id="relationShip"
-						placeholder="Father's/ Husband's / Family Name">
+						placeholder="Father's/ Husband's Name">
 				</div>
 			</div>
 
@@ -107,7 +126,6 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
 				<label for="exampleInputPassword1" class="col-sm-2 col-form-label"></label>
 				<div class="col-sm-5">
 					<button type="submit" class="btn btn-primary">Submit</button>
-					<button type="submit" class="btn btn-danger">Back</button>
 				</div>
 			</div>
 		</form>
@@ -115,3 +133,13 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
 	</div>
 </div>
 
+
+
+<script>
+window.setTimeout(function() {
+    $(".alert").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove(); 
+    });
+}, 2000);
+
+</script>

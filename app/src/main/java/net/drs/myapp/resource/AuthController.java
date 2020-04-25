@@ -1,5 +1,6 @@
 package net.drs.myapp.resource;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
@@ -60,16 +61,19 @@ public class AuthController extends GenericService {
      */
 
     @PostMapping("/signin")
-    public ModelAndView authenticateUser(LoginRequest loginRequest, HttpSession httpSession) {
+    public ModelAndView authenticateUser(LoginRequest loginRequest, HttpServletRequest httpservletRequest) {
         try {
 
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
             if (authentication.isAuthenticated()) {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
                 String jwt = tokenProvider.generateToken(authentication);
-                httpSession.setAttribute("userloggedin", jwt);
-                httpSession.setMaxInactiveInterval(180); // 3 minutes
-                logger.info("New Session Created: " + httpSession.getId());
+                httpservletRequest.getSession(true);
+                
+                    logger.info("============== " + httpservletRequest.getSession().getId());
+                httpservletRequest.getSession().setAttribute("userloggedin", jwt);
+               // httpservletRequest.setMaxInactiveInterval(180); // 3 minutes
+           //     logger.info("New Session Created: " + httpSession.getId());
                 return new ModelAndView("redirect:/user/loginHome");
             } else {
                 return new ModelAndView("redirect:/home/guest");
