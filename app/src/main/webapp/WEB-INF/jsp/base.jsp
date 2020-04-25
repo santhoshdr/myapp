@@ -26,6 +26,10 @@
 	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
 	crossorigin="anonymous" -->
 	
+<<<<<<< HEAD
+=======
+	
+>>>>>>> c6178957545fa0ce4bc182cbe1cdd77e590af080
 <link rel="stylesheet" type="text/css" href="/resources/css/bootstrap.min.css">
 <!-- <script type="text/javascript" src="/resources/js/bootstrap.min.js"></script> -->
 
@@ -34,10 +38,14 @@
 <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap-grid.min.css"> -->
 <link rel="stylesheet"  type="text/css"  href="/resources/css/bootstrap-grid.min.css" >
 
+<<<<<<< HEAD
 
     <script type="text/javascript" src="/resources/js/jquery-3.1.1.js"></script>
         <script type="text/javascript" src="/resources/js/popper.min.js"></script>    
 
+=======
+    <script type="text/javascript" src="/resources/js/jquery-3.1.1.js"></script>
+>>>>>>> c6178957545fa0ce4bc182cbe1cdd77e590af080
     
   
       <!--  
