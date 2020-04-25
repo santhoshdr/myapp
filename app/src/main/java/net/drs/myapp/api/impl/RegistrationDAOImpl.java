@@ -18,6 +18,7 @@ import net.drs.myapp.model.Fotographer;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
+import net.drs.myapp.utils.AppUtils;
 
 @Repository("registrationDAO")
 @Transactional
@@ -220,14 +221,11 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         User storedUser = entityManager.find(User.class, user.getId());
         storedUser.setAccountValidTill(user.getAccountValidTill());
         storedUser.setActive(true);
-        
         entityManager.merge(storedUser);
-        
-        Users users = entityManager.find(Users.class, user.getId());
-        users.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        Users users = entityManager.find(Users.class, storedUser.getUserId());
+        users.setPassword(AppUtils.encryptPassword(user.getPassword()));
         users.setActive(1);
         entityManager.persist(users);
-        
         return true;
     }
 

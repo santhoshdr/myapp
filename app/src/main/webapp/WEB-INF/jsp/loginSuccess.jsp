@@ -1,5 +1,4 @@
-<html lang="en">
-<body>
+	<%@ include file="base.jsp"%>
 	<%@ include file="loggedInNav.jsp"%>
 	<%@ include file="header.jsp"%>
 	<%
@@ -32,8 +31,4 @@
 	    }
 	%>
 
-
-	<%@ include file="footer.jsp"%>
-</body>
-</html>
-<%@ include file="base.jsp"%>
+<%@ include file="footer.jsp"%>

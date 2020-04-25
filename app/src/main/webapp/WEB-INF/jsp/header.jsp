@@ -3,81 +3,31 @@
 	uri="http://www.springframework.org/security/tags"%>
 
 <div class="container" style="margin-top: 60px;">
-
-	<html>
-<head>
-<style>
-ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: #333;
-}
-
-li {
-	float: left;
-}
-
-li a, .dropbtn {
-	display: inline-block;
-	color: white;
-	text-align: center;
-	padding: 14px 16px;
-	text-decoration: none;
-}
-
-li a:hover, .dropdown:hover .dropbtn {
-	background-color: red;
-}
-
-li.dropdown {
-	display: inline-block;
-}
-
-.dropdown-content {
-	display: none;
-	position: absolute;
-	background-color: #f9f9f9;
-	min-width: 160px;
-	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-	z-index: 1;
-}
-
-.dropdown-content a {
-	color: black;
-	padding: 12px 16px;
-	text-decoration: none;
-	display: block;
-	text-align: left;
-}
-
-.dropdown-content a:hover {
-	background-color: #f1f1f1;
-}
-
-.dropdown:hover .dropdown-content {
-	display: block;
-}
-</style>
-</head>
-<body>
-
-	<ul>
-		<li><a href="/user/loginHome">Home</a></li>
-		<li><a href="#">Members</a></li>
-		<li><a href="/user/addMember">Add Member</a></li>
-		<li><a href="/user/getAllActiveMembers">View Members</a></li>
-		<sec:authorize access="hasRole('ROLE_ADMIN') and isAuthenticated()">
-			<li><a href="/admin/getAllMembers">View All Members</a></li>
-			<li><a href="/admin/getAllUsers">View All Users</a></li>
-		</sec:authorize>
-		<li class="dropdown"><a href="javascript:void(0)" class="dropbtn">Dropdown</a>
-			<div class="dropdown-content">
-				<a href="#">Link 1</a> <a href="#">Link 2</a> <a href="#">Link 3</a>
-			</div></li>
-	</ul>
-</body>
-	</html>
-
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<a class="navbar-brand" href="/user/loginHome">Home</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarText" aria-controls="navbarText"
+			aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon">asdsadsadsa</span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarText">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+					<div class="dropdown">
+						<a class="btn btn-secondary dropdown-toggle" type="button"
+							id="dropdownMenuButton" data-toggle="dropdown"
+							aria-haspopup="true" aria-expanded="false" href="#"> Member</a>
+						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" href="/user/addMember">Add Member</a> <a
+								class="dropdown-item" href="/user/getAllActiveMembers">View Members</a>
+								        <sec:authorize access="hasRole('ROLE_ADMIN') and isAuthenticated()">
+            <a class="dropdown-item" href="/admin/getAllMembers">View All Members</a>
+            <a class="dropdown-item" href="/admin/getAllUsers">View All Users</a>
+        </sec:authorize>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</nav>
 </div>

@@ -1,4 +1,6 @@
-  <body class="d-flex flex-column min-vh-100">
+  
+  
+  <body class="d-flex flex-column min-vh-100" class="fixed-bottom">
     <div class="wrapper flex-grow-1"></div>
      <footer class="py-5 bg-dark" class="navbar fixed-bottom">
     <div class="container" >
@@ -6,5 +8,7 @@
     </div>
     <!-- /.container -->
   </footer>
+  
+  
   
 </body>
