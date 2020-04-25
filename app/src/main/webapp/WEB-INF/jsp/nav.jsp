@@ -1,4 +1,4 @@
-     
+         
 <nav
 	class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
 	<div class="container">
@@ -13,7 +13,7 @@
 			<ul class="navbar-nav ml-auto">
 				<li class="nav-item">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
-						data-target="#register">Sign Up</button>
+						data-target="#register" class="float-left">Sign Up</button>
 				</li> &nbsp;&nbsp;
 				<!-- Split button -->
 				<div class="btn-group">

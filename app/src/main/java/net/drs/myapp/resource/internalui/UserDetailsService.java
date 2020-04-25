@@ -11,18 +11,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.config.UserPrincipal;
 import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.dto.UserDTO;
-import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.model.User;
 import net.drs.myapp.resource.GenericService;
@@ -175,11 +176,11 @@ public class UserDetailsService extends GenericService {
         return null;
     }
     
-    
-    // get add member page
     @GetMapping("/addMember")
-    public ModelAndView addMember() {
+    // get add member page
+    public ModelAndView addMember(RedirectAttributes redirectAttributes ) {
         try {
+            
             Gotras[] listofGotram  = Gotras.values();
             ClassOfMembership[] list = ClassOfMembership.values();
             ModeOfPayment[] modeofPayments = ModeOfPayment.values();
@@ -193,11 +194,15 @@ public class UserDetailsService extends GenericService {
 
         }
         return null;
+        
     }
     
     @PostMapping("/saveMember")
-    public ResponseEntity<UserDTO> saveMember(UserDTO user) {
+    public ModelAndView   saveMember(UserDTO user,RedirectAttributes redirectAttributes ) {
         try {
+            
+            
+            validateInputRequest(user);
             user.setMemberAddedBy(getLoggedInUserId());
             user.setCreatedBy(Long.toString(getLoggedInUserId()));
             user.setCreationDate(AppUtils.getCurrentDate());
@@ -205,11 +210,29 @@ public class UserDetailsService extends GenericService {
             user.setUpdatedBy(Long.toString(getLoggedInUserId()));
             
             UserDTO userdto = userDetails.addMember(user);
-            return new ResponseEntity<UserDTO>(userdto, HttpStatus.OK);
+            return new ModelAndView("redirect:/user/addMember").addObject("addMember",true);
         } catch (Exception e) {
-
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return new ModelAndView("redirect:/user/addMember");
         }
-        return null;
+    }
+
+
+    private void validateInputRequest(UserDTO user) throws Exception {
+       if(StringUtils.isEmpty(user.getFirstName())) {
+           throw new Exception("Name Can't be Empty");
+       }else if(StringUtils.isEmpty(user.getAddress())){
+           throw new Exception("Address Can't be Empty");
+       }else if(StringUtils.isEmpty(user.getAge())){
+           throw new Exception("Age Can't be Empty");
+       }else if(StringUtils.isEmpty(user.getAmount())){
+           throw new Exception("Amount Can't be Empty");
+       }else if(StringUtils.isEmpty(user.getClassofMembershipDesired())){
+           throw new Exception("Class of Membership  Can't be Empty");
+       }else if(StringUtils.isEmpty(user.getGotram())){
+           throw new Exception("Gotram Can't be Empty");
+       }
+        
     }
     
     

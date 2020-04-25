@@ -10,17 +10,13 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarResponsive">
 			<ul class="navbar-nav ml-auto">
-				
 				<div class="dropdown">
-					<button class="btn btn-primary dropdown-toggle" type="button"
-						id="dropdownMenuButton" data-toggle="dropdown">
-						Welcome
-						<%=session.getAttribute("loggedInUserName") %>
+					<button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
+						Welcome <%=session.getAttribute("loggedInUserName") %>
 					</button>
 					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						<a class="dropdown-item" href="/user/getMyProfile">My Profile</a>
-						<button type="button" class="btn" data-toggle="modal"
-							data-target="#changePassword">Change Password</button>
+						<button type="button" class="btn" data-toggle="modal" data-target="#changePassword">Change Password</button>
 						<a class="dropdown-item" href="/api/auth/logout">Log Out</a>
 					</div>
 				</div>
@@ -64,7 +60,6 @@
 		</div>
 	</div>
 </div>
-
 <script>
 $(document).ready(function() {
                         $("#failure").hide();
