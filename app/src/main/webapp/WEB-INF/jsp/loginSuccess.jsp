@@ -3,13 +3,13 @@
 	<%@ include file="header.jsp"%>
 	<%
 	    String pageName = request.getAttribute("pageName") != null ? (String) request.getAttribute("pageName") : "";
+	    System.out.println("Pagename" + pageName );
 	    switch (pageName) {
 	    case "viewMembers":
 	%>
 	<%@ include file="viewMembers.jsp"%>
 	<%
-	    System.out.println("It\'s Sunday.");
-	        break;
+	    break;
 	    case "loginHome":
 	%>
 	<%@ include file="loggedInBody.jsp"%>
@@ -19,6 +19,11 @@
 	%>
 	<%@ include file="addMember.jsp"%>
 	<%
+        break;
+        case "registerWedProfile":
+    %>
+    <%@ include file="registerWedProfile.jsp"%>
+    <%
 	    break;
 	    case "getAllUsers":
 	%>

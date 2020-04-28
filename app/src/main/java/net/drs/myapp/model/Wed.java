@@ -2,6 +2,7 @@ package net.drs.myapp.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,15 +49,9 @@ public class Wed extends CommonDTO {
 
     private Date dateOfBirth;
 
-    private Time timeOfBirth;
+    private Timestamp timeOfBirth;
 
-    public Time getTimeOfBirth() {
-        return timeOfBirth;
-    }
-
-    public void setTimeOfBirth(Time timeOfBirth) {
-        this.timeOfBirth = timeOfBirth;
-    }
+   
 
     private String placeOfBirth;
 
@@ -192,6 +187,14 @@ public class Wed extends CommonDTO {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Timestamp getTimeOfBirth() {
+        return timeOfBirth;
+    }
+
+    public void setTimeOfBirth(Timestamp timeOfBirth) {
+        this.timeOfBirth = timeOfBirth;
     }
 
 }

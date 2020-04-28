@@ -63,7 +63,7 @@ public class WedTests extends GenericAbstractTests {
 
         DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
         Time time = Time.valueOf(timeString);
-        wed.setTimeOfBirth(time);
+      //  wed.setTimeOfBirth(time);
 
         File image1 = new File("imagesourcefolder/male.png");
         File image2 = new File("imagesourcefolder/woman.png");

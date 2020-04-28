@@ -1,5 +1,6 @@
 package net.drs.myapp.resource.internalui;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import net.drs.myapp.response.handler.SuccessMessageHandler;
 import net.drs.myapp.utils.AppUtils;
 import net.drs.myapp.utils.ClassOfMembership;
 import net.drs.myapp.utils.Gotras;
+import net.drs.myapp.utils.MaritalStatus;
 import net.drs.myapp.utils.ModeOfPayment;
 
 @Controller
@@ -45,13 +47,12 @@ public class UserDetailsService extends GenericService {
     @GetMapping("/loginHome")
     public ModelAndView hello(HttpSession session) {
         ModelAndView modelandView = new ModelAndView();
-        setValueInUserSession(session,getLoggedInUserName());
+        setValueInUserSession(session, getLoggedInUserName());
         modelandView.addObject("pageName", "loginHome");
         modelandView.setViewName("loginSuccess");
         return modelandView;
     }
-    
-    
+
     @GetMapping("/hello")
     public ModelAndView loginHome() {
         ModelAndView h = new ModelAndView();
@@ -59,22 +60,20 @@ public class UserDetailsService extends GenericService {
         return h;
 
     }
-    
+
     @GetMapping("/getAllActiveMembers")
     public ModelAndView getAllActiveMembers() {
         try {
             // 10 is not used any where as of now.. Need to use this if
             // performance degrades
             List<User> userDTO = userDetails.getAllActiveMembers();
-            return new ModelAndView("loginSuccess").addObject("listofusers",userDTO)
-                                            .addObject("pageName","viewMembers");
+            return new ModelAndView("loginSuccess").addObject("listofusers", userDTO).addObject("pageName", "viewMembers");
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
             return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
         }
     }
-    
-    
+
     @GetMapping("/viewMember")
     public ResponseEntity<?> viewMember(Long userId) {
         try {
@@ -84,16 +83,13 @@ public class UserDetailsService extends GenericService {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
-            return new ResponseEntity<>(errorDetails, HttpStatus. BAD_REQUEST);
-            }
+            return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+        }
     }
-    
-    
-    
+
     @GetMapping("/getMyProfile")
     public ModelAndView getMyProfile() {
-        return new ModelAndView("viewProfile").
-                addObject("data",userDetails.getMemberById(getLoggedInUserId()));
+        return new ModelAndView("viewProfile").addObject("data", userDetails.getMemberById(getLoggedInUserId()));
     }
 
     @PostMapping("/updateMyProfile")
@@ -116,7 +112,7 @@ public class UserDetailsService extends GenericService {
      * @param bindingResult
      * @return
      */
-    
+
     @PostMapping("/changePassword")
     public ResponseEntity<?> changePassword(ResetPasswordDTO passwordDTO, BindingResult bindingResult) {
         java.util.Date uDate = new java.util.Date();
@@ -130,22 +126,40 @@ public class UserDetailsService extends GenericService {
             userDetails.changePassword(passwordDTO);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Password has been changed successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
-            
+
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
             return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
         }
     }
 
+    @GetMapping("/registerWedProfile")
+    public ModelAndView registerWedProfile() {
+        try {
+            
+            Gotras[] listofGotram = Gotras.values();
+            List<String> genders = Arrays.asList("Male","Female","Transgender");
+            MaritalStatus[] listOfMaritalStatus = MaritalStatus.values();
+            return new ModelAndView("loginSuccess").
+                    addObject("pageName", "registerWedProfile").
+                    addObject("gotrams", listofGotram).
+                    addObject("listOfMaritalStatus", listOfMaritalStatus).
+                    addObject("genders", genders);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @PostMapping("/createWedProfile")
-    public ResponseEntity<WedDTO> createWedProfile(@RequestBody WedDTO wedDTO, BindingResult bindingResult) {
+    public ResponseEntity<WedDTO> createWedProfile(WedDTO wedDTO, BindingResult bindingResult) {
         try {
             wedDTO.setWedFullName("Full Name");
             wedDTO.setCreatedBy(getLoggedInUser().toString());
             wedDTO.setUpdatedBy(getLoggedInUser().toString());
             wedDTO.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));
             wedDTO.setUpdatedDate(new java.sql.Date(System.currentTimeMillis()));
-
             return new ResponseEntity<WedDTO>(userDetails.createWedProfile(wedDTO, getLoggedInUserId()), HttpStatus.CREATED);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -175,13 +189,13 @@ public class UserDetailsService extends GenericService {
         }
         return null;
     }
-    
+
     @GetMapping("/addMember")
     // get add member page
-    public ModelAndView addMember(RedirectAttributes redirectAttributes ) {
+    public ModelAndView addMember(RedirectAttributes redirectAttributes) {
         try {
-            
-            Gotras[] listofGotram  = Gotras.values();
+
+            Gotras[] listofGotram = Gotras.values();
             ClassOfMembership[] list = ClassOfMembership.values();
             ModeOfPayment[] modeofPayments = ModeOfPayment.values();
             ModelAndView mv = new ModelAndView("loginSuccess");
@@ -194,48 +208,43 @@ public class UserDetailsService extends GenericService {
 
         }
         return null;
-        
+
     }
-    
+
     @PostMapping("/saveMember")
-    public ModelAndView   saveMember(UserDTO user,RedirectAttributes redirectAttributes ) {
+    public ModelAndView saveMember(UserDTO user, RedirectAttributes redirectAttributes) {
         try {
-            
-            
+
             validateInputRequest(user);
             user.setMemberAddedBy(getLoggedInUserId());
             user.setCreatedBy(Long.toString(getLoggedInUserId()));
             user.setCreationDate(AppUtils.getCurrentDate());
             user.setUpdatedDate(AppUtils.getCurrentDate());
             user.setUpdatedBy(Long.toString(getLoggedInUserId()));
-            
+
             UserDTO userdto = userDetails.addMember(user);
-            return new ModelAndView("redirect:/user/addMember").addObject("addMember",true);
+            return new ModelAndView("redirect:/user/addMember").addObject("addMember", true);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return new ModelAndView("redirect:/user/addMember");
         }
     }
 
-
     private void validateInputRequest(UserDTO user) throws Exception {
-       if(StringUtils.isEmpty(user.getFirstName())) {
-           throw new Exception("Name Can't be Empty");
-       }else if(StringUtils.isEmpty(user.getAddress())){
-           throw new Exception("Address Can't be Empty");
-       }else if(StringUtils.isEmpty(user.getAge())){
-           throw new Exception("Age Can't be Empty");
-       }else if(StringUtils.isEmpty(user.getAmount())){
-           throw new Exception("Amount Can't be Empty");
-       }else if(StringUtils.isEmpty(user.getClassofMembershipDesired())){
-           throw new Exception("Class of Membership  Can't be Empty");
-       }else if(StringUtils.isEmpty(user.getGotram())){
-           throw new Exception("Gotram Can't be Empty");
-       }
-        
+        if (StringUtils.isEmpty(user.getFirstName())) {
+            throw new Exception("Name Can't be Empty");
+        } else if (StringUtils.isEmpty(user.getAddress())) {
+            throw new Exception("Address Can't be Empty");
+        } else if (StringUtils.isEmpty(user.getAge())) {
+            throw new Exception("Age Can't be Empty");
+        } else if (StringUtils.isEmpty(user.getAmount())) {
+            throw new Exception("Amount Can't be Empty");
+        } else if (StringUtils.isEmpty(user.getClassofMembershipDesired())) {
+            throw new Exception("Class of Membership  Can't be Empty");
+        } else if (StringUtils.isEmpty(user.getGotram())) {
+            throw new Exception("Gotram Can't be Empty");
+        }
+
     }
-    
-    
-    
 
 }

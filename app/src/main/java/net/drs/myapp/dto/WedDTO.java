@@ -2,7 +2,7 @@ package net.drs.myapp.dto;
 
 import java.io.File;
 import java.sql.Date;
-import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Arrays;
 
 import net.drs.myapp.utils.MaritalStatus;
@@ -27,6 +27,34 @@ public class WedDTO extends CommonDTO {
 
     private MaritalStatus maritalStatus = MaritalStatus.SINGLE;
 
+ private String fatherFullName;
+    
+    private String motherFullName;
+    
+    public String getFatherFullName() {
+        return fatherFullName;
+    }
+
+    public void setFatherFullName(String fatherFullName) {
+        this.fatherFullName = fatherFullName;
+    }
+
+    public String getMotherFullName() {
+        return motherFullName;
+    }
+
+    public void setMotherFullName(String motherFullName) {
+        this.motherFullName = motherFullName;
+    }
+
+    public String getWedGotram() {
+        return wedGotram;
+    }
+
+    public void setWedGotram(String wedGotram) {
+        this.wedGotram = wedGotram;
+    }
+
     // father can add their siblings. Father -> would have registered, but
     // updating son/daughters data.
     // bydefault = true
@@ -36,14 +64,14 @@ public class WedDTO extends CommonDTO {
 
     private Date dateOfBirth;
 
-    private Time timeOfBirth;
+    private String timeOfBirth;
 
     private String placeOfBirth;
 
     private Boolean makePublic;
 
     private String wedFullName;
-
+    
     private int wedAge;
 
     private String wedGender;
@@ -51,6 +79,8 @@ public class WedDTO extends CommonDTO {
     private String wedOccupation;
 
     private String wedRaashi;
+    
+    private String wedGotram;
 
     private String wedNakshtra;
 
@@ -130,11 +160,17 @@ public class WedDTO extends CommonDTO {
         this.id = id;
     }
 
-    public Time getTimeOfBirth() {
-        return timeOfBirth;
+
+
+    public Timestamp getTimeOfBirth() {
+        Timestamp ts =null;
+        if(timeOfBirth!=null) {
+           ts = Timestamp.valueOf(timeOfBirth);    
+        }
+        return ts;
     }
 
-    public void setTimeOfBirth(Time timeOfBirth) {
+    public void setTimeOfBirth(String timeOfBirth) {
         this.timeOfBirth = timeOfBirth;
     }
 

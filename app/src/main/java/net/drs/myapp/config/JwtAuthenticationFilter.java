@@ -29,13 +29,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = getJwtFromRequest(request);
-            System.out.println("1111111 "+ request.getRequestURI() + "==" + jwt);
-            jwt = (String)request.getSession().getAttribute("userloggedin");
-            
-            if(jwt== null) {
-            System.out.println("============="+ request.getRequestURI() + "==" + jwt);
-            
-            }if (jwt!=null && StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+            jwt = (String) request.getSession().getAttribute("userloggedin");
+            if (jwt != null && StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromJWT(jwt);
                 /*
                  * Note that you could also encode the user's username and roles
