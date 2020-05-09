@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.resource.GenericService;
@@ -22,7 +23,7 @@ public class HomeResource  extends GenericService{
     IUserDetails userDetails;
 
     @GetMapping(value = { "", "/", "/guest" })
-    public String showHome( HttpSession httpSession) {
+    public String showHome( HttpSession httpSession,RedirectAttributes redirectAttributes) {
         httpSession.invalidate();
         return "redirect:/home/guest";
     }

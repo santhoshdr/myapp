@@ -56,7 +56,7 @@ public interface IUserDAO {
 
     List<Wed> fetchWedProfile(Long loggedInUser);
 
-    Wed updateWedProfile(Wed wed, Long Id);
+    Wed updateWedProfile(Wed wed);
 
     // to validate entered OTP
     // boolean validateOTPVerify(Long userid,String generatedOTP, String

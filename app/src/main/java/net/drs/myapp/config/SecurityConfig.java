@@ -58,6 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.gif", "/**/*.svg", "/**/*.jpg", "/**/*.html", 
                         "/**/*.css", "/**/*.js").permitAll()
                 .antMatchers("/guest/**").permitAll()
+                .antMatchers("/imageuploadfolder").permitAll()
                 .antMatchers("/home/guest/**").permitAll()
                 .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")
                 .antMatchers("/user/**").access("hasRole('ROLE_USER')")

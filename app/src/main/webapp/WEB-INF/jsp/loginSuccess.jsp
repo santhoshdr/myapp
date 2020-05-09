@@ -5,6 +5,16 @@
 	    String pageName = request.getAttribute("pageName") != null ? (String) request.getAttribute("pageName") : "";
 	    System.out.println("Pagename" + pageName );
 	    switch (pageName) {
+	    case "viewWedProfile":
+	     %>
+	      <%@ include file="viewWedProfile.jsp"%>        
+	    <%	    
+	    break;
+	    case "viewMywedProfile":
+	    %>
+    <%@ include file="viewMywedProfile.jsp"%>	    
+	    <%  
+	    break;
 	    case "viewMembers":
 	%>
 	<%@ include file="viewMembers.jsp"%>

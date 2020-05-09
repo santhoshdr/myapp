@@ -28,8 +28,9 @@
                             id="dropdownMenuButton" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false" href="#"> Matrimony </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="/user/registerWedProfile">Add Guy/Girl </a> <a
-                                class="dropdown-item" href="/user/getAllActiveMembers">View Guys/Girls</a>
+                            <a class="dropdown-item" href="/user/registerWedProfile">Add Guy/Girl </a> 
+                            <a  class="dropdown-item" href="/user/getMyWedProfiles">View My Wed Profiles</a>
+                            <a  class="dropdown-item" href="/user/getAllActiveWedProfiles">View All Wed Profiles</a>
                             <sec:authorize
                                 access="hasRole('ROLE_ADMIN') and isAuthenticated()">
                                 <a class="dropdown-item" href="/admin/getAllMembers">View All Guys/Girls</a>

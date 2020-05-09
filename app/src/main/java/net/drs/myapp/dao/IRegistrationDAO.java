@@ -15,6 +15,8 @@ public interface IRegistrationDAO {
     User addUser(User user, Set<Role> roles);
 
     User addUserandGetUserId(User user, Set<Role> roles);
+    
+    boolean  checkIfUserExistsByUser_ID(Users user) ;
 
     boolean checkIfUserExistbyName(User user) throws Exception;
 

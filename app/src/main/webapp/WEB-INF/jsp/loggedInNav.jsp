@@ -40,9 +40,10 @@
 				<h4 class="modal-title">Change Password</h4>
 			</div>
 			<div id="failure" style="display: none" class="alert alert-danger"
-				role="alert"></div>
+				role="alert">faillure</div>
 			<div id="success" style="display: none" class="alert alert-success"
-				role="alert"></div>
+				role="alert">
+				jnjknsdjkfndsjkn</div>
 			<!-- Modal body -->
 			<div class="modal-body">
 				<div class="form-group">
@@ -89,7 +90,7 @@ $(document).ready(function() {
                                                       type : "POST",
                                                       data : model,
                                                       success : function(response,textStatus,jqXHR) {
-                                                          var result = JSON.stringify(response.message,null,4)
+                                                          var result = JSON.stringify(response.message,null,4);
                                                                     $('#success').html(result);
                                                                     $("#success").show();
                                                                 },

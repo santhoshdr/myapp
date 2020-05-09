@@ -5,11 +5,11 @@
 		<!-- Good Reference: 
 https://www.pair.com/support/kb/types-of-bootstrap-forms/
  -->
-		<c:if test="${not empty errorMessage }">
-			<div class="alert alert-danger" role="alert">${errorMessage}</div>
+		<c:if test="${not empty successMessage }">
+			<div class="alert alert-success" role="alert">${successMessage}</div>
 		</c:if>
 		<h1 align="left">Add New Wedding Profile</h1>
-		<form id="addWeddingProfile" action="/user/createWedProfile"
+		<form id="addWeddingProfile" action="/user/createWedProfile" enctype="multipart/form-data"
 			method="post">
 			<div class="form-group row">
 				<label for="wedFullName" class="col-sm-2 col-form-label">Name</label>
@@ -133,25 +133,22 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
 						id="wedPlace" aria-describedby="wedPlace" placeholder="Staying At">
 				</div>
 			</div>
-			<div class="form-group row">
-				<label for="wedImage" class="col-sm-2 col-form-label">Upload
-					Photos</label>
-				<div class="col-sm-5">
-					<input type="file"name="wedImage" class="custom-file-input form-control"
-						id="wedImage" aria-describedby="inputGroupFileAddon01"> <label
-						class="custom-file-label" for="wedImage">Choose file</label>
-				</div>
-			</div>
-			<div class="form-group row">
-				<label for="wedJataka" class="col-sm-2 col-form-label">Upload
-					Jatakam</label>
-				<div class="col-sm-5">
-					<input type="file" name="wedJataka" class="custom-file-input form-control"
-						id="wedJataka" aria-describedby="wedJataka"> <label
-						class="custom-file-label" for="wedJataka">Choose file</label>
-				</div>
-			</div>
-
+			
+			  <div class="form-group row">
+                    <label for="wedImage" class="col-sm-2 col-form-label">Upload Photos</label>
+                    <div class="col-sm-5">
+                    <input type="file" name="wedImage" class="form-control-file"  id="wedImage" >
+                    </div>
+            </div>
+			
+			
+  <div class="form-group row">
+                    <label for="wedJataka" class="col-sm-2 col-form-label">Upload Jatakam</label>
+                    <div class="col-sm-5">
+                    <input type="file" name="wedJataka" class="form-control-file"  id="wedJataka" >
+                    </div>
+            </div>
+            			
 			<div class="form-group row">
 				<label for="exampleInputEmail1" class="col-sm-2 col-form-label">Make
 					Visible to All</label>

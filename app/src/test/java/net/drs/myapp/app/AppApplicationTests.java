@@ -150,6 +150,8 @@ public class AppApplicationTests extends GenericAbstractTests{
         // assertEquals(response3.getStatusCode(), HttpStatus.BAD_REQUEST);
     }
 
+    
+    // this is the one used to create admin user for the first time.
     @Test
     public void createAndLoginAdmin() {
         UserDTO userDTO = new UserDTO();

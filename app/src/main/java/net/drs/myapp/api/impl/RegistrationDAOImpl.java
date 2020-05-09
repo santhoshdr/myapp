@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -241,4 +240,17 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         }
         return false;
     }
+
+    @Override
+    public boolean checkIfUserExistsByUser_ID(Users users) {
+            List list = entityManager
+                                 .createQuery("SELECT count(*) FROM User WHERE userId=?1")
+                                .setParameter(1, users.getId())
+                                .getResultList();
+            if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
+                return false;
+            }
+        return true;
+    }
+    
 }

@@ -16,8 +16,6 @@ and set Can access virtual hosts to /
  Setting up database: 
  https://medium.com/@dilsimchandrasena/how-to-deploy-and-use-a-mysql-docker-container-in-ubuntu-4ace7c893982
  
- 
- 
 
 
 Database: 
@@ -45,7 +43,9 @@ docker build --rm -t santhoshdr/myappbuild1 .
 DB Setup:
 
 sudo docker pull mysql/mysql-server:5.7
-sudo docker -d run --name=mysqlCon -p 3306:3306 -d mysql/mysql-server:5.7
+sudo /etc/init.d/mysql stop
+
+sudo docker run --name=mysqlCon -p 3306:3306 -d mysql/mysql-server:5.7
 docker logs mysqlCon
 ( copy the password from the logs )
 
@@ -60,6 +60,8 @@ Then create new schema myapp. Application will not create. It will just create t
 
 GRANT ALL PRIVILEGES ON *.* to root@'%' IDENTIFIED BY 'root';
 
+
+CREATE SCHEMA `myapp2` ;
 
 
 

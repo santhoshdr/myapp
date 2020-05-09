@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.drs.myapp.config.JwtTokenProvider;
 import net.drs.myapp.dto.LoginRequest;
@@ -40,7 +41,7 @@ public class AuthController extends GenericService {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/signin")
-    public ModelAndView authenticateUser(LoginRequest loginRequest, HttpServletRequest httpservletRequest) {
+    public ModelAndView authenticateUser(LoginRequest loginRequest, HttpServletRequest httpservletRequest,RedirectAttributes redirectAttributes) {
         try {
             Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
             if (authentication.isAuthenticated()) {
@@ -50,10 +51,12 @@ public class AuthController extends GenericService {
                 httpservletRequest.getSession().setAttribute("userloggedin", jwt);
                 return new ModelAndView("redirect:/user/loginHome");
             } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Entered UserName or Password is wrong.Please try again!");
                 return new ModelAndView("redirect:/home/guest");
             }
         } catch (Exception e) {
-            return new ModelAndView("redirect:/home/guest").addObject("message", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Entered UserName or Password is wrong.Please try again!");
+            return new ModelAndView("redirect:/home/guest");
         }
     }
 

@@ -123,7 +123,7 @@ public class UserDAOImpl implements IUserDAO {
 
     @Override
     public User getUser(Long userId) {
-        return (User) entityManager.createQuery("from User where id=:id").setParameter("id", userId).getSingleResult();
+        return (User) entityManager.createQuery("from User where userId=:userId").setParameter("userId", userId).getSingleResult();
     }
 
     @Override
@@ -260,7 +260,12 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public Wed updateWedProfile(Wed wed, Long id) {
+    public Wed updateWedProfile(Wed wed) {
+        
+        Wed storedWed = entityManager.find(Wed.class, wed.getId());
+        wed.setCreatedBy(storedWed.getCreatedBy());
+        wed.setCreatedDate(storedWed.getCreatedDate());
+        wed.setFolderId(storedWed.getFolderId());
         entityManager.merge(wed);
         return wed;
     }

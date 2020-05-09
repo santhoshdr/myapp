@@ -58,9 +58,13 @@ public interface IUserDetails {
 
     WedDTO createWedProfile(WedDTO wedDTO, Long addedBy) throws Exception;
 
-    List<WedDTO> fetchWedProfile(Long loggedinUserId) throws Exception;
+    List<WedDTO> fetchMyWedProfiles(Long loggedinUserId) throws Exception;
+    
+    List<WedDTO> fetchWedProfile(Long loggedInUser,Long profileId) throws Exception;
 
     WedDTO updateWedProfile(WedDTO wedDTO, Long addedBy) throws Exception;
+    
+    WedDTO  deletePhoto(String photoName, String folderName,Long addedBy) throws Exception;
 
     boolean changePassword(ResetPasswordDTO passwordDTO) throws Exception;
 
@@ -72,4 +76,8 @@ public interface IUserDetails {
      * @throws Exception
      */
     UserDTO addMember(UserDTO userDTO) throws Exception;
+
+    WedDTO downloadFile(String fileName, Long loggedInUserId) throws Exception;
+
+    boolean deleteFile(String fileName, long wedId, Long loggedInUserId) throws Exception;
 }

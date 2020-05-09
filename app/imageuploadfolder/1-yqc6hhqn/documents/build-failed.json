@@ -1,0 +1,15 @@
+{
+    "kind": "BuildConfig",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "ops-profile-history-build"
+    },
+    "spec": {
+        "strategy": {
+            "type": "JenkinsPipeline",
+            "jenkinsPipelineStrategy": {
+                "jenkinsfile": "def createOrUpdateComp(loadItem, loadItemVersion) {\n    if(acs.listComponents().Items.find { component -> component.Name == loadItem }) {\n        acs.updateComponent(loadItem, loadItemVersion, loadItem, loadItemVersion)\n    }\n    else {\n        acs.createComponent(loadItem, loadItemVersion, loadItem, loadItemVersion)\n    }\n}\n\ndef waitForReadiness(loadItem, loadItemVersion) {\n    timeout(time: 12, unit: 'MINUTES') {\n        acs.waitForComponentReady(loadItem, loadItemVersion)\n    }\n}\n\ndef deleteOrUpdateComp(loadItem, loadItemVersion, oldComponent) {\n    if(oldComponent) {\n        def oldVersion = oldComponent.Version\n        def oldEnvVersion = oldComponent.Environment.Version\n        acs.updateComponent(loadItem, oldVersion, loadItem, oldEnvVersion)\n        waitForReadiness(loadItem, oldVersion)\n    }\n    else {\n        acs.deleteComponent(loadItem, loadItemVersion)\n    }\n}\n\nnode {\n    def LOAD_ITEM=\"logaserver\"\n    def LOAD_ITEM_VERSION=\"4.11.5\"\n\n    def oldComponent\n\n    timeout(time: 30, unit: 'MINUTES') {\n\n        stage('Setup') {\n            // Setup ACS\n            acs.setLocalClusterMode(true)\n\n            // Save running component versions\n            oldComponent = acs.listComponents().Items.find { component -> component.Name == LOAD_ITEM }\n        }\n\n        stage('Load') {\n            // Create/update component\n            createOrUpdateComp(LOAD_ITEM, LOAD_ITEM_VERSION)\n\n            // Wait for component to be ready\n            try {\n                waitForReadiness(LOAD_ITEM, LOAD_ITEM_VERSION)\n            } catch (Exception e) {\n                // Fallback to previous state\n                stage('Fallback') {\n                    deleteOrUpdateComp(LOAD_ITEM, LOAD_ITEM_VERSION, oldComponent)\n                }\n                currentBuild.result = 'FAILURE'\n            }\n        }\n    }\n}\n"
+            }
+        }
+    }
+}

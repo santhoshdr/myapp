@@ -1,6 +1,23 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
 <div class="container" style="margin-top: 55px;">
+
+        <c:if test="${not empty errorMessage }">
+            <div class="alert alert-danger alert-dismissible fade show"
+                role="alert">
+                ${errorMessage}
+                <button type="button" class="close" data-dismiss="alert"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        </c:if>
+
+
+
+
+
+
 	<c:if test="${!actionResult && not empty actionResult}">
 		<div id="loginFailure"
 			class="alert alert-danger alert-dismissible fade show"
