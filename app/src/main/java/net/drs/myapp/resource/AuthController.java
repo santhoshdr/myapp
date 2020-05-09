@@ -1,29 +1,32 @@
 package net.drs.myapp.resource;
 
-import javax.validation.Valid;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
-import net.drs.myapp.config.JwtTokenProvider;
-import net.drs.myapp.dto.LoginRequest;
-import net.drs.myapp.repositpry.UsersRepository;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-/**
- * Created by rajeevkumarsingh on 02/08/17.
- */
-@RestController
+import net.drs.myapp.config.JwtTokenProvider;
+import net.drs.myapp.dto.LoginRequest;
+import net.drs.myapp.repositpry.UsersRepository;
+
+@Controller
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController extends GenericService {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -31,9 +34,6 @@ public class AuthController {
     @Autowired
     UsersRepository userRepository;
 
-    /*
-     * @Autowired RoleRepository roleRepository;
-     */
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -41,46 +41,46 @@ public class AuthController {
     JwtTokenProvider tokenProvider;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+    public ModelAndView authenticateUser(LoginRequest loginRequest, HttpServletRequest httpservletRequest,RedirectAttributes redirectAttributes) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsernameOrEmail(), loginRequest.getPassword()));
+            if (authentication.isAuthenticated()) {
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                String jwt = tokenProvider.generateToken(authentication);
+                httpservletRequest.getSession(true);
+                httpservletRequest.getSession().setAttribute("userloggedin", jwt);
+                return new ModelAndView("redirect:/user/loginHome");
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Entered UserName or Password is wrong.Please try again!");
+                return new ModelAndView("redirect:/home/guest");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Entered UserName or Password is wrong.Please try again!");
+            return new ModelAndView("redirect:/home/guest");
+        }
     }
 
-    /*
-     * @PostMapping("/signup") public ResponseEntity<?> registerUser(@Valid
-     * 
-     * @RequestBody SignUpRequest signUpRequest) {
-     * if(userRepository.existsByUsername(signUpRequest.getUsername())) { return
-     * new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
-     * HttpStatus.BAD_REQUEST); }
-     * 
-     * if(userRepository.existsByEmail(signUpRequest.getEmail())) { return new
-     * ResponseEntity("Email Address already in use!", HttpStatus.BAD_REQUEST);
-     * }
-     * 
-     * // Creating user's account Users user = new
-     * Users(signUpRequest.getName(), signUpRequest.getUsername(),
-     * signUpRequest.getEmail(), signUpRequest.getPassword());
-     * 
-     * user.setPassword(passwordEncoder.encode(user.getPassword()));
-     * 
-     * Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-     * .orElseThrow(() -> new AppException("User Role not set."));
-     * 
-     * user.setRoles(Collections.singleton(userRole));
-     * 
-     * Users result = userRepository.save(user);
-     * 
-     * URI location = ServletUriComponentsBuilder
-     * .fromCurrentContextPath().path("/users/{username}")
-     * .buildAndExpand(result.getUsername()).toUri();
-     * 
-     * return ResponseEntity.created(location).body(new ApiResponse(true,
-     * "User registered successfully")); }
-     */
+    @GetMapping("/logout")
+    public String logout(HttpSession httpSession) {
+        try {
+
+            logger.info(" This session was Created at : " + httpSession.getCreationTime());
+            logger.info(" This session was Last accessed at : " + httpSession.getLastAccessedTime());
+            logger.info(" Session Destroyed : " + httpSession.getId());
+            httpSession.getId();
+            httpSession.invalidate();
+            return "redirect:/";
+        } catch (Exception e) {
+            return "redirect:/showData";
+        }
+    }
+
+    @GetMapping("/showData")
+    public String showData(LoginRequest loginRequest) {
+        try {
+            return "wonderful";
+        } catch (Exception e) {
+            return "redirect:/showData";
+        }
+    }
 }

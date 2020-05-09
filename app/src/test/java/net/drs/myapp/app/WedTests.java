@@ -59,11 +59,11 @@ public class WedTests extends GenericAbstractTests {
         wed.setMakePublic(true);
         wed.setMaritalStatus(MaritalStatus.SINGLE);
         wed.setPlaceOfBirth("placeofbirth");
-        wed.setDateOfBirth(new Date(System.currentTimeMillis()));
+      //  wed.setDateOfBirth(new Date(System.currentTimeMillis()));
 
         DateTimeFormatter parseFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
         Time time = Time.valueOf(timeString);
-        wed.setTimeOfBirth(time);
+      //  wed.setTimeOfBirth(time);
 
         File image1 = new File("imagesourcefolder/male.png");
         File image2 = new File("imagesourcefolder/woman.png");
@@ -73,13 +73,13 @@ public class WedTests extends GenericAbstractTests {
 
         imageList[0] = image1;
         imageList[1] = image2;
-        wed.setWedImage(imageList);
+   //     wed.setWedImage(imageList);
         File jataka1 = new File("imagesourcefolder/doc1.txt");
         File jataka2 = new File("imagesourcefolder/doc2.txt");
 
         jatakaList[0] = jataka1;
         jatakaList[1] = jataka2;
-        wed.setWedJataka(jatakaList);
+    //    wed.setWedJataka(jatakaList);
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", loginresponse.getTokenType() + " " + loginresponse.getAccessToken());
@@ -111,13 +111,13 @@ public class WedTests extends GenericAbstractTests {
 
         imageList[0] = image1;
         imageList[1] = image2;
-        wed.setWedImage(imageList);
+    //    wed.setWedImage(imageList);
         File jataka1 = new File("C:\\Users\\srajanna\\Desktop\\DeploymentManager\\Example_DeploymentUnit.doc");
         File jataka2 = new File("C:\\Users\\srajanna\\Desktop\\DeploymentManager\\Example_DeploymentUnit.doc");
 
         jatakaList[0] = jataka1;
         jatakaList[1] = jataka2;
-        wed.setWedJataka(jatakaList);
+  //      wed.setWedJataka(jatakaList);
 
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", "Bearer wrongkey");

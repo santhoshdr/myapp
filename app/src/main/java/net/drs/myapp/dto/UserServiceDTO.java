@@ -6,171 +6,177 @@ import java.util.Set;
 
 import net.drs.myapp.model.Role;
 
-
 // this DTO is used for Updating/Deleting user information
 public class UserServiceDTO {
 
-	private String firstName;
-	
-	private String lastName;
-	
-	private String mobileNumber;
-	
-	private String emailAddress;
-	
-	private String address;
-	
-	private boolean isActive;
-	
-	private Date dateOfCreation;
-	
-	private Date lastUpdated;
-	
-	private Long id;
-	
-	private Long userId;
+    private boolean isAdmin = false;
 
-	private File image;
-	
-	private Set<Role> roles;
+    private String firstName;
 
-	
-	private Date creationDate;
-	
-	private String createdBy;
-	
-	private Date updatedDate;
-	
-	private String updatedBy;
-	
-	
-	
-	public Date getCreationDate() {
-		return creationDate;
-	}
+    private String lastName;
 
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
+    private String mobileNumber;
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    private String emailAddress;
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    private String address;
 
-	public Date getUpdatedDate() {
-		return updatedDate;
-	}
+    private boolean isActive = false;
 
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
-	}
+    private Date dateOfCreation;
 
-	public String getUpdatedBy() {
-		return updatedBy;
-	}
+    private Date lastUpdated;
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
+    private Long id;
 
-	public String getFirstName() {
-		return firstName;
-	}
+    private Long userId;
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    private File image;
 
-	public String getLastName() {
-		return lastName;
-	}
+    private Set<Role> roles;
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    private Date creationDate;
 
-	public String getMobileNumber() {
-		return mobileNumber;
-	}
+    private String createdBy;
 
-	public void setMobileNumber(String mobileNumber) {
-		this.mobileNumber = mobileNumber;
-	}
+    private Date updatedDate;
 
-	public String getEmailAddress() {
-		return emailAddress;
-	}
+    private String updatedBy;
 
-	public void setEmailAddress(String emailAddress) {
-		this.emailAddress = emailAddress;
-	}
+    public Date getCreationDate() {
+        return creationDate;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public boolean isActive() {
-		return isActive;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
+    public Date getUpdatedDate() {
+        return updatedDate;
+    }
 
-	public Date getDateOfCreation() {
-		return dateOfCreation;
-	}
+    public void setUpdatedDate(Date updatedDate) {
+        this.updatedDate = updatedDate;
+    }
 
-	public void setDateOfCreation(Date dateOfCreation) {
-		this.dateOfCreation = dateOfCreation;
-	}
+    public String getUpdatedBy() {
+        return updatedBy;
+    }
 
-	public Date getLastUpdated() {
-		return lastUpdated;
-	}
+    public void setUpdatedBy(String updatedBy) {
+        this.updatedBy = updatedBy;
+    }
 
-	public void setLastUpdated(Date lastUpdated) {
-		this.lastUpdated = lastUpdated;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public Long getUserId() {
-		return userId;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
 
-	public File getImage() {
-		return image;
-	}
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
+    }
 
-	public void setImage(File image) {
-		this.image = image;
-	}
+    public String getEmailAddress() {
+        return emailAddress;
+    }
 
-	public Set<Role> getRoles() {
-		return roles;
-	}
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
 
-	public void setRoles(Set<Role> roles) {
-		this.roles = roles;
-	}
-	
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean isActive) {
+        this.isActive = isActive;
+    }
+
+    public Date getDateOfCreation() {
+        return dateOfCreation;
+    }
+
+    public void setDateOfCreation(Date dateOfCreation) {
+        this.dateOfCreation = dateOfCreation;
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public File getImage() {
+        return image;
+    }
+
+    public void setImage(File image) {
+        this.image = image;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
 }

@@ -12,7 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
+// we call this as member
 @Entity
 @Table(name = "userdetail")
 public class User implements Serializable {
@@ -43,6 +43,8 @@ public class User implements Serializable {
 
     private String password;
 
+    private Long memberAddedBy;
+    
     @Transient
     private String confirmPassword;
 
@@ -307,6 +309,14 @@ public class User implements Serializable {
 
     public void setPaymentDetails(String paymentDetails) {
         this.paymentDetails = paymentDetails;
+    }
+
+    public Long getMemberAddedBy() {
+        return memberAddedBy;
+    }
+
+    public void setMemberAddedBy(Long memberAddedBy) {
+        this.memberAddedBy = memberAddedBy;
     }
 
     private String updatedBy;

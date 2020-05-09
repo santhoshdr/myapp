@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
@@ -28,13 +29,15 @@ import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.model.Role;
+import net.drs.myapp.model.User;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
+import net.drs.myapp.utils.AppUtils;
 
 // these methods should be only accessible by admins
-@RestController
-@RequestMapping("/v1/admin")
+@Controller
+@RequestMapping("/admin")
 @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
 public class AdministrationService extends GenericService {
 
@@ -73,22 +76,6 @@ public class AdministrationService extends GenericService {
         }
     }
 
-    @GetMapping("/getAllUsers")
-    public ResponseEntity<?> getAllUsers() {
-
-        java.util.Date uDate = new java.util.Date();
-        try {
-            // 10 is not used any where as of now.. Need to use this if
-            // performance degrades
-            List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
-            return new ResponseEntity<>(userDTO, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
-            return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
-        }
-    }
-
     @GetMapping("/getAllActiveUsers")
     public ResponseEntity<?> getAllActiveUsers() {
 
@@ -117,20 +104,36 @@ public class AdministrationService extends GenericService {
             return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
         }
     }
+    /*
+     * @PostMapping("/deactivateUser/{userId}") //
+     * http://localhost:8085/name/abc/123
+     * 
+     * @RequestMapping(path="/{name}/{age}") public ResponseEntity<?>
+     * deactivateUser(@PathVariable("userId") String name) {
+     * 
+     * java.util.Date uDate = new java.util.Date(); try { UserDTO userDTO = new
+     * UserDTO(); userDTO.setUpdatedBy(Long.toString(getLoggedInUserId()));
+     * userDTO.setUpdatedDate(AppUtils.getCurrentDate());
+     * userDetails.deactiveUser(userDTO); return new ResponseEntity<>(userDTO,
+     * HttpStatus.OK); } catch (Exception e) { e.printStackTrace();
+     * ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(),
+     * "Something not working. Try after some time.", ""); return new
+     * ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND); } }
+     */
 
-    // based on user id
-    @PutMapping("/deactivateUser/{userId}")
+    @PostMapping("/activateUser")
     // http://localhost:8085/name/abc/123
     /* @RequestMapping(path="/{name}/{age}") */
-    public ResponseEntity<?> deactivateUser(@PathVariable("userId") String name, @AuthenticationPrincipal Principal principal, @RequestBody UserServiceDTO userDTO) {
+    public ResponseEntity<?> activateUser(Long userId) {
 
-        java.util.Date uDate = new java.util.Date();
         try {
-            String updatedBy = principal != null ? principal.getName() : ApplicationConstants.USER_SYSTEM;
-
-            userDTO.setUpdatedBy(updatedBy);
-            userDTO.setUpdatedDate(new java.sql.Date(uDate.getTime()));
-            userDetails.deactiveUser(userDTO);
+            Long updatedBy = getLoggedInUserId();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(userId);
+            userDTO.setActive(true);
+            userDTO.setUpdatedBy(Long.toString(updatedBy));
+            userDTO.setUpdatedDate(AppUtils.getCurrentDate());
+            userDetails.activeteUser(userDTO);
             return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -139,6 +142,57 @@ public class AdministrationService extends GenericService {
         }
     }
 
+    
+    
+    
+    @PostMapping("/deactivateUser")
+    public ModelAndView  deactivateUser(Long userId) {
+
+        try {
+            Long updatedBy = getLoggedInUserId();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(userId);
+            userDTO.setActive(false);
+            userDTO.setUpdatedBy(Long.toString(updatedBy));
+            userDTO.setUpdatedDate(AppUtils.getCurrentDate());
+            userDetails.deactiveUser(userDTO);
+            return new ModelAndView("redirect:/admin/getAllActiveUsers");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return null;
+        }
+    }
+    
+    
+    @PostMapping("/makeorRemoveAdmin")
+    public ModelAndView  makeorRemoveAdmin(Long userId) {
+        try {
+            Long updatedBy = getLoggedInUserId();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(userId);
+            userDTO.setUpdatedBy(Long.toString(updatedBy));
+            userDTO.setUpdatedDate(AppUtils.getCurrentDate());
+            userDetails.makeorremoveAdmin(userDTO);
+            return new ModelAndView("redirect:/admin/getAllActiveUsers");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return null;
+        }
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /*
      * 
      * { "userId":"2", "roles":[{"roleId":6,"role":"ADMIN"}]
@@ -175,7 +229,6 @@ public class AdministrationService extends GenericService {
 
     @GetMapping("/secured/all")
     public String securedHello(Principal princi) {
-        userDetails.activeteUser(new Long(123));
         return "Secured Hello";
     }
 
@@ -184,4 +237,45 @@ public class AdministrationService extends GenericService {
         return "alternate";
     }
 
+    @GetMapping("/getAllMembers")
+    public ModelAndView getAllMembers() {
+        try {
+            // 10 is not used any where as of now.. Need to use this if
+            // performance degrades
+            List<User> userDTO = userDetails.getAllMembers(10);
+            return new ModelAndView("loginSuccess").addObject("listofusers", userDTO).addObject("pageName", "viewMembers");
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
+        }
+    }
+
+    @GetMapping("/getAllUsers")
+    public ModelAndView getAllUsers() {
+
+        java.util.Date uDate = new java.util.Date();
+        try {
+            // 10 is not used any where as of now.. Need to use this if
+            // performance degrades
+            List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
+            return new ModelAndView("loginSuccess").addObject("listofusers", userDTO).addObject("pageName", "getAllUsers");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
+        }
+    }
+
+    /*
+     * // those who can login
+     * 
+     * @GetMapping("/getAllUsers") public ModelAndView getAllUsers() { try { //
+     * 10 is not used any where as of now.. Need to use this if // performance
+     * degrades List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
+     * return new ModelAndView("loginSuccess").addObject("listofusers",
+     * userDTO).addObject("pageName", "viewMembers"); } catch (Exception e) {
+     * ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(),
+     * "Something not working. Try after some time.", ""); return new
+     * ModelAndView("loginSuccess").addObject("listofusers", errorDetails); } }
+     */
 }

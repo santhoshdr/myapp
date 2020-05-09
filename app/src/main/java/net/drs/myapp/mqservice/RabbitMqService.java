@@ -36,7 +36,7 @@ import net.jodah.lyra.config.ConfigurableConnection;
 import net.jodah.lyra.config.RecoveryPolicies;
 import net.jodah.lyra.config.RetryPolicies;
 
-@Component
+//@Component
 @Repository("rabbitMqService")
 @Transactional
 public class RabbitMqService implements IRabbitMqService {
@@ -58,15 +58,13 @@ public class RabbitMqService implements IRabbitMqService {
     @PostConstruct
     private void postConsrtuct() {
 
-        MqUtils.manageCheckedExceptions(new Callable<Void>() {
-            @Override
-            public Void call() throws Exception {
-                initializeMq();
-
-                manageChannelStartup();
-                return null;
-            }
-        });
+        /*
+         * MqUtils.manageCheckedExceptions(new Callable<Void>() {
+         * 
+         * @Override public Void call() throws Exception { initializeMq();
+         * 
+         * manageChannelStartup(); return null; } });
+         */
     }
 
     protected void manageChannelStartup() throws Exception {
@@ -151,6 +149,8 @@ public class RabbitMqService implements IRabbitMqService {
         }
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost(MQ_HOST);
+        factory.setUsername("appuser");
+        factory.setPassword("appuser");
         try (Connection connection = factory.newConnection(); Channel channel = connection.createChannel()) {
             channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.FANOUT);
             channel.basicPublish(EXCHANGE_NAME, "", null, data);

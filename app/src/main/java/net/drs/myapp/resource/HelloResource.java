@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 //@RequestMapping("/rest/hello")
-@RestController
+//@RestController
 public class HelloResource {
 
     @Autowired
@@ -25,7 +25,6 @@ public class HelloResource {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping("/secured/all")
     public String securedHello(Principal princi) {
-        userDetails.activeteUser(new Long(123));
         return "Secured Hello";
     }
 

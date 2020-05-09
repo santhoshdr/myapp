@@ -1,3 +1,5 @@
+// NOT IN USE
+
 package net.drs.myapp.resource;
 
 import java.util.Date;
@@ -34,7 +36,7 @@ public class UserDetailsService extends GenericService {
 
     @PostMapping("/getMyProfile")
     public ResponseEntity<User> getMyProfile(@RequestBody UserDTO userDTO, BindingResult bindingResult) {
-        return new ResponseEntity<>(userDetails.getUserById(userDTO.getUserId()), HttpStatus.OK);
+        return new ResponseEntity<>(userDetails.getMemberById(userDTO.getUserId()), HttpStatus.OK);
 
     }
 
@@ -99,11 +101,11 @@ public class UserDetailsService extends GenericService {
         return null;
     }
 
-    @GetMapping("/fetchWedProfile")
+    @GetMapping("/fetchMyWedProfiles")
     public ResponseEntity<List<WedDTO>> fetchWedProfile() {
         try {
             Long loggedInUser = getLoggedInUserId();
-            return new ResponseEntity<List<WedDTO>>(userDetails.fetchWedProfile(loggedInUser), HttpStatus.OK);
+            return new ResponseEntity<List<WedDTO>>(userDetails.fetchMyWedProfiles(loggedInUser), HttpStatus.OK);
         } catch (Exception e) {
 
         }

@@ -15,6 +15,8 @@ public interface IRegistrationDAO {
     User addUser(User user, Set<Role> roles);
 
     User addUserandGetUserId(User user, Set<Role> roles);
+    
+    boolean  checkIfUserExistsByUser_ID(Users user) ;
 
     boolean checkIfUserExistbyName(User user) throws Exception;
 
@@ -32,7 +34,7 @@ public interface IRegistrationDAO {
 
     boolean completeRegistration(CompleteUserDetails completeUserDetails);
 
-    User checkIfUserEmailisPresentandVerified(String email);
+    User checkIfUserEmailisPresentandVerified(String email) throws Exception;
 
     Users checkIfUserPhoneisPresentandVerified(String emailorphoneNumber) throws Exception;
 
@@ -43,6 +45,8 @@ public interface IRegistrationDAO {
     boolean activateUserIftemporaryPasswordMatches(User user) throws Exception;
 
     boolean resetPassword(Users users);
+
+    void updateUserWithTemperoryPassword(User user) throws Exception;
 
 
 }

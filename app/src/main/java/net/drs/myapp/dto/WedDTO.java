@@ -1,9 +1,8 @@
 package net.drs.myapp.dto;
 
 import java.io.File;
-import java.sql.Date;
-import java.sql.Time;
-import java.util.Arrays;
+
+import org.springframework.web.multipart.MultipartFile;
 
 import net.drs.myapp.utils.MaritalStatus;
 
@@ -27,6 +26,36 @@ public class WedDTO extends CommonDTO {
 
     private MaritalStatus maritalStatus = MaritalStatus.SINGLE;
 
+    private String folderId;
+    
+    private String fatherFullName;
+
+    private String motherFullName;
+
+    public String getFatherFullName() {
+        return fatherFullName;
+    }
+
+    public void setFatherFullName(String fatherFullName) {
+        this.fatherFullName = fatherFullName;
+    }
+
+    public String getMotherFullName() {
+        return motherFullName;
+    }
+
+    public void setMotherFullName(String motherFullName) {
+        this.motherFullName = motherFullName;
+    }
+
+    public String getWedGotram() {
+        return wedGotram;
+    }
+
+    public void setWedGotram(String wedGotram) {
+        this.wedGotram = wedGotram;
+    }
+
     // father can add their siblings. Father -> would have registered, but
     // updating son/daughters data.
     // bydefault = true
@@ -34,9 +63,13 @@ public class WedDTO extends CommonDTO {
 
     private Long id;
 
-    private Date dateOfBirth;
+    private String dateOfBirth;
 
-    private Time timeOfBirth;
+    private String timeOfBirth;
+
+    public String getTimeOfBirth() {
+        return timeOfBirth;
+    }
 
     private String placeOfBirth;
 
@@ -52,19 +85,44 @@ public class WedDTO extends CommonDTO {
 
     private String wedRaashi;
 
+    private String wedGotram;
+
     private String wedNakshtra;
 
     private String wedPlace;
     // optional
     private String wedMobilenumber;
 
-    private File[] wedImage;
+     private  MultipartFile[] wedImage;
+     
+     private MultipartFile[] wedJataka;
+     
+     
+     private  String[]  wedImageFilePath;
+     
+     private String[] wedJatakaFilePath;
+    
+    public MultipartFile[] getWedImage() {
+        return wedImage;
+    }
 
-    private File[] wedJataka;
+    public void setWedImage(MultipartFile[] wedImage) {
+        this.wedImage = wedImage;
+    }
+
+    public MultipartFile[] getWedJataka() {
+        return wedJataka;
+    }
+
+    public void setWedJataka(MultipartFile[] wedJataka) {
+        this.wedJataka = wedJataka;
+    }
 
     public String getWedFullName() {
         return wedFullName;
     }
+
+    
 
     public void setWedFullName(String wedFullName) {
         this.wedFullName = wedFullName;
@@ -118,10 +176,6 @@ public class WedDTO extends CommonDTO {
         this.wedPlace = wedPlace;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
     public Long getId() {
         return id;
     }
@@ -130,15 +184,15 @@ public class WedDTO extends CommonDTO {
         this.id = id;
     }
 
-    public Time getTimeOfBirth() {
-        return timeOfBirth;
-    }
-
-    public void setTimeOfBirth(Time timeOfBirth) {
+    public void setTimeOfBirth(String timeOfBirth) {
         this.timeOfBirth = timeOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -158,35 +212,8 @@ public class WedDTO extends CommonDTO {
         this.wedMobilenumber = wedMobilenumber;
     }
 
-    public File[] getWedImage() {
-        return wedImage;
-    }
 
-    public Boolean getMakePublic() {
-        return makePublic;
-    }
 
-    public void setMakePublic(Boolean makePublic) {
-        this.makePublic = makePublic;
-    }
-
-    public void setWedImage(File[] wedImage) {
-        this.wedImage = wedImage;
-    }
-
-    public File[] getWedJataka() {
-        return wedJataka;
-    }
-
-    public void setWedJataka(File[] wedJataka) {
-        this.wedJataka = wedJataka;
-    }
-
-    @Override
-    public String toString() {
-        return "Wed [wedFullName=" + wedFullName + ", wedAge=" + wedAge + ", wedGender=" + wedGender + ", wedOccupation=" + wedOccupation + ", wedRaashi=" + wedRaashi + ", wedNakshtra=" + wedNakshtra
-                + ", wedPlace=" + wedPlace + ", wedMobilenumber=" + wedMobilenumber + ", wedImage=" + Arrays.toString(wedImage) + ", wedJataka=" + Arrays.toString(wedJataka) + "]";
-    }
 
     public Boolean getIsProfileActive() {
         return isProfileActive;
@@ -204,4 +231,38 @@ public class WedDTO extends CommonDTO {
         this.maritalStatus = maritalStatus;
     }
 
+    public Boolean getMakePublic() {
+        return makePublic;
+    }
+
+    public void setMakePublic(Boolean makePublic) {
+        this.makePublic = makePublic;
+    }
+
+    public String getFolderId() {
+        return folderId;
+    }
+
+    public void setFolderId(String folderId) {
+        this.folderId = folderId;
+    }
+
+    public String[] getWedImageFilePath() {
+        return wedImageFilePath;
+    }
+
+    public void setWedImageFilePath(String[] wedImageFilePath) {
+        this.wedImageFilePath = wedImageFilePath;
+    }
+
+    public String[] getWedJatakaFilePath() {
+        return wedJatakaFilePath;
+    }
+
+    public void setWedJatakaFilePath(String[] wedJatakaFilePath) {
+        this.wedJatakaFilePath = wedJatakaFilePath;
+    }
+
+
+    
 }

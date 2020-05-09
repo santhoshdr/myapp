@@ -118,6 +118,8 @@ public class UserDTO implements Serializable {
 
     private String lastName;
 
+    private String mobileNumberOrEmail;
+    
     private String mobileNumber;
     
     private String relation;
@@ -267,10 +269,28 @@ public class UserDTO implements Serializable {
         this.paymentDetails = paymentDetails;
     }
 
+    public String getMobileNumberOrEmail() {
+        return mobileNumberOrEmail;
+    }
+
+    public void setMobileNumberOrEmail(String mobileNumberOrEmail) {
+        this.mobileNumberOrEmail = mobileNumberOrEmail;
+    }
+    
+    public Long getMemberAddedBy() {
+        return memberAddedBy;
+    }
+
+    public void setMemberAddedBy(Long memberAddedBy) {
+        this.memberAddedBy = memberAddedBy;
+    }
+
     private String createdBy;
 
     private Date updatedDate;
 
     private String updatedBy;
 
+    private Long memberAddedBy;
 }
+

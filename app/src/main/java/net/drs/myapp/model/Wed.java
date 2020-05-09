@@ -2,6 +2,7 @@ package net.drs.myapp.model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,30 +34,55 @@ public class Wed extends CommonDTO {
         super();
     }
 
+    public String getFatherFullName() {
+        return fatherFullName;
+    }
+
+    public void setFatherFullName(String fatherFullName) {
+        this.fatherFullName = fatherFullName;
+    }
+
+    public String getMotherFullName() {
+        return motherFullName;
+    }
+
+    public void setMotherFullName(String motherFullName) {
+        this.motherFullName = motherFullName;
+    }
+
+    public String getTimeOfBirth() {
+        return timeOfBirth;
+    }
+
+    public void setTimeOfBirth(String timeOfBirth) {
+        this.timeOfBirth = timeOfBirth;
+    }
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // father can add their siblings. Father -> would have registered, but
-    // updating son/daughters data.
+    
+    private String folderId;
+    
+    private boolean   makePublic;
+    
+    private String fatherFullName;
+    
+    private String motherFullName;
+    
     private Long addedBy;
 
     private Boolean isProfileActive;
 
     private MaritalStatus maritalStatus;
 
-    private Date dateOfBirth;
+    private String  dateOfBirth;
 
-    private Time timeOfBirth;
+    private String timeOfBirth;
 
-    public Time getTimeOfBirth() {
-        return timeOfBirth;
-    }
-
-    public void setTimeOfBirth(Time timeOfBirth) {
-        this.timeOfBirth = timeOfBirth;
-    }
+   
 
     private String placeOfBirth;
 
@@ -67,6 +93,8 @@ public class Wed extends CommonDTO {
     private String wedGender;
 
     private String wedOccupation;
+    
+    private String wedGotram;
 
     private String wedRaashi;
 
@@ -152,13 +180,6 @@ public class Wed extends CommonDTO {
         return id;
     }
 
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
 
     public String getPlaceOfBirth() {
         return placeOfBirth;
@@ -193,5 +214,39 @@ public class Wed extends CommonDTO {
     public void setId(Long id) {
         this.id = id;
     }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getFolderId() {
+        return folderId;
+    }
+
+    public void setFolderId(String folderId) {
+        this.folderId = folderId;
+    }
+
+    public String getWedGotram() {
+        return wedGotram;
+    }
+
+    public void setWedGotram(String wedGotram) {
+        this.wedGotram = wedGotram;
+    }
+
+    public boolean isMakePublic() {
+        return makePublic;
+    }
+
+    public void setMakePublic(boolean makePublic) {
+        this.makePublic = makePublic;
+    }
+
+    
 
 }

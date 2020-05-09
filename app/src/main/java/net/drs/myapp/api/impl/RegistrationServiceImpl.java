@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
@@ -15,7 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import net.drs.common.notifier.NotificationDataConstants;
 import net.drs.common.notifier.NotificationRequest;
+import net.drs.common.notifier.NotificationTemplate;
+import net.drs.common.notifier.NotificationType;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
@@ -116,7 +121,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
                 String temperoryActivationString = AppUtils.generateRandomString();
                 user.setTemporaryActivationSentDate(System.currentTimeMillis());
                 user.setTemporaryActivationString(temperoryActivationString);
-                user.setPassword(AppUtils.encryptPassword(user.getPassword()));
+           //    user.setPassword(AppUtils.encryptPassword(user.getPassword()));
                 user.setTemporaryActivationvalidforInMinutes(temperoryactivationvalidtillminutes);
                 // Storing User
                 user = registrationDAO.addUserandGetUserId(user, roles);
@@ -135,24 +140,26 @@ public class RegistrationServiceImpl implements IRegistrationService {
         return user;
     }
 
+    
+    // reset and send email
     @Override
     public String forgotPassword(String emailId) throws Exception {
 
         // check if user exist and is active
-        Users users = registrationDAO.checkIfUserPhoneisPresentandVerified(emailId);
-        if (users == null) {
+        User user = registrationDAO.checkIfUserEmailisPresentandVerified(emailId);
+        if (user == null) {
             throw new Exception("Email Id Not found ...");
         }
         System.out.println("Resetting password");
         String temperoryPassword = AppUtils.generateRandomString();
-        users.setEmail(emailId);
-        users.setPassword(temperoryPassword);
-        users.setId(users.getId());
-        boolean result = registrationDAO.updateUserWithTemperoryPassword(users);
-        if (!result) {
-            throw new Exception("Unable to Reset Password. Kindly Try after some time. OR Contact Administrator.");
-        }
+        user.setEmailAddress(emailId);
+        user.setTemporaryActivationString(temperoryPassword);
+       registrationDAO.updateUserWithTemperoryPassword(user);
 
+       
+       NotificationRequest notificationReq = null;
+        Map<String, String> data = new HashMap<String, String>();
+        
         EmailDTO emailDto = new EmailDTO();
         java.util.Date uDate = new java.util.Date();
         emailDto.setEmailId(emailId);
@@ -163,8 +170,14 @@ public class RegistrationServiceImpl implements IRegistrationService {
         emailDto.setEmailTemplateId("FORGOTPASSWORD_EMAIL");
         emailDto.setUserID(new Long(123));
         emailDto.setNeedtoSendEmail(true);
+        data.put(NotificationDataConstants.USER_EMAILID, emailId);
+        data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, temperoryPassword);
         Long notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
-
+        notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.FORGOT_PASSWORD, NotificationType.EMAIL);
+        
+        
+        notificationByEmailService.sendNotoficationDirectly(notificationReq);
+        
    //     rabbitMqService.publishSMSMessage(new NotificationRequest(notificationId, emailId, "FORGOTPASSWORD_EMAIL", "notificationmessage"));
         return "SUCCESS";
     }
@@ -176,6 +189,8 @@ public class RegistrationServiceImpl implements IRegistrationService {
         if (users == null) {
             throw new Exception("Email Id Not found ...");
         }
+        
+        userDetails.getMemberById(users.getId());
         users.setPassword(new BCryptPasswordEncoder().encode(userDTO.getPassword()));
         registrationDAO.resetPassword(users);
         return true;
@@ -203,24 +218,27 @@ public class RegistrationServiceImpl implements IRegistrationService {
             throw new Exception("Email if doesnt not exist. Please check your email id");
         }
 
-        user = registrationDAO.getTemporaryActivationTokenforUser(user.getEmailAddress());
+        User storedUser = registrationDAO.getTemporaryActivationTokenforUser(userDTO.getEmailAddress());
 
-        if (user.getTemporaryActivationString() == null) {
-            throw new Exception("Try resetting password again...");
+        if (storedUser.getTemporaryActivationString() == null) {
+            // this means, there is no temporary password set in db
+            throw new Exception("Error while resetting password. Please contact administrator");
         }
         // 600000
         // zoom123 -- used only for testcases...
-        if ((user.getTemporaryActivationString().equalsIgnoreCase(userDTO.getTemporaryActivationString()) 
-                && (System.currentTimeMillis() - user.getTemporaryActivationSentDate()) < AppUtils.getActivationStringExpiryTimeInMilliseconds()))
+        if ((storedUser.getTemporaryActivationString().equalsIgnoreCase(userDTO.getTemporaryActivationString()) 
+                && (System.currentTimeMillis() - storedUser.getTemporaryActivationSentDate()) < AppUtils.getActivationStringExpiryTimeInMilliseconds()))
         // time at which temporaryActivationString sent - Current time must be
         // less than 10 mins ( which is the value set as standard )
         {
+            
+            storedUser.setPassword(userDTO.getPassword());
+            
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             // Getting current date
             Calendar cal = Calendar.getInstance();
             // is account expiry is set.
             if (AppUtils.enableAccountExpiry()) {
-
                 // Displaying current date in the desired format
                 System.out.println("Current Date: " + sdf.format(cal.getTime()));
                 cal.add(Calendar.DAY_OF_MONTH, AppUtils.getAccountValidityExpiryAfterDays());
@@ -228,17 +246,16 @@ public class RegistrationServiceImpl implements IRegistrationService {
                 cal.set(Calendar.MINUTE, 59);
                 cal.set(Calendar.SECOND, 58);
                 // Date after adding the days to the current date
-                user.setAccountValidTill(cal.getTime());
-
+                storedUser.setAccountValidTill(cal.getTime());
             } else {
                 // infinate
                 cal.set(2100, 12, 30);
                 cal.set(Calendar.HOUR_OF_DAY, 23);
                 cal.set(Calendar.MINUTE, 59);
                 cal.set(Calendar.SECOND, 58);
-                user.setAccountValidTill(cal.getTime());
+                storedUser.setAccountValidTill(cal.getTime());
             }
-            registrationDAO.activateUserIftemporaryPasswordMatches(user);
+            registrationDAO.activateUserIftemporaryPasswordMatches(storedUser);
         }else {
             throw new Exception("Password doesnt match or Activation Duration is expired. Please try after some time...");
         }
