@@ -2,8 +2,8 @@
 
 
 cd ../../app-common/
-mvn clean install -Dspring.profiles.active=dev
+mvn clean install -DskipTests
 
 cd -
 
-mvn clean install -Dspring.profiles.active=dev
+mvn clean install -DskipTests

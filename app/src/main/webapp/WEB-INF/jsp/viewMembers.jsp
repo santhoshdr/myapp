@@ -1,3 +1,5 @@
+<!--  ALL Members -->
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
@@ -156,6 +158,7 @@ $(document).ready(function(){
 	        var currentRow=$(this).closest("tr");
 	        var userId=currentRow.find("td:eq(0)").text();
 	        var username=currentRow.find("td:eq(1)").text(); // get current row 1st TD value
+	        alert("currentRow"+ userId );
 	        $.ajax({
 	                url: '/user/viewMember',
 	                type: "GET",

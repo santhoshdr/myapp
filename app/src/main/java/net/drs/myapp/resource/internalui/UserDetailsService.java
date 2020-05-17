@@ -182,10 +182,10 @@ public class UserDetailsService extends GenericService {
     }
 
     @GetMapping("/getMyWedProfiles")
-    public ModelAndView fetchWedProfile(RedirectAttributes redirectAttributes) {
+    public ModelAndView getMyWedProfiles(RedirectAttributes redirectAttributes) {
         try {
             Long loggedInUser = getLoggedInUserId();
-            List<WedDTO> wedDto = userDetails.fetchMyWedProfiles(loggedInUser);
+            List<WedDTO> wedDto = userDetails.fetchMyWedProfiles(loggedInUser,null);
             return new ModelAndView("loginSuccess").addObject("pageName", "viewMywedProfile").addObject("wedProfileList", wedDto);
         } catch (Exception e) {
 
@@ -230,7 +230,7 @@ public class UserDetailsService extends GenericService {
     public ModelAndView viewWedProfile(@PathVariable("id") long id, RedirectAttributes redirectAttributes) {
         try {
             Long loggedInUser = getLoggedInUserId();
-            List<WedDTO> wedDto = userDetails.fetchWedProfile(loggedInUser, id);
+            List<WedDTO> wedDto = userDetails.fetchWedProfile(loggedInUser, id,false);
             Gotras[] listofGotram = Gotras.values();
             List<String> genders = Arrays.asList("Male", "Female", "Transgender");
             MaritalStatus[] listOfMaritalStatus = MaritalStatus.values();
@@ -275,7 +275,7 @@ public class UserDetailsService extends GenericService {
             computedfolderName = StringUtils.substringBetween(photoname, "imageuploadfolder/", "/images");
             computedPhotoName = StringUtils.substringAfterLast(photoname,"images/");
             
-            wedDTO = userDetails.deletePhoto(computedPhotoName,computedfolderName, getLoggedInUserId());
+            wedDTO = userDetails.deletePhoto(computedPhotoName,computedfolderName, getLoggedInUserId(),null);
             
              redirectAttributes.addFlashAttribute("successMessage", "Selected Photo was deleted successfully");
             return new ModelAndView("redirect:/user/viewWedProfile/"+ wedDTO.getId());
@@ -320,7 +320,7 @@ public class UserDetailsService extends GenericService {
                 throw new Exception("Unable to downalod  the file");
             }
 
-            wedDTO = userDetails.downloadFile(fileName,getLoggedInUserId());
+            wedDTO = userDetails.downloadFile(fileName,getLoggedInUserId(),null);
             
             String fileBasePath = wedDTO.getWedJatakaFilePath()[0];
             

@@ -7,7 +7,7 @@
 	<groupId>net.drs.myapp</groupId>
 	<artifactId>app</artifactId>
 	<version>app</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>app</name>
 	<description>Demo project for Spring Boot</description>
@@ -186,6 +186,15 @@
 	</dependencies>
 
 	<build>
+       <resources>
+        <resource>
+            <directory>${basedir}/src/main/resources</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+        </resource>
+    </resources>
+      
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -193,6 +202,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-
 </project>

@@ -53,18 +53,23 @@ public interface IUserDetails {
 
     // if the user need to update the details..
     boolean updateUserDetails(User user);
+    
+    // use this
+    boolean updateUserRole(Long userId,String roleName,String action);
 
     boolean changeUserRole(UserServiceDTO userServiceDTO) throws RoleException;
 
     WedDTO createWedProfile(WedDTO wedDTO, Long addedBy) throws Exception;
 
-    List<WedDTO> fetchMyWedProfiles(Long loggedinUserId) throws Exception;
+    List<WedDTO> fetchMyWedProfiles(Long loggedinUserId,Long wedId) throws Exception;
     
-    List<WedDTO> fetchWedProfile(Long loggedInUser,Long profileId) throws Exception;
+    List<WedDTO> fetchWedProfile(Long loggedInUser,Long profileId,boolean canViewProfile) throws Exception;
+   
+    WedDTO fetchSelectedWedProfile(Long wedId) throws Exception;
 
     WedDTO updateWedProfile(WedDTO wedDTO, Long addedBy) throws Exception;
     
-    WedDTO  deletePhoto(String photoName, String folderName,Long addedBy) throws Exception;
+    WedDTO  deletePhoto(String photoName, String folderName,Long addedBy,Long wedId) throws Exception;
 
     boolean changePassword(ResetPasswordDTO passwordDTO) throws Exception;
 
@@ -77,7 +82,7 @@ public interface IUserDetails {
      */
     UserDTO addMember(UserDTO userDTO) throws Exception;
 
-    WedDTO downloadFile(String fileName, Long loggedInUserId) throws Exception;
+    WedDTO downloadFile(String fileName, Long loggedInUserId,Long wedId) throws Exception;
 
     boolean deleteFile(String fileName, long wedId, Long loggedInUserId) throws Exception;
 }

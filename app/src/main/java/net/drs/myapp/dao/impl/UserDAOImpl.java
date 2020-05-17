@@ -121,9 +121,11 @@ public class UserDAOImpl implements IUserDAO {
      * }
      */
 
+    
+    // viewMember flow... 
     @Override
     public User getUser(Long userId) {
-        return (User) entityManager.createQuery("from User where userId=:userId").setParameter("userId", userId).getSingleResult();
+        return (User) entityManager.createQuery("from User where id=:userId").setParameter("id", userId).getSingleResult();
     }
 
     @Override
@@ -253,10 +255,19 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public List<Wed> fetchWedProfile(Long loggedInUser) {
-        @SuppressWarnings("unchecked")
-        List<Wed> find = (List<Wed>) entityManager.createQuery("from Wed where addedBy=:addedBy").setParameter("addedBy", loggedInUser).getResultList();
-        return find;
+    public List<Wed> fetchWedProfile(Long loggedInUser,Long wedId) {
+        List<Wed> wedList = new ArrayList<>();
+        if(wedId!= null) {
+            wedList = (List<Wed>) entityManager.createQuery("from Wed where id=:wedId and addedBy=:addedBy").
+                    setParameter("wedId", wedId).
+                    setParameter("addedBy", loggedInUser)
+                    .getResultList();
+        }else {        
+            wedList = (List<Wed>) entityManager.createQuery("from Wed where addedBy=:addedBy").
+                                            setParameter("addedBy", loggedInUser)
+                                            .getResultList();
+        }
+        return wedList;
     }
 
     @Override
@@ -323,5 +334,20 @@ public class UserDAOImpl implements IUserDAO {
             entityManager.persist(storedUser);  
         }
         return true;
+    }
+
+    @Override
+    public Users getUserById(Long userid) {
+        return  entityManager.find(Users.class, userid);
+    }
+
+    @Override
+    public void updateUser(Users user) {
+        entityManager.persist(user);
+    }
+
+    @Override
+    public Wed fetchSelectedWedProfile(Long wedId) {
+        return entityManager.find(Wed.class, wedId);
     }
 }

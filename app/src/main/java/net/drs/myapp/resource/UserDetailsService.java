@@ -105,7 +105,7 @@ public class UserDetailsService extends GenericService {
     public ResponseEntity<List<WedDTO>> fetchWedProfile() {
         try {
             Long loggedInUser = getLoggedInUserId();
-            return new ResponseEntity<List<WedDTO>>(userDetails.fetchMyWedProfiles(loggedInUser), HttpStatus.OK);
+            return new ResponseEntity<List<WedDTO>>(userDetails.fetchMyWedProfiles(loggedInUser,null), HttpStatus.OK);
         } catch (Exception e) {
 
         }

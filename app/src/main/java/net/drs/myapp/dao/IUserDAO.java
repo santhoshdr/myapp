@@ -35,8 +35,13 @@ public interface IUserDAO {
 
     List<User> getAllAdminActiveUsers(int numberofUsers);
 
+    
+    Users getUserById(Long userid);
+    
+    // member
     User getUser(Long userId);
     
+    // member
     User getUser(String emailId);
 
     boolean isUserActive(Long userId);
@@ -47,6 +52,9 @@ public interface IUserDAO {
 
     boolean updateUser(User user);
     
+    // login User
+    void  updateUser(Users user);
+    
     boolean makeorremoveAdmin(User user);
 
     // to send OTP
@@ -54,7 +62,10 @@ public interface IUserDAO {
 
     Wed createWedProfile(Wed wed);
 
-    List<Wed> fetchWedProfile(Long loggedInUser);
+    List<Wed> fetchWedProfile(Long loggedInUser , Long wedId);
+    
+    // individual wed
+    Wed fetchSelectedWedProfile(Long wedId);
 
     Wed updateWedProfile(Wed wed);
 

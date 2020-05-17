@@ -184,21 +184,25 @@ public class AdministrationService extends GenericService {
 
     
     
+    @PostMapping("/addRoletoUser")
+    public ModelAndView  makeorRemoveAdmin(Long userId,String roleNme) {
+        try {
+            Long updatedBy = getLoggedInUserId();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(userId);
+            userDTO.setUpdatedBy(Long.toString(updatedBy));
+            userDTO.setUpdatedDate(AppUtils.getCurrentDate());
+            userDetails.makeorremoveAdmin(userDTO);
+            return new ModelAndView("redirect:/admin/getAllActiveUsers");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return null;
+        }
+    } 
     
     
     
-    
-    
-    
-    
-    
-    
-    /*
-     * 
-     * { "userId":"2", "roles":[{"roleId":6,"role":"ADMIN"}]
-     * 
-     * }
-     */
     @PutMapping("/changeUserRole")
     public ResponseEntity<?> getAllUsersWithRoles(@AuthenticationPrincipal Principal principal, @RequestBody UserServiceDTO userServiceDTO) {
         try {
@@ -257,8 +261,12 @@ public class AdministrationService extends GenericService {
         try {
             // 10 is not used any where as of now.. Need to use this if
             // performance degrades
+            net.drs.myapp.utils.Role[]  listofRoles = net.drs.myapp.utils.Role.values();
             List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
-            return new ModelAndView("loginSuccess").addObject("listofusers", userDTO).addObject("pageName", "getAllUsers");
+            return new ModelAndView("loginSuccess").
+                                     addObject("listofusers", userDTO).
+                                     addObject("pageName", "getAllUsers").
+                                     addObject("listOfRoles", listofRoles);
         } catch (Exception e) {
             e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
@@ -266,6 +274,21 @@ public class AdministrationService extends GenericService {
         }
     }
 
+    
+    @PostMapping("/changeRole")
+    public ModelAndView changeRole(String newRole,Long  userId) {
+        try {
+                userDetails.updateUserRole(userId, newRole, "addRole");
+            return new ModelAndView("loginSuccess").
+                                     addObject("pageName", "getAllUsers");
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
+        }
+    }
+
+    
+    
     /*
      * // those who can login
      * 

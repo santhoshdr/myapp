@@ -97,11 +97,12 @@ public class WedDTO extends CommonDTO {
      
      private MultipartFile[] wedJataka;
      
-     
      private  String[]  wedImageFilePath;
      
      private String[] wedJatakaFilePath;
-    
+
+     private String[] wedJatakaFileName;
+     
     public MultipartFile[] getWedImage() {
         return wedImage;
     }
@@ -261,6 +262,14 @@ public class WedDTO extends CommonDTO {
 
     public void setWedJatakaFilePath(String[] wedJatakaFilePath) {
         this.wedJatakaFilePath = wedJatakaFilePath;
+    }
+
+    public String[] getWedJatakaFileName() {
+        return wedJatakaFileName;
+    }
+
+    public void setWedJatakaFileName(String[] wedJatakaFileName) {
+        this.wedJatakaFileName = wedJatakaFileName;
     }
 
 

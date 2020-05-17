@@ -30,10 +30,10 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="/user/registerWedProfile">Add Guy/Girl </a> 
                             <a  class="dropdown-item" href="/user/getMyWedProfiles">View My Wed Profiles</a>
-                            <a  class="dropdown-item" href="/user/getAllActiveWedProfiles">View All Wed Profiles</a>
+                            <a  class="dropdown-item" href="/matrimony/viewProfiles">View All Wed Profiles</a>
                             <sec:authorize
                                 access="hasRole('ROLE_ADMIN') and isAuthenticated()">
-                                <a class="dropdown-item" href="/admin/getAllMembers">View All Guys/Girls</a>
+                                <a class="dropdown-item" href="/admin/getAllMembers">View/Edit All Wed Profiles</a>
                             </sec:authorize>
                         </div>
                     </div>

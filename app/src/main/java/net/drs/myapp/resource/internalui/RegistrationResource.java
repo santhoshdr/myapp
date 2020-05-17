@@ -72,11 +72,14 @@ public class RegistrationResource extends GenericService {
         try {
             Set<Role> roles = new HashSet();
             Role role = new Role();
-            role.setRole(ApplicationConstants.ROLE_ADMIN);
+            role.setRole(net.drs.myapp.utils.Role.ADMIN.getRole());
             roles.add(role);
             Role role1 = new Role();
-            role1.setRole(ApplicationConstants.ROLE_USER);
+            role1.setRole(net.drs.myapp.utils.Role.USER.getRole());
             roles.add(role1);
+            Role role2 = new Role();
+            role2.setRole(net.drs.myapp.utils.Role.MATRIMONY.getRole());
+            roles.add(role2);
             userDTO = registrationService.adduser(userDTO, roles);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "User Added Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
