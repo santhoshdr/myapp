@@ -55,7 +55,7 @@ public class AuthController extends GenericService {
                 return new ModelAndView("redirect:/home/guest");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Entered UserName or Password is wrong.Please try again!");
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return new ModelAndView("redirect:/home/guest");
         }
     }

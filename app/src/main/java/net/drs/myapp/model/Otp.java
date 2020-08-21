@@ -28,6 +28,8 @@ public class Otp  implements Serializable{
 	
 	private Long userId;
 	
+	private String phoneNumber;
+	
 	private boolean isvalidated = false;
 	
 	private char[] userEnteredOTP;
@@ -111,5 +113,13 @@ public class Otp  implements Serializable{
 				+ otpSentTimeStamp + ", userOtpEnteredTimeStamp="
 				+ userOtpEnteredTimeStamp + "]";
 	}
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
 }

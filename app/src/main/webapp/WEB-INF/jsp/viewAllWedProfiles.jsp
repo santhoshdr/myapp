@@ -16,6 +16,7 @@
                         <th>Date Of Birth</th>
                         <th>Rashi</th>
                         <th>Nakshatra</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -28,6 +29,19 @@
                                <td>${element.wedNakshtra}</td>
                          <td><a href="/matrimony/viewWedProfile/${element.id}"
                                 class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i>More Details</a>
+                                <a href="#"
+                                class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i>Edit</a>
+                                <c:if test="${element.isProfileActive}">
+                                 <a href="/admin/deactivateWedProfile/${element.id}"
+                                class="btn btn-success"><i class="fas fa-user-edit ml-2"></i>Make InActive</a>
+                                </c:if>
+                                
+                                  <c:if test="${!element.isProfileActive}">
+                                 <a href="/admin/activateWedProfile/${element.id}"
+                                class="btn btn-danger"><i class="fas fa-user-edit ml-2"></i>Make Active </a>
+                                </c:if>
+                                
+                               
                             </td>  
                         </tr>
                     </c:forEach>

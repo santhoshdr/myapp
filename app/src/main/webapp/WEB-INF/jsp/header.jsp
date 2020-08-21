@@ -13,7 +13,8 @@
 							aria-haspopup="true" aria-expanded="false" href="#"> Member</a>
 						<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 							<a class="dropdown-item" href="/user/addMember">Add Member</a>
-							<a class="dropdown-item" href="/user/getAllActiveMembers">View Members</a>
+							<a class="dropdown-item" href="/user/getAllActiveMembers">View Members Added By Me</a>
+							<a class="dropdown-item" href="/user/getAllActiveMembers">View All Active Members</a>
 							<sec:authorize 	access="hasRole('ROLE_ADMIN') and isAuthenticated()">
 								<a class="dropdown-item" href="/admin/getAllMembers">View All Members</a>
 								<a class="dropdown-item" href="/admin/getAllUsers">View All Users</a>
@@ -30,10 +31,14 @@
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="/user/registerWedProfile">Add Guy/Girl </a> 
                             <a  class="dropdown-item" href="/user/getMyWedProfiles">View My Wed Profiles</a>
-                            <a  class="dropdown-item" href="/matrimony/viewProfiles">View All Wed Profiles</a>
                             <sec:authorize
                                 access="hasRole('ROLE_ADMIN') and isAuthenticated()">
-                                <a class="dropdown-item" href="/admin/getAllMembers">View/Edit All Wed Profiles</a>
+                                <a class="dropdown-item" href="/admin/getAllMembers">View/Edit All Wed Profiles by ADMIN</a>
+                                <a class="dropdown-item" href="/matrimony/getAllWedProfiles">View/Edit All Wed Profiles (ADMIN)</a>
+                            </sec:authorize>
+                                    <sec:authorize
+                                access="hasRole('ROLE_MATRIMONY') and isAuthenticated()">
+                                <a  class="dropdown-item" href="/matrimony/viewActiveProfiles">View All Wed Profiles</a>
                             </sec:authorize>
                         </div>
                     </div>

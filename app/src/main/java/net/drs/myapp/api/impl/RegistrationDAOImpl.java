@@ -14,6 +14,7 @@ import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IRegistrationDAO;
 import net.drs.myapp.model.CompleteUserDetails;
 import net.drs.myapp.model.Fotographer;
+import net.drs.myapp.model.OtpDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
@@ -25,7 +26,7 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
 
     @PersistenceContext(type = PersistenceContextType.EXTENDED)
     private EntityManager entityManager;
-    
+
     public User addUser(User user, Set<Role> roles) {
         try {
             Users users = new Users();
@@ -64,31 +65,28 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     }
 
     @Override
-    public boolean checkIfUserExistbyEmailId(User user) throws Exception {
-        try {
+    public Users checkIfUserExistbyEmailId(User user) throws Exception {
             // and isActive='1'
-            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 ").setParameter(1, user.getEmailAddress()).getResultList();
-            if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
-                throw new Exception("UserName Already present. Try with different username");
+            List list = entityManager.createQuery("from  Users WHERE email=?1  ").setParameter(1, user.getEmailAddress()).getResultList();
+            if(list.size() == 1) {
+                return (Users)list.get(0);
             }
-        } catch (Exception e) {
-            throw e;
-        }
-        return false;
+            return null;
     }
+    
 
+    // need to change below method
     @Override
-    public boolean checkifUserExistbyPhoneNumber(User user) throws Exception {
+    public Users checkifUserExistbyPhoneNumber(User user) throws Exception {
         try {
-            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1 and isActive='true'").setParameter(1, user.getEmailAddress()).getResultList();
-            ;
-            if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
-                throw new Exception("UserName Already present. Try with different username");
+            List userList = entityManager.createQuery("from  Users WHERE phonenumber=?1").setParameter(1, user.getMobileNumber()).getResultList();
+            if (userList.size() == 1) {
+                return (Users) userList.get(0);
             }
         } catch (Exception e) {
             throw e;
         }
-        return false;
+        return null;
     }
 
     @Override
@@ -101,38 +99,59 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         return false;
     }
 
+    
+    // verified 
     @Override
-    public User checkIfUserEmailisPresentandVerified(String email) throws Exception{
-            /*
-             * List<DepartmentEntity> depts =
-             * manager.createQuery("Select a From DepartmentEntity a",
-             * DepartmentEntity.class).getResultList();
-             */
-            List list = entityManager.createQuery("SELECT user FROM User user WHERE emailAddress=?1", User.class).setParameter(1, email).getResultList();
-            // need to check size first - else arry index out of bound exception
-            // will occur
-            if (list.get(0) != null && list.size() == 1) {
-                return ((User) list.get(0));
-            }else {
-                throw new Exception("Unable to find the user. Contact administrator");
-            }
+    public Users checkIfUserEmailisPresentandVerified(String email) throws Exception {
+        /*
+         * List<DepartmentEntity> depts =
+         * manager.createQuery("Select a From DepartmentEntity a",
+         * DepartmentEntity.class).getResultList();
+         */
+        List list = entityManager.createQuery("SELECT user FROM Users user WHERE email=?1", Users.class).setParameter(1, email).getResultList();
+        // need to check size first - else arry index out of bound exception
+        // will occur
+        if (list.size() == 1 && list.get(0) != null ) {
+            return ((Users) list.get(0));
+        } else {
+            throw new Exception("Unable to find the user. Contact administrator");
+        }
     }
+    
+    
+    
+//    @Override
+//    public User checkIfUserEmailisPresentandVerified(String email) throws Exception {
+//        /*
+//         * List<DepartmentEntity> depts =
+//         * manager.createQuery("Select a From DepartmentEntity a",
+//         * DepartmentEntity.class).getResultList();
+//         */
+//        List list = entityManager.createQuery("SELECT user FROM Users user WHERE email=?1", User.class).setParameter(1, email).getResultList();
+//        // need to check size first - else arry index out of bound exception
+//        // will occur
+//        if (list.size() == 1 && list.get(0) != null ) {
+//            return ((User) list.get(0));
+//        } else {
+//            throw new Exception("Unable to find the user. Contact administrator");
+//        }
+//    }
 
     @Override
     public Users checkIfUserPhoneisPresentandVerified(String phoneNumberoremailid) throws Exception {
         Users users = null;
-            users = (Users) entityManager.createQuery("from Users WHERE EMAIL=:email").setParameter("email", phoneNumberoremailid).getSingleResult();
-            if(users == null ) {
-                throw new Exception("Provided Email Id does not exist. Please provide valid email id");
-            }
-            if(users.getActive() != 1 ) {
-                throw new Exception("Your account is not active. Please activate by clicking activate link ");
-            }
+        users = (Users) entityManager.createQuery("from Users WHERE EMAIL=:email").setParameter("email", phoneNumberoremailid).getSingleResult();
+        if (users == null) {
+            throw new Exception("Provided Email Id does not exist. Please provide valid email id");
+        }
+        if (users.getActive() != 1) {
+            throw new Exception("Your account is not active. Please activate by clicking activate link ");
+        }
         return users;
     }
 
     @Override
-    public User addUserandGetUserId(User user, Set<Role> roles) {
+    public User addUserandGetUserId(User user, Set<Role> roles) throws Exception {
         Users users = new Users();
         try {
             users.setEmail(user.getEmailAddress());
@@ -144,35 +163,37 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             users.setName(user.getFirstName());
             users.setPassword(user.getPassword());
             users.setLastName(user.getLastName());
-            // String in User Table
+            users.setPhonenumber(user.getMobileNumber());
             entityManager.persist(users);
             user.setUserId(users.getId());
             // Storing in userdetail table
             entityManager.merge(user);
         } catch (Exception e) {
-            // throw exception
             e.printStackTrace();
+            throw new Exception("Exception Occurred while storing the data. Please try after some time.");
+
         }
         return user;
     }
 
-    
     // new
     @Override
     public void updateUserWithTemperoryPassword(User user) throws Exception {
-        
+
         try {
-        User storedUser = entityManager.find(User.class, user.getId());       
-        storedUser.setTemporaryActivationString(user.getTemporaryActivationString());
-        storedUser.setTemporaryActivationSentDate(System.currentTimeMillis());
-        storedUser.setTemporaryActivationvalidforInMinutes(ApplicationConstants.TEMPARORY_ACTIVATION_EXPIRY_DURATION);
-        entityManager.persist(storedUser);
-        
-        Users users = entityManager.find(Users.class, user.getId());
-        users.setPassword(ApplicationConstants.PASSWORD_RESETTED);
-        entityManager.persist(users);
-       
-        }catch(Exception e) {
+            User storedUser = entityManager.find(User.class, user.getId());
+            storedUser.setTemporaryActivationString(user.getTemporaryActivationString());
+            storedUser.setTemporaryActivationSentDate(System.currentTimeMillis());
+            storedUser.setTemporaryActivationvalidforInMinutes(ApplicationConstants.TEMPARORY_ACTIVATION_EXPIRY_DURATION);
+            entityManager.persist(storedUser);
+
+            
+            // forgot password scenario - using getUserID
+            Users users = entityManager.find(Users.class, user.getUserId());
+            users.setPassword(ApplicationConstants.PASSWORD_RESETTED);
+            entityManager.persist(users);
+
+        } catch (Exception e) {
             throw new Exception("Unable to save Temparory Password. Please contact Administrator");
         }
         /*
@@ -183,14 +204,15 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
          * users.getId()).executeUpdate(); if (result == 1) { return true; }
          */
     }
-    
-    
-    
+
     // old
     @Override
     public boolean updateUserWithTemperoryPassword(Users users) {
-        int result = entityManager.createQuery("update Users set password =:tempPassword WHERE email=:emailid and USER_Id=:userId").setParameter("tempPassword", users.getPassword())
-                .setParameter("emailid", users.getEmail()).setParameter("userId", users.getId()).executeUpdate();
+        int result = entityManager.createQuery("update Users set password =:tempPassword ,  isTempPassord=1 WHERE email=:emailid and USER_Id=:userId")
+                .setParameter("tempPassword", users.getPassword())
+                .setParameter("emailid", users.getEmail())
+                .setParameter("userId", users.getId())
+                .executeUpdate();
         if (result == 1) {
             return true;
         }
@@ -211,17 +233,25 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     @Override
     public User getTemporaryActivationTokenforUser(String emailidorphonenumber) throws Exception {
         return (User) entityManager.createQuery("from User  WHERE emailAddress=:emailid").setParameter("emailid", emailidorphonenumber).getSingleResult();
-
     }
 
     @Override
-    public boolean activateUserIftemporaryPasswordMatches(User user) throws Exception {
+    public Users updateUserasActive(OtpDTO otpDTO) throws Exception {
 
-        User storedUser = entityManager.find(User.class, user.getId());
-        storedUser.setAccountValidTill(user.getAccountValidTill());
-        storedUser.setActive(true);
-        entityManager.merge(storedUser);
-        Users users = entityManager.find(Users.class, storedUser.getUserId());
+        Users storedUser = (Users) entityManager.createQuery("from Users  WHERE  phonenumber=:phonenumber").setParameter("phonenumber", otpDTO.getPhoneNumber()).getSingleResult();
+        storedUser.setPassword(AppUtils.encryptPassword(otpDTO.getPassword()));
+        storedUser.setActive(1);
+        return entityManager.merge(storedUser);
+    }
+
+    @Override
+    public boolean activateUserIftemporaryPasswordMatches(Users user) throws Exception {
+
+//        User storedUser = entityManager.find(User.class, user.getId());
+//        storedUser.setAccountValidTill(user.getAccountValidTill());
+//        storedUser.setActive(true);
+//        entityManager.merge(storedUser);
+        Users users = entityManager.find(Users.class, user.getId());
         users.setPassword(AppUtils.encryptPassword(user.getPassword()));
         users.setActive(1);
         entityManager.persist(users);
@@ -243,14 +273,19 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
 
     @Override
     public boolean checkIfUserExistsByUser_ID(Users users) {
-            List list = entityManager
-                                 .createQuery("SELECT count(*) FROM User WHERE userId=?1")
-                                .setParameter(1, users.getId())
-                                .getResultList();
-            if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
-                return false;
-            }
+        List list = entityManager.createQuery("SELECT count(*) FROM User WHERE userId=?1").setParameter(1, users.getId()).getResultList();
+        if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
+            return false;
+        }
         return true;
     }
-    
+
+    /*
+     * @Override public boolean checkIfUserExistbyPhoneNumber(User user) { try {
+     * List list = entityManager.
+     * createQuery("SELECT count(*) FROM User WHERE mobileNumber=?1").
+     * setParameter(1, user.getMobileNumber()).getResultList(); if (list.get(0)
+     * != null && ((Long) list.get(0)).intValue() > 0) { return true; } } catch
+     * (Exception e) { throw e; } return false; }
+     */
 }

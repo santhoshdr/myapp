@@ -48,10 +48,10 @@
 				<form id="loginForm" action="/api/auth/signin" method="post"
 					enctype="application/x-www-form-urlencoded">
 					<div class="form-group">
-						<label for="exampleInputEmail1">Email address</label> <input
-							type="email" name="usernameOrEmail" class="form-control"
+						<label for="exampleInputEmail1">Email address / Phone Number</label> <input
+							type="text" name="usernameOrEmail" class="form-control"
 							id="loginemailId" aria-describedby="emailHelp"
-							placeholder="Enter email">
+							placeholder="Email / Phone Number">
 					</div>
 					<div class="form-group">
 						<label for="exampleInputPassword1">Password</label> <input
@@ -140,7 +140,7 @@
 					role="alert"></div>
 
 				<div id="forgotPasswordGroup" class="form-group">
-					<label for="First Name">Enter Your Email ID</label> <input
+					<label for="First Name">Enter Your Email ID / Phone Number </label> <input
 						type="text" name="mobileNumberOrEmail" class="form-control"
 						id="forgotEmailId" aria-describedby="emailHelp"
 						placeholder="Enter Your Email ID">
@@ -241,7 +241,7 @@ $( document ).ready(function() {
     		$("#resetPasswordButton").hide();
     	}),$( "#resetPasswordButton").click(function() {
            var datatosend = {
-                                            emailAddress:$("#forgotEmailIdNew").val(),
+        		                            mobileNumberOrEmail:$("#forgotEmailIdNew").val(),
                                             temporaryActivationString:$("#tempPassword").val(),
         		                            password:$("#newPassword").val(),
         		                            confirmPassword:$("#confirmPassword").val()

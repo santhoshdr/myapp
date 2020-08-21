@@ -25,6 +25,8 @@ public class Users {
     
     @Column(name = "email",unique=true)
     private String email;
+    @Column(name = "phonenumber",unique=true)
+    private String phonenumber;
     @Column(name = "password")
     private String password;
     @Column(name = "name")
@@ -33,6 +35,10 @@ public class Users {
     @Column(name = "usersname")
     private String usersname;
 
+    // email temperory password
+    @Column(name = "isTempPassord")
+    private boolean isTempPassord;
+    
     @Column(name = "last_name")
     private String lastName;
     @Column(name = "active")
@@ -47,6 +53,7 @@ public class Users {
     public Users(Users users) {
         this.active = users.getActive();
         this.email = users.getEmail();
+        this.phonenumber=users.getPhonenumber();
         this.roles = users.getRoles();
         this.name = users.getName();
         this.lastName = users.getLastName();
@@ -117,4 +124,22 @@ public class Users {
     public void setUsername(String usersname) {
         this.usersname = usersname;
     }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public void setPhonenumber(String phonenumber) {
+        this.phonenumber = phonenumber;
+    }
+
+    public boolean isTempPassord() {
+        return isTempPassord;
+    }
+
+    public void setTempPassord(boolean isTempPassord) {
+        this.isTempPassord = isTempPassord;
+    }
+
+
 }

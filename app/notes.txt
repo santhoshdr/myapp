@@ -65,3 +65,18 @@ CREATE SCHEMA `myapp2` ;
 
 
 
+
+
+Pending:
+
+1. Fluetd Service
+2. Log 
+3. CSS in member page
+4. View/Edit memer by me.
+5. Validation of various fields.
+
+
+
+
+
+

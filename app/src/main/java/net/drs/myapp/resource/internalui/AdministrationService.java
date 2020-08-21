@@ -22,14 +22,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.drs.myapp.api.IMatrimonyService;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
+import net.drs.myapp.dto.WedDTO;
+import net.drs.myapp.exceptions.MatrimonialException;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Wed;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
@@ -46,6 +51,9 @@ public class AdministrationService extends GenericService {
 
     @Autowired
     IRegistrationService registrationService;
+    
+    @Autowired
+    IMatrimonyService matrimonialService;
 
     @Autowired
     IUserDetails userDetails;
@@ -301,4 +309,30 @@ public class AdministrationService extends GenericService {
      * "Something not working. Try after some time.", ""); return new
      * ModelAndView("loginSuccess").addObject("listofusers", errorDetails); } }
      */
+    
+    
+    @GetMapping("/deactivateWedProfile/{id}")
+    public ModelAndView deactivateWedProfile(@PathVariable("id") Long wedid,RedirectAttributes redirectAttributes) throws MatrimonialException {
+        
+        WedDTO weddto = new WedDTO();
+        weddto.setId(wedid);
+        weddto.setIsProfileActive(false);
+        weddto.setUpdatedBy(getLoggedInUserName());
+        Wed wed = matrimonialService.activatedeactivateWed(weddto);
+        redirectAttributes.addFlashAttribute("successMessage", "Profile Deactivates Successfully");
+        return new ModelAndView("redirect:/matrimony/getAllWedProfiles");
+    }
+    
+    @GetMapping("/activateWedProfile/{id}")
+    public ModelAndView activateWedProfile(@PathVariable("id") Long wedid,RedirectAttributes redirectAttributes) throws MatrimonialException {
+        
+        WedDTO weddto = new WedDTO();
+        weddto.setIsProfileActive(true);
+        weddto.setId(wedid);
+        weddto.setUpdatedBy(getLoggedInUserName());
+        Wed wed = matrimonialService.activatedeactivateWed(weddto);
+        redirectAttributes.addFlashAttribute("successMessage", "Profile Deactivates Successfully");
+        return new ModelAndView("redirect:/matrimony/getAllWedProfiles");
+    }
+    
 }

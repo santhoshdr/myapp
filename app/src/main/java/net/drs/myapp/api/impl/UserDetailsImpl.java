@@ -304,7 +304,7 @@ public class UserDetailsImpl implements IUserDetails {
         User user = new User();
         modelMapper.map(userDTO, user);
         user.setAccountValidTill(AppUtils.getAccountValidFor100Years());
-        userDAO.addMember(user);
+        user =  userDAO.addMember(user);
 
         modelMapper.map(user, userDTO);
 

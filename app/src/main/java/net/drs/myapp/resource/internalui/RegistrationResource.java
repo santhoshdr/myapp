@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -29,15 +31,18 @@ import net.drs.common.notifier.NotificationRequest;
 import net.drs.common.notifier.NotificationTemplate;
 import net.drs.common.notifier.NotificationType;
 import net.drs.myapp.api.INotifyByEmail;
+import net.drs.myapp.api.INotifyBySMS;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.SMSDTO;
 import net.drs.myapp.dto.UserDTO;
+import net.drs.myapp.model.Otp;
+import net.drs.myapp.model.OtpDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
-import net.drs.myapp.mqservice.RabbitMqService;
+import net.drs.myapp.model.Users;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
@@ -57,7 +62,7 @@ public class RegistrationResource extends GenericService {
     INotifyByEmail notificationByEmailService;
 
     @Autowired
-    RabbitMqService rabbitMqService;
+    INotifyBySMS notificationBySMSService;
 
     @Value("${notificationByEmail.or.SMS}")
     private String notifyByEmailOrSMS;
@@ -95,11 +100,53 @@ public class RegistrationResource extends GenericService {
         return new ModelAndView("registrationSuccess").addObject("userEmailId", emailId);
     }
 
+    @PostMapping(value = "/resendOtp")
+    public ModelAndView resendOtp(@RequestParam(defaultValue = "XXXXXXXXX") String phoneNumber) {
+        ModelAndView modelandView = new ModelAndView();
+        String message = "";
+        try {
+            Users user = registrationService.checkIfUserExists(phoneNumber, "SMS");
+
+            if (user != null) {
+                char[] otpdigits = AppUtils.fourDigitOTPForMobileVerification();
+                String smsMessage = String.format("OTP for phone verification is %s", new String(otpdigits));
+                System.out.println("SMS OTP SENT :" + smsMessage);
+                Otp otp = new Otp();
+                otp.setOtpSentTimeStamp(AppUtils.getCurrentTimeStamp());
+                otp.setUniqueOTPSent(otpdigits);
+                otp.setUserId(user.getId());
+                otp.setOtpValidFor(1); // needs to be changed - 1 hour -
+                                       // assumption
+                otp.setIsvalidated(false);
+                otp.setPhoneNumber(phoneNumber);
+                notificationBySMSService.insertOTP(otp);
+
+                SMSDTO smsDTO = new SMSDTO(user.getId(), user.getPhonenumber(), smsMessage);
+                notificationBySMSService.sendPhoneNumberVerificationSMS(smsDTO);
+                message = String.format("OTP is sent to the provided Phone Number: %s. ", phoneNumber + ".  Verify your phone number to activate your account ");
+
+            } else {
+                message = String.format("Provided Phone number doesnt exist. Please sign up  again ");
+            }
+
+            modelandView.addObject("notificationType", NotificationType.SMS.toString());
+            modelandView.addObject("phoneNumber", phoneNumber);
+            modelandView.addObject("message", message);
+            modelandView.setViewName("registrationSuccess");
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println();
+        return modelandView;
+    }
+
     @PostMapping("/addUser")
     public ModelAndView addUser(UserDTO userDTO, BindingResult bindingResult, WebRequest request) {
 
         ModelAndView modelandView = new ModelAndView();
-
+        String successMessage = "";
         java.util.Date uDate = new java.util.Date();
         Set<Role> roles = new HashSet<>();
         Long notificationId = 0L;
@@ -119,11 +166,12 @@ public class RegistrationResource extends GenericService {
 
             if (AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
                 userDTO.setEmailAddress(userDTO.getMobileNumberOrEmail());
-            } else if (AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
+            } else if (AppUtils.isPhoneNumber(userDTO.getMobileNumberOrEmail())) {
                 userDTO.setMobileNumber(userDTO.getMobileNumberOrEmail());
             } else {
                 throw new Exception("Enter valid phone number or email id");
             }
+
             User user = registrationService.adduserandGetId(userDTO, roles);
             if (user != null && user.getUserId() > 0 && AppUtils.isEmailId(userDTO.getMobileNumberOrEmail())) {
                 EmailDTO emailDto = new EmailDTO();
@@ -142,22 +190,42 @@ public class RegistrationResource extends GenericService {
                 // rabbitMqService.publishSMSMessage(notificationReq);
 
                 notificationByEmailService.sendNotoficationDirectly(notificationReq);
+                modelandView.addObject("notificationType", NotificationType.EMAIL.toString());
+                successMessage = String.format("An Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID", userDTO.getEmailAddress());
+                SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");
 
-            } else if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())
-                    && AppUtils.isPhoneNumber(userDTO.getMobileNumberOrEmail())) {
-                SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), "otp message");
-                smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
-                notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumberOrEmail(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
+            } else if (user != null && user.getUserId() > 0 && AppUtils.isPhoneNumber((userDTO.getMobileNumberOrEmail()))) {
+
+                char[] otpdigits = AppUtils.fourDigitOTPForMobileVerification();
+                String smsMessage = String.format("OTP for phone verification is %s", new String(otpdigits));
+                System.out.println("SMS OTP SENT :" + smsMessage);
+                Otp otp = new Otp();
+                otp.setOtpSentTimeStamp(AppUtils.getCurrentTimeStamp());
+                otp.setUniqueOTPSent(otpdigits);
+                otp.setUserId(user.getUserId());
+                otp.setOtpValidFor(1); // needs to be changed - 1 hour -
+                                       // assumption
+                otp.setIsvalidated(false);
+                otp.setPhoneNumber(userDTO.getMobileNumberOrEmail());
+                notificationBySMSService.insertOTP(otp);
+
+                SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), smsMessage);
+                notificationBySMSService.sendPhoneNumberVerificationSMS(smsDTO);
+
+                modelandView.addObject("notificationType", NotificationType.SMS.toString());
+                modelandView.addObject("phoneNumber", userDTO.getMobileNumberOrEmail());
+                successMessage = String.format("OTP is sent to the provided Phone Number: %s. ", userDTO.getMobileNumberOrEmail() + ".  Verify your phone number to activate your account ");
+                SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");
             }
-            // rabbitMqService.publishSMSMessage(notificationReq);
-            String successMessage = String.format("An Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID", userDTO.getEmailAddress());
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");
+            //
             modelandView.addObject("registrationSuccess", true);
             modelandView.addObject("message", successMessage);
-            modelandView.addObject("userEmailId", userDTO.getEmailAddress());
+            // modelandView.addObject("userEmailId", userDTO.getEmailAddress());
             modelandView.setViewName("registrationSuccess");
             return modelandView;
         } catch (Exception e) {
+            e.printStackTrace();
+
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
             modelandView.addObject("message", e.getMessage());
             modelandView.addObject("registrationSuccess", false);
@@ -166,14 +234,34 @@ public class RegistrationResource extends GenericService {
         }
     }
 
+    @PostMapping("/verifyOTP")
+    public ModelAndView verifyOTP(OtpDTO otpDTO) {
+        String message = "";
+        ModelAndView modelAndView = new ModelAndView();
+        logger.debug("Verifying user " + otpDTO.getPhoneNumber());
+        try {
+            registrationService.verifyOtpForPhonumber(otpDTO);
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Congratulations!. Your account is active. You can login.", "");
+            return new ModelAndView("welcome").addObject("actionResult", true).addObject("message", "Congratulation!. Your account is active. You can login now");
+        } catch (Exception e) {
+
+            modelAndView.addObject("notificationType", NotificationType.SMS.toString());
+            modelAndView.addObject("phoneNumber", otpDTO.getPhoneNumber());
+            message = String.format("Entered OTP doesnt match. Enter right OTP.");
+        }
+        modelAndView.addObject("registrationSuccess", false);
+        modelAndView.addObject("message", message);
+        modelAndView.setViewName("registrationSuccess");
+        return modelAndView;
+    }
+
     @PostMapping("/activateUser")
     public ModelAndView activateAccount(UserDTO userDTO, BindingResult bindingResult) {
 
         logger.debug("Activating the user for the email id " + userDTO.getMobileNumberOrEmail());
         try {
             registrationService.activateUserAccount(userDTO);
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(),
-                    "Congratulations!. Your account is active. You can login.", "");
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Congratulations!. Your account is active. You can login.", "");
             return new ModelAndView("welcome").addObject("actionResult", true).addObject("message", "Congratulation!. Your account is active. You can login now");
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
@@ -182,14 +270,74 @@ public class RegistrationResource extends GenericService {
     }
 
     // for ajax call
+    // @PostMapping("/forgotPassword")
+    // public ModelAndView forgotPassword(String emailIdorPhoneNumber) {
+    //
+    // ModelAndView modelAndView = new ModelAndView();
+    // try {
+    //
+    // if (org.springframework.util.StringUtils.isEmpty(emailIdorPhoneNumber)) {
+    // throw new Exception("Please enter valid email id");
+    // }
+    //
+    // boolean isPhoneNumber = AppUtils.isPhoneNumber(emailIdorPhoneNumber);
+    // if(isPhoneNumber) {
+    // // send OTP
+    //
+    // Users user= registrationService.checkIfUserExists(emailIdorPhoneNumber,
+    // "SMS");
+    //
+    // if(user !=null) {
+    // char[] otpdigits = AppUtils.fourDigitOTPForMobileVerification();
+    // String smsMessage = String.format("OTP for phone verification is %s", new
+    // String(otpdigits));
+    // System.out.println("SMS OTP SENT :" + smsMessage );
+    // Otp otp = new Otp();
+    // otp.setOtpSentTimeStamp(AppUtils.getCurrentTimeStamp());
+    // otp.setUniqueOTPSent(otpdigits);
+    // otp.setUserId( user.getId() );
+    // otp.setOtpValidFor(1); // needs to be changed - 1 hour - assumption
+    // otp.setIsvalidated(false);
+    // otp.setPhoneNumber(emailIdorPhoneNumber);
+    // notificationBySMSService.insertOTP(otp);
+    //
+    // SMSDTO smsDTO = new SMSDTO(user.getId(), user.getPhonenumber(),
+    // smsMessage );
+    // notificationBySMSService .sendPhoneNumberVerificationSMS(smsDTO);
+    // String message = String.format("OTP is sent to the provided Phone Number:
+    // %s. ", emailIdorPhoneNumber + ". Verify your phone number to activate
+    // your account ");
+    // modelAndView.addObject("notificationType",
+    // NotificationType.SMS.toString());
+    // modelAndView.addObject("phoneNumber",emailIdorPhoneNumber);
+    // modelAndView.addObject("message", message);
+    // modelAndView.setViewName("registrationSuccess");
+    //
+    // }
+    // }else {
+    // // email
+    // registrationService.forgotPassword(emailIdorPhoneNumber);
+    // }
+    // SuccessMessageHandler messageHandler = new SuccessMessageHandler(new
+    // Date(), "Temperory Password has been sent to your Email id. Use it to
+    // reset your password", "");
+    //
+    // } catch (Exception e) {
+    // ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(),
+    // e.getMessage(), "");
+    //
+    // }
+    // return modelAndView;
+    // }
+
     @PostMapping("/forgotPassword")
     public ResponseEntity<?> forgotPassword(String emailId) {
         try {
             if (org.springframework.util.StringUtils.isEmpty(emailId)) {
                 throw new Exception("Please enter valid email id");
             }
-            registrationService.forgotPassword(emailId);
-            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Temperory Password has been sent to your Email id. Use it to reset your password", "");
+            String message =  registrationService.forgotPassword(emailId);
+            SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), message, "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), e.getMessage(), "");
@@ -203,10 +351,17 @@ public class RegistrationResource extends GenericService {
         try {
 
             java.util.Date uDate = new java.util.Date();
-            if (!userDTO.getPassword().equalsIgnoreCase(userDTO.getConfirmPassword())) {
+            if(StringUtils.isEmpty(userDTO.getMobileNumberOrEmail())){
+                throw new Exception("Entered Email / Phone number cannot be blank");
+            }
+            
+            if(StringUtils.isEmpty(userDTO.getPassword())){
+                throw new Exception("Password Cannot be Blank.");
+            }
+            
+            if ( !userDTO.getPassword().equalsIgnoreCase(userDTO.getConfirmPassword())) {
                 throw new Exception("Password and Confirm Password doesnt match. Please try again with correct password");
             }
-
             registrationService.resetPassword(userDTO);
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), "Password Resetted Successfully", "");
             return new ResponseEntity<>(messageHandler, HttpStatus.CREATED);

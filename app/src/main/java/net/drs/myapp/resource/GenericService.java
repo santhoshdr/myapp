@@ -18,8 +18,8 @@ public abstract class GenericService {
     }
     
     
-    protected void setValueInUserSession(HttpSession session ,Object value) {
-         session.setAttribute(ApplicationConstants.LOGGED_IN_USER_NAME, value);
+    protected void setValueInUserSession(HttpSession session ,String key, Object value) {
+         session.setAttribute(key, value);
     }
     
     protected Long getLoggedInUserId() {
@@ -40,5 +40,10 @@ public abstract class GenericService {
     protected String getLoggedInUserName() {
         UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userPrincipal.getUsername();
+    }
+    
+    protected String getLoggedInUserRole() {
+        UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return "";
     }
 }

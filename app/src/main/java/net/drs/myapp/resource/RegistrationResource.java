@@ -125,7 +125,7 @@ public class RegistrationResource extends GenericService {
                 smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
                 notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumber(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
             }
-            rabbitMqService.publishSMSMessage(notificationReq);
+      //      rabbitMqService.publishSMSMessage(notificationReq);
             String successMessage = String.format("User Added Successfully. Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID",
                     userDTO.getEmailAddress());
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");

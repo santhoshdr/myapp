@@ -125,7 +125,7 @@ public class UserDAOImpl implements IUserDAO {
     // viewMember flow... 
     @Override
     public User getUser(Long userId) {
-        return (User) entityManager.createQuery("from User where id=:userId").setParameter("id", userId).getSingleResult();
+        return (User) entityManager.createQuery("from User where id=:userId").setParameter("userId", userId).getSingleResult();
     }
 
     @Override

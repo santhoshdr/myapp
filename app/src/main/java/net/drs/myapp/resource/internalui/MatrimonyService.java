@@ -27,6 +27,7 @@ import net.drs.myapp.api.IMatrimonyService;
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.exceptions.MatrimonialException;
+import net.drs.myapp.model.Wed;
 import net.drs.myapp.resource.GenericService;
 
 @Controller
@@ -44,15 +45,27 @@ public class MatrimonyService extends GenericService{
     @Autowired
     IUserDetails userDetails;
     
-    @GetMapping("/viewProfiles")
+    @GetMapping("/viewActiveProfiles")
     public ModelAndView viewActiveProfiles() throws MatrimonialException {
         
-        List list = matrimonialService.viewProfiles();
+        List list = matrimonialService.viewActiveProfiles();
         
         return new ModelAndView("loginSuccess").
                 addObject("pageName","viewAllWedProfiles").
                 addObject("wedProfiles",list);
     }
+    
+    
+    @GetMapping("/getAllWedProfiles")
+    public ModelAndView getAllWedProfiles() throws MatrimonialException {
+        
+        List<Wed> list = matrimonialService.getAllWedProfiles();
+        
+        return new ModelAndView("loginSuccess").
+                addObject("pageName","viewAllWedProfiles").
+                addObject("wedProfiles",list);
+    }
+    
     
     @GetMapping("/viewWedProfile/{id}")
     public ModelAndView viewWedProfile(@PathVariable("id") long wedId, RedirectAttributes redirectAttributes) {

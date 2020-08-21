@@ -6,7 +6,12 @@ public class SMSDTO extends CommonNotifyDTO {
     
     private Long userID;
 
+    private  String referenceId;
+    
     private String phoneNumber;
+    
+    
+    private char[] otp;
 
     private String smsMessage;
 
@@ -43,6 +48,10 @@ public class SMSDTO extends CommonNotifyDTO {
         this.phoneNumber = phoneNumber;
     }
 
+    public SMSDTO() {
+        // TODO Auto-generated constructor stub
+    }
+
     public Long getUserID() {
         return userID;
     }
@@ -57,6 +66,14 @@ public class SMSDTO extends CommonNotifyDTO {
 
     public void setId(Long id) {
         Id = id;
+    }
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
     }
 
 }

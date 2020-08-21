@@ -12,12 +12,6 @@
                 </button>
             </div>
         </c:if>
-
-
-
-
-
-
 	<c:if test="${!actionResult && not empty actionResult}">
 		<div id="loginFailure"
 			class="alert alert-danger alert-dismissible fade show"
@@ -46,7 +40,7 @@
 
 <!-- login result  -->
 
-<c:if test="${not empty message}">
+<%-- <c:if test="${not empty message}">
 	<c:choose>
         <c:when test="${ message} eq 'inActive' ">
             <div id="registrationSuccess"
@@ -74,8 +68,8 @@
         </c:when>
     </c:choose>
 </c:if>
-
-	<c:choose>
+ --%>
+	<%-- <c:choose>
 		<c:when test="${registrationSuccess && not empty registrationSuccess}">
 			<div id="registrationSuccess"
 				class="alert alert-success alert-dismissible fade show"
@@ -100,10 +94,10 @@
 				</button>
 			</div>
 		</c:when>
-	</c:choose>
+	</c:choose> --%>
 
 
-	<c:choose>
+	<%-- <c:choose>
 
 		<c:when test="${registrationSuccess && not empty registrationSuccess}">
 			<div id="registrationSuccess"
@@ -129,7 +123,7 @@
 				</button>
 			</div>
 		</c:when>
-	</c:choose>
+	</c:choose> --%>
 	<%-- 
 	<c:if test="${registrationSuccess && not empty registrationSuccess}">
 		<div id="registrationSuccess"
@@ -158,7 +152,7 @@
 
 	<div class="jumbotron">
 		<div class="container">
-			<h1 class="display-3">message == ${message} Hello, world!</h1>
+			<h1 class="display-3"> Hello, world!</h1>
 			<p>This is a template for a simple marketing or informational
 				website. It includes a large callout called a jumbotron and three
 				supporting pieces of content. Use it as a starting point to create
@@ -169,6 +163,12 @@
 			</p>
 		</div>
 	</div>
+
+<c:if test="${not empty message }">
+ <div class="alert alert-success" role="alert">
+ ${message}
+</div>
+</c:if>
 
 	<!-- Marketing Icons Section -->
 	<div class="row">
