@@ -1,15 +1,14 @@
 package net.drs.myapp.api.impl;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.app.exception.RoleException;
-import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IUserDAO;
 import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.dto.UserDTO;
@@ -54,42 +52,58 @@ public class UserDetailsImpl implements IUserDetails {
     public boolean changePassword(ResetPasswordDTO resetPasswordDTO) throws Exception {
         return userDAO.changePassword(resetPasswordDTO);
     }
-
+//
+//    @Override
+//    public List<UserServiceDTO> getAllUsers(int numberofUsers) {
+//
+//        List<UserServiceDTO> userDTO = new ArrayList<UserServiceDTO>();
+//        System.out.println("uploadImageLocation ====> " + uploadImageLocation);
+//
+//        File directory = new File(uploadImageLocation);
+//
+//        List<User> users = userDAO.getAllUsers(numberofUsers);
+//        users.forEach(user -> {
+//            File[] files = null;
+//            UserServiceDTO udto = new UserServiceDTO();
+//            files = directory.listFiles((FileFilter) new PrefixFileFilter(user.getId().toString() + "--", IOCase.SENSITIVE));
+//            if (files != null && files.length > 0) {
+//                udto.setImage(files[0]);
+//            }
+//
+//            user.getRoles().forEach(v -> {
+//                if (v.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN)) {
+//                    udto.setAdmin(true);
+//                }
+//            });
+//
+//            // udto.setAdmin(user.getRoles().contains(ApplicationConstants.ROLE_ADMIN)?true:false);
+//            modelMapper.map(user, udto);
+//            userDTO.add(udto);
+//        });
+//        return userDTO;
+//    }
+//
+//
+    
     @Override
-    public List<UserServiceDTO> getAllUsers(int numberofUsers) {
-
-        List<UserServiceDTO> userDTO = new ArrayList<UserServiceDTO>();
-        System.out.println("uploadImageLocation ====> " + uploadImageLocation);
-
-        File directory = new File(uploadImageLocation);
-
-        List<User> users = userDAO.getAllUsers(numberofUsers);
-        users.forEach(user -> {
-            File[] files = null;
-            UserServiceDTO udto = new UserServiceDTO();
-            files = directory.listFiles((FileFilter) new PrefixFileFilter(user.getId().toString() + "--", IOCase.SENSITIVE));
-            if (files != null && files.length > 0) {
-                udto.setImage(files[0]);
-            }
-
-            user.getRoles().forEach(v -> {
-                if (v.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN)) {
-                    udto.setAdmin(true);
-                }
-            });
-
-            // udto.setAdmin(user.getRoles().contains(ApplicationConstants.ROLE_ADMIN)?true:false);
-            modelMapper.map(user, udto);
-            userDTO.add(udto);
-        });
-        return userDTO;
+    public List<Users>  getAllUsers(int numberofUsers) {
+        return userDAO.getAllUsers(numberofUsers);
     }
 
+    
+    
+    
     // this returns user object no matter user is active or inactive
     @Override
     public User getMemberById(Long userId) {
-        return userDAO.getUser(userId);
+        return userDAO.getMemberByID(userId);
     }
+    
+	@Override
+	public User getUserById(Long userid) {
+		 return userDAO.getUser(userid);
+	}
+    
 
     @Override
     public List<UserServiceDTO> getAllActiveUsers(int numberofUsers) {
@@ -465,18 +479,29 @@ public class UserDetailsImpl implements IUserDetails {
     }
 
     @Override
-    public boolean updateUserRole(Long userId, String roleName, String action) {
+    public boolean updateUserRole(Long userId, List<String> roleNames, String action) {
         Users users = userDAO.getUserById(userId);
         switch (action) {
         case "addRole":
             Role role = new Role();
-            role.setRole(net.drs.myapp.utils.Role.valueOf(roleName).getRole());
+            role.setRole(net.drs.myapp.utils.Role.MATRIMONY.getRole());
             users.getRoles().add(role);
             break;
-        case "removeRole":
-            Role roletoremove = new Role();
-            roletoremove.setRole(roleName);
-            users.getRoles().remove(roletoremove);
+        case "updateRole":
+        	Set<Role> newRoleset = new HashSet<Role>();
+        	users.getRoles().clear();
+        	Role  newRoles = new Role();
+        	
+        	//bydefault.. USER ROLE SHOULD BE ADDED... 
+        	newRoles.setRole(net.drs.myapp.utils.Role.valueOf("USER").getRole());
+        	newRoleset.add(newRoles);
+        	for (String roleName : roleNames) {
+        		newRoles = new Role();
+        		newRoles.setRole(net.drs.myapp.utils.Role.valueOf(roleName).getRole());
+        		newRoleset.add(newRoles);
+			}
+            
+           	users.setRoles(newRoleset);
             break;
         }
         
@@ -504,7 +529,7 @@ public class UserDetailsImpl implements IUserDetails {
              String[] images = new String[listofImages.length];
              
              for (int i = 0; i < listofImages.length; i++) {
-                 images[i] = listofImages[0].getPath();
+                 images[i] = listofImages[i].getPath();
              }
              weddto.setWedImageFilePath(images);
              
@@ -516,5 +541,16 @@ public class UserDetailsImpl implements IUserDetails {
              weddto.setWedJatakaFilePath(documentPath);
          return weddto;
     }
+
+	@Override
+	public List<User> getAllMembersAddedbyMe(Long loggedInUser) {
+		return userDAO.getAllMembersAddedByMe(loggedInUser);	}
+
+	@Override
+	public Users getUsersById(Long userid) {
+		return userDAO.getUserById(userid);
+	}
+
+
 
 }

@@ -3,6 +3,7 @@ package net.drs.myapp.model;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -49,7 +50,7 @@ public class User implements Serializable {
     private String confirmPassword;
 
     private Long userId;
-
+    
     @Transient
     private Set<Role> roles;
 
@@ -68,8 +69,14 @@ public class User implements Serializable {
 
     private String temporaryActivationString;
     
+    // transactionId
     private String paymentDetails;
-
+    
+    @Transient
+    private List<PaymentDTO> paymentDetailsList;
+    
+    private String finalPaymentStatus = "NOT-INITIATED";
+    
     private String createdBy;
 
     public String getRelation() {
@@ -319,6 +326,23 @@ public class User implements Serializable {
         this.memberAddedBy = memberAddedBy;
     }
 
-    private String updatedBy;
+
+	public List<PaymentDTO> getPaymentDetailsList() {
+		return paymentDetailsList;
+	}
+
+	public void setPaymentDetailsList(List<PaymentDTO> paymentDetailsList) {
+		this.paymentDetailsList = paymentDetailsList;
+	}
+
+	public String getFinalPaymentStatus() {
+		return finalPaymentStatus;
+	}
+
+	public void setFinalPaymentStatus(String finalPaymentStatus) {
+		this.finalPaymentStatus = finalPaymentStatus;
+	}
+
+	private String updatedBy;
 
 }

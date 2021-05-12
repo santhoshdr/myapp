@@ -27,23 +27,20 @@
                                <td>${element.dateOfBirth}</td>
                                <td>${element.wedRaashi}</td>
                                <td>${element.wedNakshtra}</td>
-                         <td><a href="/matrimony/viewWedProfile/${element.id}"
-                                class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i>More Details</a>
-                                <a href="#"
-                                class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i>Edit</a>
-                                <c:if test="${element.isProfileActive}">
-                                 <a href="/admin/deactivateWedProfile/${element.id}"
-                                class="btn btn-success"><i class="fas fa-user-edit ml-2"></i>Make InActive</a>
-                                </c:if>
-                                
-                                  <c:if test="${!element.isProfileActive}">
-                                 <a href="/admin/activateWedProfile/${element.id}"
-                                class="btn btn-danger"><i class="fas fa-user-edit ml-2"></i>Make Active </a>
-                                </c:if>
-                                
-                               
-                            </td>  
-                        </tr>
+     <td> <a href="/matrimony/viewWedProfile/${element.id}" class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i>More Details</a>
+     </td>
+     
+      <sec:authorize access="hasRole('ROLE_ADMIN') and isAuthenticated()">
+          <td> <a href="#" class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i>Edit ( not implemented ) </a>
+           <c:if test="${element.isProfileActive}"> 
+                <a href="/admin/deactivateWedProfile/${element.id}" class="btn btn-success"><i class="fas fa-user-edit ml-2"></i>Make In Active</a>
+           </c:if>
+           <c:if test="${!element.isProfileActive}">               
+                 <a href="/admin/activateWedProfile/${element.id}" class="btn btn-danger"><i class="fas fa-user-edit ml-2"></i>Make Active </a>
+           </c:if>
+     </td>  
+     </sec:authorize>
+       </tr>
                     </c:forEach>
                 </tbody>
             </table>

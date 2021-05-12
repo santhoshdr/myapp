@@ -1,13 +1,10 @@
 package net.drs.myapp.api.impl;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.paytm.pg.merchant.CheckSumServiceHelper;
 
 import net.drs.myapp.api.IPaymentService;
 import net.drs.myapp.dao.IPaymentDAO;
@@ -39,6 +36,11 @@ public class PaymentImpl implements IPaymentService {
     public PaymentDTO updatePaymentDetails(PaymentDTO paymentDTO) {
         return paymentDAO.updatePayment(paymentDTO);
     }
+
+	@Override
+	public List<PaymentDTO> getPaymentByMemberId(Long memberId) {
+		return paymentDAO.getPaymentByMemberId(memberId);
+	}
 
 
 

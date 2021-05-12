@@ -8,6 +8,7 @@ import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
 
 /**
  * 
@@ -22,9 +23,11 @@ public interface IUserDetails {
     // this will get all the users
     // int numberofUser - get numberofUser - records - fetching all can create
     // performance issues
-    List<UserServiceDTO> getAllUsers(int numberofUser);
+    List<Users> getAllUsers(int numberofUser);
 
     List<User> getAllMembers(int numberofUser);
+    
+    List<User> getAllMembersAddedbyMe(Long loggedInUser);
     
     //List<UserServiceDTO> getAllMembers();
     
@@ -32,8 +35,14 @@ public interface IUserDetails {
 
     // get the information of specific user - based on user id
     User getMemberById(Long userid);
-
+    
+    User getUserById(Long userid);
+    
     User getUserById(String emailId);
+    
+    // from user table
+    Users getUsersById(Long userid);
+    
 
     // get all Active users
     List<UserServiceDTO> getAllActiveUsers(int numberofUser);
@@ -55,7 +64,7 @@ public interface IUserDetails {
     boolean updateUserDetails(User user);
     
     // use this
-    boolean updateUserRole(Long userId,String roleName,String action);
+    boolean updateUserRole(Long userId,List<String>  roleNames,String action);
 
     boolean changeUserRole(UserServiceDTO userServiceDTO) throws RoleException;
 

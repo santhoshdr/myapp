@@ -7,9 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.hibernate.validator.constraints.Length;
 
-import net.drs.myapp.utils.PaymentStatus;
+
+import net.drs.myapp.utils.TransactionStatus;
 
 @Entity
 @Table(name = "payment")
@@ -20,17 +20,20 @@ public class PaymentDTO {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
     
+    
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Integer receiptNumber;
+    
     double amount;
     
-    @Length(max = 500)
+  //  @Length(max = 500)
     private String response;
     
-    private String paymentStatus = PaymentStatus.INITIATED.name();
+    private String transactionStatus = TransactionStatus.INITIATED.name();
     
-    private boolean transactionResult=false;
-    
-    String orderId;
-    
+     private boolean transactionResult=false;
+     
+     private String orderId;
     
     private  Long  loggedInUserId;
     
@@ -109,14 +112,7 @@ public class PaymentDTO {
         this.transactionResult = transactionResult;
     }
 
-    public String getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(String paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
+ 
     public String getResponse() {
         return response;
     }
@@ -125,7 +121,24 @@ public class PaymentDTO {
         this.response = response;
     }
 
-    String transactionId;
+    public Integer getReceiptNumber() {
+		return receiptNumber;
+	}
+
+	public void setReceiptNumber(Integer receiptNumber) {
+		this.receiptNumber = receiptNumber;
+	}
+
+	public String getTransactionStatus() {
+		return transactionStatus;
+	}
+
+	public void setTransactionStatus(String transactionStatus) {
+		this.transactionStatus = transactionStatus;
+	}
+
+
+	String transactionId;
     
     String customerMobileNumber;
     

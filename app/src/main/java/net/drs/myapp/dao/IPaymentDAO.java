@@ -1,5 +1,7 @@
 package net.drs.myapp.dao;
 
+import java.util.List;
+
 import net.drs.myapp.model.PaymentDTO;
 
 public interface IPaymentDAO {
@@ -8,7 +10,7 @@ public interface IPaymentDAO {
     
     PaymentDTO getPayment(Long  paymentId);
     
-    
+    List<PaymentDTO> getPaymentByMemberId(Long memberId);
+        
     PaymentDTO updatePayment(PaymentDTO paymentDto);
-
 }

@@ -16,7 +16,7 @@ public interface  IRegistrationDAO{
 
     User addUserandGetUserId(User user, Set<Role> roles) throws Exception;
     
-    boolean  checkIfUserExistsByUser_ID(Users user) ;
+    Users  checkIfUserExistsByUser_ID(Users user) ;
 
     boolean checkIfUserExistbyName(User user) throws Exception;
 
@@ -25,7 +25,7 @@ public interface  IRegistrationDAO{
     
     
     // check just email id is present or not...
-    boolean checkIfUserEmailIdExists(User user) throws Exception;
+    Users checkIfUserEmailIdExists(User user) throws Exception;
     
 
     Users checkifUserExistbyPhoneNumber(User user) throws Exception;

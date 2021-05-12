@@ -1,5 +1,7 @@
 package net.drs.myapp.dao.impl;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -27,7 +29,7 @@ public class PaymentDAOImpl implements IPaymentDAO {
         PaymentDTO storedPayment =  (PaymentDTO) entityManager.createQuery("from PaymentDTO p  where p.orderId=:orderId ").
                 setParameter("orderId",paymentDto.getOrderId()).getSingleResult();
         storedPayment.setTransactionResult(paymentDto.isTransactionResult());
-        storedPayment.setPaymentStatus(paymentDto.getPaymentStatus());
+        storedPayment.setTransactionStatus(paymentDto.getTransactionStatus());
         storedPayment.setResponse(paymentDto.getResponse());
         return entityManager.merge(storedPayment);
     }
@@ -36,5 +38,11 @@ public class PaymentDAOImpl implements IPaymentDAO {
     public PaymentDTO getPayment(Long  paymentId) {
         return entityManager.find(PaymentDTO.class, paymentId);
     }
+
+	@Override
+	public List<PaymentDTO> getPaymentByMemberId(Long memberId) {
+		return entityManager.createQuery("from PaymentDTO p  where p.memberId=:memberId ").
+				setParameter("memberId", memberId).getResultList();
+}
 
 }

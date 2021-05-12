@@ -8,15 +8,6 @@ import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
-import net.drs.myapp.api.IRegistrationService;
-import net.drs.myapp.api.IUserDetails;
-import net.drs.myapp.constants.ApplicationConstants;
-import net.drs.myapp.dto.UserDTO;
-import net.drs.myapp.dto.UserServiceDTO;
-import net.drs.myapp.model.Role;
-import net.drs.myapp.response.handler.ExeceptionHandler;
-import net.drs.myapp.response.handler.SuccessMessageHandler;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +20,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+
+import net.drs.myapp.api.IRegistrationService;
+import net.drs.myapp.api.IUserDetails;
+import net.drs.myapp.constants.ApplicationConstants;
+import net.drs.myapp.dto.UserDTO;
+import net.drs.myapp.dto.UserServiceDTO;
+import net.drs.myapp.model.Role;
+import net.drs.myapp.model.Users;
+import net.drs.myapp.response.handler.ExeceptionHandler;
+import net.drs.myapp.response.handler.SuccessMessageHandler;
 
 // these methods should be only accessible by admins
 //@RestController
@@ -79,7 +79,7 @@ public class AdministrationService {
         try {
             // 10 is not used any where as of now.. Need to use this if
             // performance degrades
-            List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
+            List<Users> userDTO = userDetails.getAllUsers(10);
             return new ResponseEntity<>(userDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

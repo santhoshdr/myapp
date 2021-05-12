@@ -1,5 +1,7 @@
 package net.drs.myapp.api;
 
+import java.util.List;
+
 import net.drs.myapp.model.PaymentDTO;
 
 public interface IPaymentService {
@@ -9,6 +11,9 @@ public interface IPaymentService {
     
     
     PaymentDTO  getPaymentDetails(Long   paymentId);
+    
+    List<PaymentDTO>  getPaymentByMemberId(Long   memberId);
+    
     
     PaymentDTO  updatePaymentDetails(PaymentDTO  paymentDTO);
     

@@ -49,6 +49,7 @@ public class AuthController extends GenericService {
                 String jwt = tokenProvider.generateToken(authentication);
                 httpservletRequest.getSession(true);
                 httpservletRequest.getSession().setAttribute("userloggedin", jwt);
+                setJWTinsession(httpservletRequest.getSession(), jwt);
                 return new ModelAndView("redirect:/user/loginHome");
             } else {
                 redirectAttributes.addFlashAttribute("errorMessage", "Entered UserName or Password is wrong.Please try again!");

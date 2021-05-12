@@ -134,6 +134,8 @@ public class UserDTO implements Serializable {
     
     private String paymentDetails;
     
+    private String paymentStatus="NOT-INITIATED";
+    
     private int age;
     
     
@@ -285,7 +287,15 @@ public class UserDTO implements Serializable {
         this.memberAddedBy = memberAddedBy;
     }
 
-    private String createdBy;
+    public String getPaymentStatus() {
+		return paymentStatus;
+	}
+
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+
+	private String createdBy;
 
     private Date updatedDate;
 

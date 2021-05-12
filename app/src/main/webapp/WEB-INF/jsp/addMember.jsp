@@ -6,7 +6,10 @@
 https://www.pair.com/support/kb/types-of-bootstrap-forms/
  -->
  
-<%String msg = (String)request.getParameter("addMember"); 
+ 
+<%
+System.out.println("back from payment page1111111111111111111");
+String msg = (String)request.getParameter("addMember"); 
 if(msg != null && msg.equals("true")){
  %>
  <div class="alert alert-success" role="alert">

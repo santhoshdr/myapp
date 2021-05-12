@@ -231,10 +231,10 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
                 <label for="wedImage class="col-sm-2 col-form-label">Uploaded Photo</label>
                 <div class="col-sm-5">
            <c:forEach items="${wedProfileList[0].wedImageFilePath}" var="single">
-            <a class="image-popup-fit-width" href="/user/${single }" title="">
-              <img  name="photoName"  id="imgLogo" src="/user/${single }" width="75" height="75">
+            <a class="image-popup-fit-width" href="/user/${single}" title="">
+              <img  name="photoName"  id="imgLogo" src="/user/${single}" width="75" height="75">
             </a>
-            <a href=""  id="deletePhotos" onclick="callDelete('${single }')" >delete</a>
+            <a href=""  id="deletePhotos" onclick="callDelete('${single}')">delete</a>
             </c:forEach>
             </div>
             </div>
@@ -243,10 +243,10 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
                 <label for="wedImage class="col-sm-2 col-form-label">Uploaded Document</label>
                 <div class="col-sm-5">
            <c:forEach items="${wedProfileList[0].wedJatakaFilePath}" var="single">
-            <a href="/user/downloadFile/${single }" title="Click to download" >
+            <a href="/user/downloadFile/${single}" title="Click to download" >
              <c:out value="${single }"></c:out> </a>
             &nbsp;&nbsp;
-            <a href="/user/deleteFile/${wedProfileList[0].id}/${single }" title = "Delete File"  id="deleteDocument" >delete</a>
+            <a href="/user/deleteFile/${wedProfileList[0].id}/${single}" title = "Delete File"  id="deleteDocument">Delete</a>
             </br>
             </c:forEach>
             </div>
@@ -282,11 +282,12 @@ https://www.pair.com/support/kb/types-of-bootstrap-forms/
 <script>
 
 function callDelete(image){
+alert("deleting image" + image);
 	$.ajax({
         type: "POST",
         url: "/user/deletePhoto",
         data: {
-        	photoname :encodeURI(image)
+        	photoname :image
         },
      
         async: false,

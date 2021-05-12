@@ -2,7 +2,6 @@ package net.drs.myapp.config;
 
 import java.io.IOException;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,12 +12,12 @@ import org.springframework.stereotype.Component;
 public class AppAuthenticationEntryPoint extends BasicAuthenticationEntryPoint {
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
-		     AuthenticationException authException) throws IOException, ServletException {
+		     AuthenticationException authException) throws IOException {
 		response.addHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());
 	}
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		setRealmName("MY APP REALM");
 	}
 }

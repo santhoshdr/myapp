@@ -1,8 +1,11 @@
 package net.drs.myapp.resource.internalui;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -34,6 +37,7 @@ import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.exceptions.MatrimonialException;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
 import net.drs.myapp.model.Wed;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
@@ -270,9 +274,27 @@ public class AdministrationService extends GenericService {
             // 10 is not used any where as of now.. Need to use this if
             // performance degrades
             net.drs.myapp.utils.Role[]  listofRoles = net.drs.myapp.utils.Role.values();
-            List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
+            List<Users> users= userDetails.getAllUsers(10);
+            
+            for (Users userServiceDTO : users) {
+            	Iterator it = userServiceDTO.getRoles().iterator();
+            	
+            	while(it.hasNext()) {
+            		Role associatedRole = (Role)it.next();
+            		if(associatedRole.getRole().equalsIgnoreCase(net.drs.myapp.utils.Role.ADMIN.getRole())) {
+            			userServiceDTO.getAssociatedRoles().add(net.drs.myapp.utils.Role.ADMIN.getRoleDisplayName());
+            		}else if(associatedRole.getRole().equalsIgnoreCase(net.drs.myapp.utils.Role.MATRIMONY.getRole())) {
+            			userServiceDTO.getAssociatedRoles().add(net.drs.myapp.utils.Role.MATRIMONY.getRoleDisplayName());
+                    }else if(associatedRole.getRole().equalsIgnoreCase(net.drs.myapp.utils.Role.USER.getRole())) {
+                    	userServiceDTO.getAssociatedRoles().add(net.drs.myapp.utils.Role.USER.getRoleDisplayName());
+                    }
+            		
+            		
+            	}
+			}
+            
             return new ModelAndView("loginSuccess").
-                                     addObject("listofusers", userDTO).
+                                     addObject("listofusers", users).
                                      addObject("pageName", "getAllUsers").
                                      addObject("listOfRoles", listofRoles);
         } catch (Exception e) {
@@ -284,17 +306,51 @@ public class AdministrationService extends GenericService {
 
     
     @PostMapping("/changeRole")
-    public ModelAndView changeRole(String newRole,Long  userId) {
+    public ModelAndView changeRole(String[] newRole,Long  userId,RedirectAttributes redirectAttributes) {
+    	
+    	
         try {
-                userDetails.updateUserRole(userId, newRole, "addRole");
-            return new ModelAndView("loginSuccess").
-                                     addObject("pageName", "getAllUsers");
+            userDetails.updateUserRole(userId, Arrays.asList(newRole), "updateRole");
+            return new ModelAndView("redirect:/admin/getAllUsers");
         } catch (Exception e) {
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
             return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
         }
     }
 
+    
+    
+    @GetMapping("/getUserRoles")
+    public ResponseEntity<?> getUserRoles(Long  userId) {
+    	
+    	List<String> listofRolesAssociatedwithUser = new ArrayList<String>();
+        try {
+            Users user = userDetails.getUsersById(userId);
+            
+            Iterator it = user.getRoles().iterator();
+            while(it.hasNext()) {
+            Role role1 = (Role)it.next();
+           	String roleName = role1.getRole();
+           	
+           	
+           	// this code needs to be re-looked.
+           	if(roleName.equalsIgnoreCase(net.drs.myapp.utils.Role.ADMIN.getRole())) {
+           		listofRolesAssociatedwithUser.add(net.drs.myapp.utils.Role.ADMIN.getRoleDisplayName());
+           	}else if(roleName.equalsIgnoreCase(net.drs.myapp.utils.Role.MATRIMONY.getRole())) {
+               		listofRolesAssociatedwithUser.add(net.drs.myapp.utils.Role.MATRIMONY.getRoleDisplayName());
+            }else if(roleName.equalsIgnoreCase(net.drs.myapp.utils.Role.USER.getRole())) {
+           		listofRolesAssociatedwithUser.add(net.drs.myapp.utils.Role.USER.getRoleDisplayName());
+            }
+            }
+            return new ResponseEntity<>(listofRolesAssociatedwithUser, HttpStatus.OK);
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ResponseEntity<>(listofRolesAssociatedwithUser, HttpStatus.BAD_REQUEST);
+
+        }
+    }
+    
+    
     
     
     /*

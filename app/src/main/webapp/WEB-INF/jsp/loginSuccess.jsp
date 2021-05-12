@@ -42,6 +42,7 @@
 	<%
 	    break;
 	    case "addMember":
+	    System.out.println("back from payment page");
 	%>
 	<%@ include file="addMember.jsp"%>
 	<%

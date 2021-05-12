@@ -2,6 +2,8 @@ package net.drs.myapp.dto;
 
 import java.io.File;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import net.drs.myapp.model.Role;
@@ -34,6 +36,8 @@ public class UserServiceDTO {
     private File image;
 
     private Set<Role> roles;
+    
+    private List<String> rolesAssociated = new ArrayList<String>();
 
     private Date creationDate;
 
@@ -178,5 +182,13 @@ public class UserServiceDTO {
     public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
+
+	public List<String> getRolesAssociated() {
+		return rolesAssociated;
+	}
+
+	public void setRolesAssociated(List<String> rolesAssociated) {
+		this.rolesAssociated = rolesAssociated;
+	}
 
 }

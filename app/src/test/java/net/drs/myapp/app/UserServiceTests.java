@@ -2,15 +2,10 @@ package net.drs.myapp.app;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import net.drs.myapp.dto.LoginRequest;
-import net.drs.myapp.dto.LoginResponse;
-import net.drs.myapp.dto.ResetPasswordDTO;
-import net.drs.myapp.dto.UserDTO;
 
-import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import net.drs.myapp.dto.LoginRequest;
+import net.drs.myapp.dto.LoginResponse;
+import net.drs.myapp.dto.ResetPasswordDTO;
+import net.drs.myapp.dto.UserDTO;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

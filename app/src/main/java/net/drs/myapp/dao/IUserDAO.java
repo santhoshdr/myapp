@@ -22,15 +22,21 @@ public interface IUserDAO {
 
     User addMember(User  user);
     
+    User getMemberByID(Long userId);
+    
     // from Users table - used for login
-    List<User> getAllUsers(int numberofUsers);
+    List<Users> getAllUsers(int numberofUsers);
     
     // from UserDetails has details of all the members ( users + members )
     List<User> getAllActiveMembers();
     
     // from UserDetails has details of all the members ( users + members )
     List<User> getAllMembers();
+    
+    
 
+    List<User> getAllMembersAddedByMe(long loggedInUser);
+    
     List<User> getAllActiveUsers(int numberofUsers);
 
     List<User> getAllAdminActiveUsers(int numberofUsers);

@@ -35,7 +35,7 @@ These are the username and password to log in to your database and phpMyAdmin
 
 
 
-
+cd 	
 docker build --rm -t santhoshdr/myappbuild1 .
 
 
@@ -80,3 +80,9 @@ Pending:
 
 
 
+mvn install -Dmaven.test.skip=true
+
+
+
+
+directoryadmin / mywork@123

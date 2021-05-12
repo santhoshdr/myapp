@@ -157,7 +157,7 @@ public class AppApplicationTests extends GenericAbstractTests{
         UserDTO userDTO = new UserDTO();
         userDTO.setFirstName("FirstName");
         userDTO.setLastName("LastName");
-        userDTO.setEmailAddress("admin1@admin.com");
+        userDTO.setEmailAddress("admin@admin.com");
         userDTO.setMobileNumber("9999999999");
         userDTO.setPassword("password");
         userDTO.setAddress("address");

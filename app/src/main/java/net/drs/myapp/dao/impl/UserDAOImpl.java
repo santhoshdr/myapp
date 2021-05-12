@@ -33,19 +33,8 @@ public class UserDAOImpl implements IUserDAO {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<User> getAllUsers(int numberofUsers) {
-        List tempList = new ArrayList();
-        List<User> userList = new ArrayList<User>();
-        tempList = entityManager.createQuery("from Users us , User u where us.id=u.userId").getResultList();
-        Object[] items = tempList.toArray();
-        for (Object item : items) {
-            Object[] arr = (Object[]) item;
-            Users users = (Users) arr[0];
-            User user = (User) arr[1];
-            user.setRoles(users.getRoles());
-            userList.add(user);
-        }
-        return userList;
+    public List<Users> getAllUsers(int numberofUsers) {
+        return entityManager.createQuery("from Users").getResultList();
     }
 
     public List<User> getAllActiveUsers(int numberofUsers) {
@@ -122,11 +111,18 @@ public class UserDAOImpl implements IUserDAO {
      */
 
     
-    // viewMember flow... 
+    // viewMember flow... id is used
+    // in view my profile = userId is used..
     @Override
     public User getUser(Long userId) {
-        return (User) entityManager.createQuery("from User where id=:userId").setParameter("userId", userId).getSingleResult();
+        return (User) entityManager.createQuery("from User where userId=:userId").setParameter("userId", userId).getSingleResult();
     }
+    
+    @Override
+    public User getMemberByID(Long userId) {
+        return (User) entityManager.createQuery("from User where id=:id").setParameter("id", userId).getSingleResult();
+    }
+    
 
     @Override
     public boolean isUserActive(Long userId) {
@@ -309,7 +305,7 @@ public class UserDAOImpl implements IUserDAO {
     @Override
     public List<User> getAllMembers() {
         return entityManager.createQuery("from User").getResultList();
-    }
+    }  
 
     @Override
     public boolean makeorremoveAdmin(User user) {
@@ -342,12 +338,18 @@ public class UserDAOImpl implements IUserDAO {
     }
 
     @Override
-    public void updateUser(Users user) {
-        entityManager.persist(user);
+    public void updateUser(Users users) {
+        entityManager.persist(users);
     }
 
     @Override
     public Wed fetchSelectedWedProfile(Long wedId) {
         return entityManager.find(Wed.class, wedId);
     }
+
+	@Override
+	public List<User> getAllMembersAddedByMe(long loggedInUser) {
+		return entityManager.createQuery("from User where memberAddedBy=:loggedInUser")
+				.setParameter("loggedInUser", loggedInUser)
+				.getResultList();	}
 }

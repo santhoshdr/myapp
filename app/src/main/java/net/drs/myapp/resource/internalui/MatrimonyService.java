@@ -57,6 +57,7 @@ public class MatrimonyService extends GenericService{
     
     
     @GetMapping("/getAllWedProfiles")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
     public ModelAndView getAllWedProfiles() throws MatrimonialException {
         
         List<Wed> list = matrimonialService.getAllWedProfiles();

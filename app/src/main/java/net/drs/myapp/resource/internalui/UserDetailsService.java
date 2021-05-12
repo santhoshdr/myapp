@@ -4,14 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -92,6 +91,25 @@ public class UserDetailsService extends GenericService {
         return h;
 
     }
+    
+    
+// get all active and inactive members added by me
+    @GetMapping("/getAllMembers")
+    public ModelAndView getAllMembers() {
+        try {
+            // 10 is not used any where as of now.. Need to use this if
+            // performance degrades
+        	
+            List<User> userDTO = userDetails.getAllMembersAddedbyMe(getLoggedInUserId());
+            return new ModelAndView("loginSuccess").addObject("listofusers", userDTO).addObject("pageName", "viewMembers");
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
+        }
+    }
+
+    
+    
 
     @GetMapping("/getAllActiveMembers")
     public ModelAndView getAllActiveMembers() {
@@ -112,6 +130,18 @@ public class UserDetailsService extends GenericService {
             // 10 is not used any where as of now.. Need to use this if
             // performance degrades
             User user = userDetails.getMemberById(userId);
+            
+            List<PaymentDTO> payment = paymentService.getPaymentByMemberId(userId);
+            
+            for(int j = 0; j< payment.size();j++) {
+            	
+            	
+            	if(payment.get(j).getTransactionStatus().equalsIgnoreCase("SUCCESS")) {
+            	user.setFinalPaymentStatus("SUCCESS");
+            	break;
+            	}
+            }
+            user.setPaymentDetailsList(payment);
             return new ResponseEntity<>(user, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,7 +152,7 @@ public class UserDetailsService extends GenericService {
 
     @GetMapping("/getMyProfile")
     public ModelAndView getMyProfile() {
-        return new ModelAndView("viewProfile").addObject("data", userDetails.getMemberById(getLoggedInUserId()));
+        return new ModelAndView("viewProfile").addObject("data", userDetails.getUserById(getLoggedInUserId()));
     }
 
     @PostMapping("/updateMyProfile")
@@ -229,7 +259,7 @@ public class UserDetailsService extends GenericService {
        
         
         // pwd/home/srajanna/myprojectwork/myapp/app/imageuploadfolder/
-        String imagePath = "/home/srajanna/myprojectwork/myapp/app"+"/imageuploadfolder/"+folderid+"/"+image+"/"+photoName;
+        String imagePath = "C:\\Data\\Santhosh\\SanthoshProject\\myapp\\app"+"/imageuploadfolder/"+folderid+"/"+image+"/"+photoName;
         Path pathImages1= Paths.get( imagePath );
 
         File imgFile = new File(pathImages1.toString());
@@ -424,9 +454,65 @@ public class UserDetailsService extends GenericService {
         }
         }
         
-        
+ 
+    /**
+     * 
+     * @RequestMapping(path="/{name}/{age}")
+public String getMessage(@PathVariable("name") String name, 
+        @PathVariable("age") String age) 
+     * 
+     * @param memberid
+     * @param failedOrderId
+     * @param redirectAttributes
+     * @return
+     */
+    
+    
+    @GetMapping(path="retryFailedPayment/{memberid}")
+    public ModelAndView retryFailedPayment(@PathVariable("memberid") Long memberid, 
+            RedirectAttributes redirectAttributes) {
+        try {
+
+        	PaymentDTO paymentDTOTobeprocessed = null;
+        	User member= userDetails.getMemberById(memberid);
+            List<PaymentDTO> payment = paymentService.getPaymentByMemberId(member.getId());
+//           
+//            Iterator it = payment.iterator();
+//            while(it.hasNext()) {
+//            	PaymentDTO paymentDto = (PaymentDTO)it.next();
+//            	
+//            	if(paymentDto.getOrderId().equalsIgnoreCase(failedOrderId)) {
+//            		paymentDTOTobeprocessed = paymentDto;
+//            	}
+//            }
+//            if(paymentDTOTobeprocessed == null) {
+//            	throw new Exception("Provided Order ID doesnt belong to member. Please contact administrator");
+//            }
+            
+            
+            // make payment here: 
+            PaymentDTO paymentDTO = new PaymentDTO();
+            paymentDTO.setAmount(member.getAmount());
+            paymentDTO.setLoggedInUserId(getLoggedInUserId());
+            paymentDTO.setCustomerMobileNumber(member.getMobileNumber());
+            paymentDTO.setCustomerEmailId(member.getEmailAddress());
+            paymentDTO.setMemberId(member.getId());
+
+            UUID orderId = UUID.randomUUID();
+            paymentDTO.setOrderId( orderId.toString());
+            
+            PaymentDTO paymentreceived =   paymentService.savePaymentDetails(paymentDTO);
+            return new ModelAndView("redirect:" + "/user/makePayment/"+paymentreceived.getId());
+
+        }catch(Exception e ) {
+            return new ModelAndView("redirect:" + "/user/addMember").addObject("errorMessage", e.getMessage());
+        }
+        }
+    
+    
+    
         @GetMapping("/makePayment/{id}")
-        public ModelAndView makePayment(@PathVariable("id") Long  paymentId) {
+        public ModelAndView makePayment(HttpServletRequest request ,@PathVariable("id") Long  paymentId) {
             try {
             
            ModelAndView modelAndView = new ModelAndView("redirect:" + "https://securegw-stage.paytm.in/order/process");
@@ -444,7 +530,8 @@ public class UserDetailsService extends GenericService {
            parameters.put("ORDER_ID", payment.getOrderId());
            parameters.put("TXN_AMOUNT", String.valueOf(payment.getAmount()));
            parameters.put("CUST_ID", String.valueOf(payment.getLoggedInUserId()));
-           parameters.put("CALLBACK_URL", "http://localhost:8085/user/pgresponse");
+           
+           parameters.put("CALLBACK_URL", "http://localhost:8085/guest/pgresponse?token="+ request.getSession().getAttribute("token"));
            
            String checkSum = CheckSumServiceHelper.getCheckSumServiceHelper().genrateCheckSum("ymYFiyrKDkr4QAHF", parameters);
            parameters.put("CHECKSUMHASH", checkSum);
@@ -479,7 +566,7 @@ public class UserDetailsService extends GenericService {
                 if (parameters.get("RESPCODE").equals("01")) {
                     result = "Payment Successful";
                     payment.setResponse(parameters.toString());
-                    payment.setPaymentStatus(PaymentStatus.SUCCESS.name());
+                    payment.setTransactionStatus(PaymentStatus.SUCCESS.name());
                     PaymentDTO paymentDTO = paymentService.updatePaymentDetails(payment);
                     UserDTO userDTO = new UserDTO();
                     userDTO.setUserId(paymentDTO.getMemberId());
@@ -489,7 +576,10 @@ public class UserDetailsService extends GenericService {
                     redirectAttributes.addFlashAttribute("successMessage","The Member is added Successfully");
                     return "redirect:/user/addMember";
                 } else {
-                    result = "Payment Failed";
+                	 result = "Payment Failed";
+                     payment.setResponse(parameters.toString());
+                     payment.setTransactionStatus(PaymentStatus.FAILED.name());
+                     PaymentDTO paymentDTO = paymentService.updatePaymentDetails(payment);
                     redirectAttributes.addFlashAttribute("errorMessage","Payment was not Success. The Member is not added. Please try again");
                     return "redirect:/user/addMember";
                 }
@@ -504,10 +594,7 @@ public class UserDetailsService extends GenericService {
             return "redirect:/user/addMember";
         }
     }
-    private boolean validateCheckSum(TreeMap<String, String> parameters, String paytmChecksum) throws Exception {
-        return CheckSumServiceHelper.getCheckSumServiceHelper().verifycheckSum("ymYFiyrKDkr4QAHF",
-                parameters, paytmChecksum);
-    }
+
 
     private void validateInputRequest(UserDTO user) throws Exception {
         if (StringUtils.isEmpty(user.getFirstName())) {

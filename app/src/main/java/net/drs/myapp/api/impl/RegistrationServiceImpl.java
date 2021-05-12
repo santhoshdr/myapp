@@ -19,10 +19,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import net.drs.common.notifier.NotificationDataConstants;
-import net.drs.common.notifier.NotificationRequest;
-import net.drs.common.notifier.NotificationTemplate;
-import net.drs.common.notifier.NotificationType;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.INotifyBySMS;
 import net.drs.myapp.api.IRegistrationService;
@@ -41,6 +37,10 @@ import net.drs.myapp.model.OtpDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
+import net.drs.myapp.notification.NotificationDataConstants;
+import net.drs.myapp.notification.NotificationRequest;
+import net.drs.myapp.notification.NotificationTemplate;
+import net.drs.myapp.notification.NotificationType;
 import net.drs.myapp.utils.AppUtils;
 
 @Repository("registrationService")
@@ -194,7 +194,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
             emailDto.setEmailTemplateId("FORGOTPASSWORD_EMAIL");
             emailDto.setUserID(new Long(123));
             emailDto.setNeedtoSendEmail(true);
-            data.put(NotificationDataConstants.USER_EMAILID, emailIdorPhoneNumber);
+       //     data.put(NotificationDataConstants.USER_EMAILID, emailIdorPhoneNumber);
             data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, temperoryPassword);
             Long notificationId = notificationByEmailService.insertDatatoDBforNotification(emailDto);
             notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.FORGOT_PASSWORD, NotificationType.EMAIL);
@@ -239,6 +239,8 @@ public class RegistrationServiceImpl implements IRegistrationService {
             if(!result) {
                 throw new Exception("Please enter correct temporary string sent to your Email. ");
             }
+            // because temperory password matches , 
+            users.setPassword(userDTO.getPassword());
             if(users == null) {
                 throw new Exception("Enterd Email is not present. Please register.");
             }
@@ -301,9 +303,9 @@ public class RegistrationServiceImpl implements IRegistrationService {
         User user = new User();
         modelMapper.map(userDTO, user);
 
-        boolean result = registrationDAO.checkIfUserEmailIdExists(user);
-        if (!result) {
-            throw new Exception("Email if doesnt not exist. Please check your email id");
+        Users  users = registrationDAO.checkIfUserEmailIdExists(user);
+        if (users ==null ) {
+            throw new Exception("Email id doesn't not exist. Please check your email id");
         }
 
         User storedUser = registrationDAO.getTemporaryActivationTokenforUser(userDTO.getEmailAddress());
@@ -319,8 +321,7 @@ public class RegistrationServiceImpl implements IRegistrationService {
         // time at which temporaryActivationString sent - Current time must be
         // less than 10 mins ( which is the value set as standard )
         {
-            
-            storedUser.setPassword(userDTO.getPassword());
+        	users.setPassword(userDTO.getPassword());
             
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
             // Getting current date
@@ -343,7 +344,9 @@ public class RegistrationServiceImpl implements IRegistrationService {
                 cal.set(Calendar.SECOND, 58);
                 storedUser.setAccountValidTill(cal.getTime());
             }
-   //         registrationDAO.activateUserIftemporaryPasswordMatches(storedUser);
+            
+            // users - user
+            registrationDAO.activateUserIftemporaryPasswordMatches(users);
         }else {
             throw new Exception("Password doesnt match or Activation Duration is expired. Please try after some time...");
         }

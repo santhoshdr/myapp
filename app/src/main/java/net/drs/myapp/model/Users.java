@@ -1,5 +1,7 @@
 package net.drs.myapp.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,9 +15,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
-@Table(name = "user")
+@Table(name = "app_user")
 public class Users {
 
     @Id
@@ -46,6 +49,11 @@ public class Users {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+    
+    
+    @Transient
+    private List<String> associatedRoles = new ArrayList<String>();
+    
 
     public Users() {
     }
@@ -140,6 +148,14 @@ public class Users {
     public void setTempPassord(boolean isTempPassord) {
         this.isTempPassord = isTempPassord;
     }
+
+	public List<String> getAssociatedRoles() {
+		return associatedRoles;
+	}
+
+	public void setAssociatedRoles(List<String> associatedRoles) {
+		this.associatedRoles = associatedRoles;
+	}
 
 
 }

@@ -30,6 +30,7 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     public User addUser(User user, Set<Role> roles) {
         try {
             Users users = new Users();
+            
             users.setEmail(user.getEmailAddress());
             users.setActive(1);
             users.setRoles(roles);
@@ -37,6 +38,12 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             users.setPassword(user.getPassword());
             users.setLastName(user.getLastName());
             entityManager.persist(users);
+            
+            
+            // this needs to be dealt in better way
+            if(user.getEmailAddress().equalsIgnoreCase("admin@admin.com")) {
+            	user.setActive(true); // by default
+            }
             user.setUserId(users.getId());
             return entityManager.merge(user);
         } catch (Exception e) {
@@ -259,25 +266,22 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     }
 
     @Override
-    public boolean checkIfUserEmailIdExists(User user) throws Exception {
+    public Users checkIfUserEmailIdExists(User user) throws Exception {
         try {
-            List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1").setParameter(1, user.getEmailAddress()).getResultList();
-            if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
-                return true;
-            }
-        } catch (Exception e) {
+        	return (Users) entityManager.createQuery("from Users  WHERE  email=:email").setParameter("email", user.getEmailAddress()).getSingleResult();
+        	            //List list = entityManager.createQuery("SELECT count(*) FROM User WHERE emailAddress=?1").setParameter(1, user.getEmailAddress()).getResultList();
+            } catch (Exception e) {
             throw e;
         }
-        return false;
+        
     }
 
+    
+    // check user exists and is active
     @Override
-    public boolean checkIfUserExistsByUser_ID(Users users) {
-        List list = entityManager.createQuery("SELECT count(*) FROM User WHERE userId=?1").setParameter(1, users.getId()).getResultList();
-        if (list.get(0) != null && ((Long) list.get(0)).intValue() > 0) {
-            return false;
-        }
-        return true;
+    public Users checkIfUserExistsByUser_ID(Users users) {
+        return  (Users) entityManager.createQuery("FROM Users WHERE id=?1").
+        		setParameter(1, users.getId()).getSingleResult();
     }
 
     /*

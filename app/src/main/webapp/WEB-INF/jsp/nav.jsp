@@ -1,4 +1,4 @@
-         
+       
 <nav
 	class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark fixed-top">
 	<div class="container">
@@ -23,8 +23,13 @@
 						data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					</button>
 					<div class="dropdown-menu">
-						<form id="verifyEmail" action="/guest/verifyEmail">
-							<button type="submit" class="btn">Activate my Account</button>
+						<form id="verifyEmail" action="/guest/verifyEmail?mode=email">
+							<button type="submit" class="btn">Activate my Account using Email</button>
+						</form>
+					</div>
+					<div class="dropdown-menu">
+						<form id="verifyEmail" action="/guest/verifyEmail?mode=sms">
+							<button type="submit" class="btn">Activate my Account using SMS</button>
 						</form>
 					</div>
 				</div>
@@ -143,35 +148,31 @@
 					<label for="First Name">Enter Your Email ID / Phone Number </label> <input
 						type="text" name="mobileNumberOrEmail" class="form-control"
 						id="forgotEmailId" aria-describedby="emailHelp"
-						placeholder="Enter Your Email ID">
+						placeholder="Enter Your Email ID / Phone Number">
 				</div>
-
-				<div id="setPasswordGroup" class="form-group">
-					<label for="temperoryPassword">Enter Email ID : </label> 
-					<input 	type="text" name="emailId" class="form-control"
-						id="forgotEmailIdNew" aria-describedby="emailHelp"
-						placeholder="Email Id"> 
+			<div id="takeOTPorPassword"  style="display: none" >
+				<div>
 				   <label for="temperoryPassword">Enter Temperory Password : </label>
-				    <input type="text" name="temporaryActivationString" class="form-control" id="tempPassword"
-						aria-describedby="emailHelp" placeholder="Enter Temperory Password you have received">
-
-					<label for="newPassword">Enter New Password : </label> <input
-						type="text" name="newPassword" class="form-control"
-						id="newPassword" aria-describedby="emailHelp"
+				   <input type="text" name="temporaryActivationString" class="form-control" id="tempPassword"
+						aria-describedby="emailHelp" placeholder="Enter Temperory Password / OTP">
+						</div>
+			    <div>
+					<label for="newPassword">Enter New Password : </label> 
+					<input type="text" name="newPassword" class="form-control" id="newPassword" aria-describedby="emailHelp"
 						placeholder="Enter new Password"> <label
 						for="temperoryPassword">Confirm Password : </label> <input
 						type="text" name="confirmPassword" class="form-control"
 						id="confirmPassword" aria-describedby="emailHelp"
 						placeholder="Confirm New Password">
 				</div>
-
+			</div>
 
 				<!-- Modal footer -->
 				<div class="modal-footer">
 					<button id="forgotPasswordButton" type="button"
 						class="btn btn-primary">Send Temperory Password</button>
-					<button id="setPermanentPasswordButton" type="button"
-						class="btn btn-primary">Have Temperory Password ?</button>
+					<!-- <button id="setPermanentPasswordButton" type="button"
+						class="btn btn-primary">Have Temperory Password ?</button> -->
 					<button id="resetPasswordButton" style="display: none"
 						type="button" class="btn btn-primary">Reset Password</button>
 					<button type="button" class="btn btn-danger" data-dismiss="modal"
@@ -190,7 +191,7 @@ $( document ).ready(function() {
 	  $("#success").hide();
 	  $("#setPasswordGroup").hide();
 	  $( "#forgotPasswordButton" ).click(function() {
-		  $("#failure").hide();
+	    $("#failure").hide();
 		  $("#setPasswordGroup").hide();
 		  $("#success").hide();
 		  var forgotEmailId = "emailId="+$("#forgotEmailId").val();
@@ -200,7 +201,9 @@ $( document ).ready(function() {
 	        data: forgotEmailId,
 	        success: function(response, textStatus, jqXHR){
 	        	var result = JSON.stringify(response.message, null, 4)
-				   $('#success').html(result);
+	        	alert("result" + result );
+				$('#success').html(result);
+				$("#takeOTPorPassword").show();
 	        	$("#setPasswordGroup").show();
 	        	$("#forgotPasswordGroup").hide();
 	        	$("#forgotPasswordButton").hide();
@@ -209,12 +212,12 @@ $( document ).ready(function() {
 	        	$("#forgotEmailIdNew").val($("#forgotEmailId").val()); 
 		    	$("#success").show();
 	        },
-	        error: function (response, textStatus, errorThrown)
-	         {
+	       error: function (response, textStatus, errorThrown)
+	        {
 	    	   var result = JSON.stringify(response.responseJSON.message, null, 4)
 			   $('#failure').html(result);
 	    	   $("#failure").show();
-	         }
+	        }
 	    })
 	  }),
 	  $( "#buttonClose").click(function() {
@@ -240,12 +243,12 @@ $( document ).ready(function() {
     		$("#setPermanentPasswordButton").show();
     		$("#resetPasswordButton").hide();
     	}),$( "#resetPasswordButton").click(function() {
-           var datatosend = {
-        		                            mobileNumberOrEmail:$("#forgotEmailIdNew").val(),
-                                            temporaryActivationString:$("#tempPassword").val(),
-        		                            password:$("#newPassword").val(),
-        		                            confirmPassword:$("#confirmPassword").val()
-        		                            };
+    	   var datatosend = {
+           					 mobileNumberOrEmail:$("#forgotEmailId").val(),
+                             temporaryActivationString:$("#tempPassword").val(),
+        		             password:$("#newPassword").val(),
+        		             confirmPassword:$("#confirmPassword").val()
+        		            };
            $.ajax({
                url: '/guest/resetPassword',
                type: "POST",
@@ -257,14 +260,14 @@ $( document ).ready(function() {
                   $('#failure').hide();
                console.log("Success");
                },
-               error: function (response, textStatus, errorThrown)
-                {
+              error: function (response, textStatus, errorThrown)
+               {
             	  $('#failure').html(response.responseJSON.message);
             	  $('#failure').show();
             	  $('#success').hide();
             	  console.log("Failure");
             	  
-             }
+            }
            })
         })
 	});

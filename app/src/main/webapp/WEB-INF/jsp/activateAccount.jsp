@@ -77,24 +77,22 @@
 		</div>
 	</c:if>
  --%>
-
 	<div class="jumbotron">
 		<div class="container">
-			<h3>Enter the temporary password sent to your email</h3>
+			<h3>Enter the temporary password sent to your email or OTP sent to your mobile </h3>
 					<form id="registrationForm" action="/guest/activateUser" method="post">
-					<input type="text"class="form-control" placeholder="Email ID" id="unverifiedEmailId" name="emailAddress" value='<c:out value="${userEmailId}"></c:out>'>
+					<input type="text"class="form-control" placeholder="Email ID / Phone Number" id="unverifiedEmailId" name="mobileNumberOrEmail" value='<c:out value="${userEmailId}"></c:out>'>
 					<div class="form-group">
-						<label for="Temporary Password">Temporary Password</label> 
+						<label for="Temporary Password / OTP">Temporary Password</label> 
 						<input type="password" name="temporaryActivationString" class="form-control"
 							id="temporaryActivationString" aria-describedby="emailHelp"
-							placeholder="Temporary Password">
+							placeholder="Temporary Password / OTP ">
 					</div>
 					<div class="form-group">
 						<label for="lastName">New Password</label> <input
 							type="password" name="password" class="form-control"
 							id="password" placeholder="New Password">
 					</div>
-					
 					<div class="form-group">
 						<label for="confirmPassword">Confirm Password </label> <input
 							type="password" name="confirmPassword" class="form-control"
@@ -104,7 +102,6 @@
 				</form>
 		</div>
 	</div>
-	
 		</div>
 	
 	<!-- /.row -->
