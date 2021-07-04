@@ -113,36 +113,40 @@ public class RegistrationServiceImpl implements IRegistrationService {
         return false;
     }
 
-    @Override
+    @SuppressWarnings("deprecation")
+	@Override
     public User adduserandGetId(UserDTO userDTO, Set<Role> roles) throws Exception {
         Long userId = 0L;
         User user = new User();
+        Users storedusers = null;
         
         // assume the email/phone number is present
         boolean result = true;
         try {
             modelMapper.map(userDTO, user);
             int validFor = AppUtils.getAccountValidityExpiryAfterDays();
-            Users storeduser = null;
-            
+           
             
             if(!StringUtils.isEmpty(userDTO.getEmailAddress()) 
                     && AppUtils.isEmailId(userDTO.getEmailAddress())){
-                storeduser = registrationDAO.checkIfUserExistbyEmailId(user);
+            	storedusers = registrationDAO.checkIfUserExistbyEmailId(user);
             }else if (!StringUtils.isEmpty(userDTO.getMobileNumber()) 
                     && AppUtils.isPhoneNumber(userDTO.getMobileNumber())) {
-                storeduser = registrationDAO.checkifUserExistbyPhoneNumber(user);
+            	storedusers = registrationDAO.checkifUserExistbyPhoneNumber(user);
             }
             
             // new user
-            if (storeduser == null) {
+            if (storedusers == null) {
                 String temperoryActivationString = AppUtils.generateRandomString();
                 user.setTemporaryActivationSentDate(System.currentTimeMillis());
                 user.setTemporaryActivationString(temperoryActivationString);
            //    user.setPassword(AppUtils.encryptPassword(user.getPassword()));
                 user.setTemporaryActivationvalidforInMinutes(temperoryactivationvalidtillminutes);
                 // Storing User
-                user = registrationDAO.addUserandGetUserId(user, roles);
+                //one
+                storedusers = registrationDAO.addUserandGetUserId(user, roles);
+                user.setUserId(storedusers.getId());
+                user = registrationDAO.addUserandGetUserId1(user);
                 File filetobeUploaded = userDTO.getImage() != null ? userDTO.getImage() : null;
                 if (uploadimage != null && uploadimage.equals("folder") && filetobeUploaded != null) {
                     byte[] bytes = Files.readAllBytes(filetobeUploaded.toPath());

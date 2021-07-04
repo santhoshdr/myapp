@@ -26,9 +26,9 @@ public class Users {
     @Column(name = "user_id")
     private Long id;
     
-    @Column(name = "email",unique=true)
+    @Column(name = "email",nullable = true)
     private String email;
-    @Column(name = "phonenumber",unique=true)
+    @Column(name = "phonenumber",nullable = true)
     private String phonenumber;
     @Column(name = "password")
     private String password;

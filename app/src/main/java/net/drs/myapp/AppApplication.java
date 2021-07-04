@@ -1,6 +1,7 @@
 package net.drs.myapp;
 
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +23,12 @@ public class AppApplication {
     @Value("${db.port.h2}")
     private String dbport;
     public static void main(String[] args) {
+    	
+    	
+    	 Map<String, String> env = System.getenv();
+         for (Map.Entry<String, String> entry : env.entrySet()) {
+             System.out.println(entry.getKey() + " : " + entry.getValue());
+         }
         SpringApplication.run(AppApplication.class, args);
     }
     @Bean(initMethod = "start", destroyMethod = "stop")

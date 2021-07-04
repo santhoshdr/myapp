@@ -53,9 +53,20 @@
 			<version>1.0</version>
 			<systemPath>${project.basedir}\PaytmChecksum.jar</systemPath>
 		</dependency>
+		
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-taglibs -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-taglibs</artifactId>
+    <version>5.4.6</version>
+</dependency>
 
 
-
+<dependency>
+  <groupId>junit</groupId>
+  <artifactId>junit</artifactId>
+  <version>4.13.2</version>
+</dependency>
 
 
 		<!-- https://mvnrepository.com/artifact/com.sun.mail/javax.mail -->
@@ -134,12 +145,21 @@
 
 		<!-- my sql driver -->
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+	<!-- 
+		This is for mysql
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.19</version>
-		</dependency>
+		</dependency> -->
 
+
+<!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+<dependency>
+    <groupId>com.microsoft.sqlserver</groupId>
+    <artifactId>mssql-jdbc</artifactId>
+    <version>8.4.1.jre8</version>
+</dependency>
 
 
 		<dependency>
@@ -184,11 +204,11 @@
 		</dependency>
 
 		<!-- Session management http://www.sedooe.com/2016/04/rest-authentication-using-spring-security-and-spring-session/ -->
-		<dependency>
+	<!-- 	<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session</artifactId>
 			<version>1.0.0.RELEASE</version>
-		</dependency>
+		</dependency> -->
 
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -228,10 +248,11 @@
 			</plugin>
 
 
-			<!-- <plugin> <artifactId>maven-compiler-plugin</artifactId> <version>3.1</version> 
+			 <plugin> <artifactId>maven-compiler-plugin</artifactId> <version>3.1</version> 
 				<configuration> <fork>true</fork> <executable>C:\Program Files\Java\jdk1.8.0_261\bin\javac.exe</executable> 
-				<skipTests>true</skipTests> Command line mvn clean install -Dmaven.test.skip=true 
-				</configuration> </plugin> -->
+				<skipTests>true</skipTests> 
+				
+				</configuration> </plugin> 
 
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>

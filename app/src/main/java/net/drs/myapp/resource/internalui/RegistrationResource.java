@@ -360,7 +360,7 @@ public class RegistrationResource extends GenericService {
 				System.out.println("Activating using Phone Number ");
 				OtpDTO otp = new OtpDTO();
 				otp.setPhoneNumber(userDTO.getMobileNumberOrEmail());
-				otp.setOtpNumber(userDTO.getTemperoryPassword()); // OTP
+				otp.setOtpNumber(userDTO.getTemporaryActivationString()); // OTP
 				otp.setPassword(userDTO.getPassword());
 				return verifyOTP(otp);
 			}

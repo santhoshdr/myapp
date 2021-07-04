@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: directory-deployment
+  labels:
+    app: directory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: directory
+  template:
+    metadata:
+      labels:
+        app: directory
+    spec:
+      containers:
+      - name: directory
+        image: santhoshdr/directory-1.0
+        ports:
+        - containerPort: 80

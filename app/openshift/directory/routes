@@ -1,0 +1,9 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: directory-deployment
+spec:
+  host: www.example.com
+  to:
+    kind: Service
+    name: directory-deployment

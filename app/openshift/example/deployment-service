@@ -1,0 +1,78 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: demo-credentials
+type: Opaque
+data:
+  database-name: YXBwLWRldjE=
+  username: c3FsYXV0aA==
+  password: c3FsYXV0aA==
+  
+---
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: db-props
+data:
+  class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: directory
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: directory
+  template:
+    metadata:
+      labels:
+        app: directory
+    spec:
+      containers:
+        - name: dir-dep
+          image: santhoshdr/lcl8
+          args: ["--spring.profiles.active=sql"]
+          imagePullPolicy: Always
+          env:
+            - name: database-name
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: database-name
+            - name: username
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: username
+            - name: password
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: password
+            - name: class-name
+              valueFrom:
+                configMapKeyRef:
+                  name: db-props
+                  key: class-name
+          ports:
+            - containerPort: 8085
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-directory
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8085
+      targetPort: 8085
+      protocol: TCP
+      nodePort: 31003
+  selector:
+    app: directory
+    

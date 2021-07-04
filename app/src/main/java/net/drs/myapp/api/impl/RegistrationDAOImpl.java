@@ -158,7 +158,7 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
     }
 
     @Override
-    public User addUserandGetUserId(User user, Set<Role> roles) throws Exception {
+    public Users addUserandGetUserId(User user, Set<Role> roles) throws Exception {
         Users users = new Users();
         try {
             users.setEmail(user.getEmailAddress());
@@ -172,15 +172,13 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
             users.setLastName(user.getLastName());
             users.setPhonenumber(user.getMobileNumber());
             entityManager.persist(users);
-            user.setUserId(users.getId());
-            // Storing in userdetail table
-            entityManager.merge(user);
+            return users;
+          
         } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Exception Occurred while storing the data. Please try after some time.");
 
         }
-        return user;
     }
 
     // new
@@ -283,6 +281,12 @@ public class RegistrationDAOImpl implements IRegistrationDAO {
         return  (Users) entityManager.createQuery("FROM Users WHERE id=?1").
         		setParameter(1, users.getId()).getSingleResult();
     }
+
+	@Override
+	public User addUserandGetUserId1(User user) throws Exception {
+		  entityManager.persist(user);
+          return user;
+	}
 
     /*
      * @Override public boolean checkIfUserExistbyPhoneNumber(User user) { try {

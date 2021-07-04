@@ -14,7 +14,10 @@ public interface  IRegistrationDAO{
     // normal User
     User addUser(User user, Set<Role> roles);
 
-    User addUserandGetUserId(User user, Set<Role> roles) throws Exception;
+    Users addUserandGetUserId(User user, Set<Role> roles) throws Exception;
+    
+    
+    User addUserandGetUserId1(User user) throws Exception;
     
     Users  checkIfUserExistsByUser_ID(Users user) ;
 
