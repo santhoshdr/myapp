@@ -30,6 +30,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String jwt = getJwtFromRequest(request);
             jwt = (String) request.getSession().getAttribute("userloggedin");
+            
+            
+            // this is from payment flow... 
+            if(jwt == null) {
+            	jwt = (String) request.getParameter("token");
+            	request.getSession().setAttribute("userloggedin",jwt);
+            }
+            
+            
             if (jwt != null && StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
                 Long userId = tokenProvider.getUserIdFromJWT(jwt);
                 /*

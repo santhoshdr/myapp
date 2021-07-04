@@ -5,8 +5,10 @@ import java.util.Set;
 import net.drs.myapp.dto.CompleteRegistrationDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Fotographer;
+import net.drs.myapp.model.OtpDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
 
 public interface IRegistrationService {
 
@@ -28,4 +30,10 @@ public interface IRegistrationService {
 	boolean addFotographer(Fotographer fotographer);
 	
 	boolean activateUserAccount(UserDTO userDTO) throws Exception;
+	
+	Users checkIfUserExists(String emailorphone,String loginType ) throws Exception;
+	// login type SMS / Email
+	
+	boolean verifyOtpForPhonumber(OtpDTO otpDTO) throws Exception;
+	
 }

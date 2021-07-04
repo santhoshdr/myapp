@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import net.drs.common.notifier.NotificationRequest;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.dao.INotifyByEmailDAO;
 import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.SMSDTO;
-import net.drs.myapp.model.Email;
-import net.drs.myapp.model.SMS;
+import net.drs.myapp.notification.Email;
+import net.drs.myapp.notification.NotificationRequest;
+import net.drs.myapp.notification.SMS;
 
 @Repository("notificationByEmailService")
 @Transactional

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,13 +20,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
-import net.drs.common.notifier.NotificationDataConstants;
-import net.drs.common.notifier.NotificationRequest;
-import net.drs.common.notifier.NotificationTemplate;
-import net.drs.common.notifier.NotificationType;
 import net.drs.myapp.api.INotifyByEmail;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.constants.ApplicationConstants;
@@ -37,7 +31,10 @@ import net.drs.myapp.dto.SMSDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
-import net.drs.myapp.mqservice.RabbitMqService;
+import net.drs.myapp.notification.NotificationDataConstants;
+import net.drs.myapp.notification.NotificationRequest;
+import net.drs.myapp.notification.NotificationTemplate;
+import net.drs.myapp.notification.NotificationType;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
 
@@ -53,9 +50,6 @@ public class RegistrationResource extends GenericService {
 
     @Autowired
     INotifyByEmail notificationByEmailService;
-
-    @Autowired
-    RabbitMqService rabbitMqService;
 
     @Value("${notificationByEmail.or.SMS}")
     private String notifyByEmailOrSMS;
@@ -119,13 +113,13 @@ public class RegistrationResource extends GenericService {
                 data.put(NotificationDataConstants.USER_NAME, userDTO.getFirstName());
                 data.put(NotificationDataConstants.TEMPERORY_ACTIVATION_STRING, user.getTemporaryActivationString());
                 notificationReq = new NotificationRequest(notificationId, emailDto.getEmailId(), null, data, NotificationTemplate.NEW_REGISTRATION, NotificationType.EMAIL);
-                rabbitMqService.publishSMSMessage(notificationReq);
+           //     rabbitMqService.publishSMSMessage(notificationReq);
             } else if (user != null && user.getUserId() > 0 && notifyByEmailOrSMS.equalsIgnoreCase(NotificationType.SMS.getNotificationType())) {
                 SMSDTO smsDTO = new SMSDTO(user.getUserId(), user.getMobileNumber(), "otp message");
                 smsDTO = notificationByEmailService.insertDatatoDBforNotification(smsDTO);
                 notificationReq = new NotificationRequest(smsDTO.getId(), null, userDTO.getMobileNumber(), data, NotificationTemplate.NEW_REGISTRATION, NotificationType.SMS);
             }
-            rabbitMqService.publishSMSMessage(notificationReq);
+      //      rabbitMqService.publishSMSMessage(notificationReq);
             String successMessage = String.format("User Added Successfully. Email Sent to the provided Email id: %s. " + "Activate your account by using code sent to your email ID",
                     userDTO.getEmailAddress());
             SuccessMessageHandler messageHandler = new SuccessMessageHandler(new Date(), successMessage, "");

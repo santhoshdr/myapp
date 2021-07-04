@@ -23,10 +23,10 @@ import org.springframework.stereotype.Repository;
 
 import com.sun.mail.smtp.SMTPTransport;
 
-import net.drs.common.notifier.NotificationDataConstants;
-import net.drs.common.notifier.NotificationRequest;
-import net.drs.common.notifier.NotificationTemplate;
-import net.drs.myapp.model.Email;
+import net.drs.myapp.notification.Email;
+import net.drs.myapp.notification.NotificationDataConstants;
+import net.drs.myapp.notification.NotificationRequest;
+import net.drs.myapp.notification.NotificationTemplate;
 
 @Repository("sendNotification")
 @Transactional
@@ -74,7 +74,7 @@ public class SendNotificationImpl implements ISendNotification {
             break;
         }
         int result = sendEmail(notificationRequest);
-        Email email = entityManager.find(net.drs.myapp.model.Email.class, notificationRequest.getNotificationId());
+        Email email = entityManager.find(Email.class, notificationRequest.getNotificationId());
         email.setNeedtoSendEmail(false);
         email.setUpdatedBy("SYSTEM");
         email.setEmailMessageSent(notificationRequest.getEmailContent());

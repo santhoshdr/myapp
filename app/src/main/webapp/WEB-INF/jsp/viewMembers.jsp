@@ -1,24 +1,12 @@
+<!--  ALL Members -->
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="sec"
-	uri="http://www.springframework.org/security/tags"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 
 <head>
-<!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script> -->
-
-<script
-              src="https://code.jquery.com/jquery-3.5.0.min.js"
-              integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ="
-              crossorigin="anonymous"></script>
-
-<link rel="stylesheet"
-    href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
-
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
-    
-    <link rel="stylesheet"
-    href="/resources/css/dataTables.bootstrap4.min.css">
-<link href="/resources/css/bootstrap.min.css" rel="stylesheet">   
- <link rel="stylesheet" href="/resources/css/jquery.dataTables.min.css"></style>     
+<link rel="stylesheet" href="http://cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+<script type="text/javascript"
+    src="http://cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
     
     
 
@@ -33,22 +21,18 @@
 		<table id="myTable" class="table table-striped">
 			<thead>
 				<tr>
-				<th>User Id</th>
-					<th>First Name</th>
-					<th>Last Name</th>
+					<th>Name</th>
 					<th>Phone Number</th>
-					<th>Email ID</th>
-     				<th class="col-3">Action</th>
+					<th>Action</th>
+     				<th>Status</th>
 				</tr>
 			</thead>
 			<tbody>
 				<c:forEach items="${listofusers}" var="element">
 					<tr>
-					<td>${element.id}</td>
+					<td hidden>${element.id}</td>
 						<td>${element.firstName}</td>
-						<td>${element.lastName}</td>
 						<td>${element.mobileNumber}</td>
-						<td>${element.emailAddress}</td>
 						<td>
 						<sec:authorize	access="hasRole('ROLE_ADMIN') and isAuthenticated()">
 							<c:choose>
@@ -61,7 +45,19 @@
 								</c:choose>
 						</sec:authorize>
 						<button type="button" class="btn btn-primary btn-lg open-modal viewMember"  id="viewMemberDetails" >View Member Details</button>
+						
 					</td>
+					<td>
+					<c:choose>	
+						<c:when test="${element.isActive()}">
+						<label  for="confirm">Active</label> 
+						</c:when>
+						<c:otherwise>
+						<label  for="confirm">InActive</label> 
+						</c:otherwise>
+					</c:choose>
+					</td>
+					
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -90,7 +86,7 @@
                         <textarea rows="10" cols="50" id="comments" ></textarea>
                       </div>
                     <button type="submit" class="btn btn-primary" id="submit">Submit</button>
-                    <button type="submit" class="btn btn-primary">Close</button>
+                    <button type="submit" class="btn">Close</button>
                     </div>
                 </form>
             </div>
@@ -116,7 +112,7 @@
 
       <!-- Modal footer -->
       <div class="modal-footer">
-        <button type="button"  id="viewMemberClostButton" class="btn btn-danger" data-dismiss="modal">Close</button>
+        <button type="button"  id="viewMemberClostButton" class="btn btn-primary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -144,10 +140,10 @@ $(document).ready(function(){
                 	location.reload(true);
                     var result = JSON.stringify(response.message, null, 4)
                 },
-                error: function (response, textStatus, errorThrown)
-                 {
+               error: function (response, textStatus, errorThrown)
+                {
                    var result = JSON.stringify(response.responseJSON.message, null, 4)
-                     }
+                    }
             });
         } 
 	 }),
@@ -163,25 +159,40 @@ $(document).ready(function(){
 	                    userId : userId
 	                },
 	                success: function(response, textStatus, jqXHR){
-	                    var result = JSON.stringify(response.message, null, 4)
-	                     var table =""
+	                var result = JSON.stringify(response.message, null, 4)
+                    var table =""
 	                    table = $('<table>').addClass('foo');
                         var row = '<tr><td>User ID</td><td>'+response.id+'</td></tr>'+
                                              '<tr><td>First Name</td><td>'+response.firstName+'</td></tr>'+
-                                             '<tr><td>LastName Name</td><td>'+response.lastName+'</td></tr>' +
                                              '<tr><td>Mobile Number</td><td>'+response.mobileNumber+'</td></tr>'+
-                                             '<tr><td>Email Id</td><td>'+response.emailAddress+'</td></tr>'+
                                              '<tr><td>Gotram</td><td>'+response.gotram+'</td></tr>'+
                                              '<tr><td>Address</td><td>'+response.address+'</td></tr>';
+                                             
+                       var i;
+                       var paymentDetails = '';
+						for (i = 0; i < response.paymentDetailsList.length; i++) {
+						paymentDetails =paymentDetails + '<tr><td>Payment Order ID'+ - (i + 1) + '</td>'
+						if(response.paymentDetailsList[i].transactionStatus == 'SUCCESS'){
+  						  paymentDetails =  paymentDetails + '<td>'+response.paymentDetailsList[i].orderId+' - Transaction Success <br></td>' ;
+  						}else{
+  						  paymentDetails =  paymentDetails + '<td>'+response.paymentDetailsList[i].orderId+' - Transaction Failed <br></td>';
+                     	 }
+                     	paymentDetails = paymentDetails+'</tr>'
+ 						}
+ 						var retry;
+						if(response.finalPaymentStatus != 'SUCCESS'){
+  						  retry =  '<tr><td> Retry Payment</td><td><a href="/user/retryFailedPayment/'+response.id+'">Retry<a></td></tr>';
+						}
+                        row = row + paymentDetails + retry;
                         table.append(row);
                         $("#memberDetails").html(table);
 	                    $('#viewMemberModal').show();
 	                },
-	                error: function (response, textStatus, errorThrown)
-	                 {
+	               error: function (response, textStatus, errorThrown)
+	                {
 	                   var result = JSON.stringify(response.responseJSON.message, null, 4)
 	                   alert("error"+ result);
-	                     }
+	                    }
 	            });
 	       
 	     }),$("#myTable").on('click','.disableUser',function(){
@@ -201,10 +212,10 @@ $(document).ready(function(){
 	                	location.reload(true);
 	                    var result = JSON.stringify(response.message, null, 4)
 	                },
-	                error: function (response, textStatus, errorThrown)
-	                 {
+	               error: function (response, textStatus, errorThrown)
+	                {
 	                   var result = JSON.stringify(response.responseJSON.message, null, 4)
-	                     }
+	                    }
 	            });
 	        } 
 	     }),

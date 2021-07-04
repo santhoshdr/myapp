@@ -1,0 +1,56 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: directory
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: directory
+  template:
+    metadata:
+      labels:
+        app: directory
+    spec:
+      containers:
+        - name: dir-dep
+          image: santhoshdr/lcl1
+          imagePullPolicy: Always
+          env:
+            - name: SQL_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: username
+            - name: SQL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: password
+            - name: SQL_DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: host
+            - name: SQL_DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: demo-credentials
+                  key: port
+          ports:
+            - containerPort: 8085
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: app-directory
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8085
+      targetPort: 8085
+      protocol: TCP
+      nodePort: 31003
+  selector:
+    app: directory

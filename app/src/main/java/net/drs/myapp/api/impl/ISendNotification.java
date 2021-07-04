@@ -1,6 +1,6 @@
 package net.drs.myapp.api.impl;
 
-import net.drs.common.notifier.NotificationRequest;
+import net.drs.myapp.notification.NotificationRequest;
 
 public interface ISendNotification {
 

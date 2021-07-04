@@ -1,8 +1,8 @@
 package net.drs.myapp.api;
 
-import net.drs.common.notifier.NotificationRequest;
 import net.drs.myapp.dto.EmailDTO;
 import net.drs.myapp.dto.SMSDTO;
+import net.drs.myapp.notification.NotificationRequest;
 
 public interface INotifyByEmail {
 

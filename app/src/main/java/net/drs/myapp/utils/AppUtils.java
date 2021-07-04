@@ -1,6 +1,8 @@
 package net.drs.myapp.utils;
 
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,7 +44,7 @@ public class AppUtils {
     }
     
     public static boolean isPhoneNumber(String enteredValue) {
-        Pattern p = Pattern.compile("^\\+(?:[0-9] ?){6,14}[0-9]$"); 
+        Pattern p = Pattern.compile("(0/91)?[7-9][0-9]{9}"); 
         Matcher m = p.matcher(enteredValue); 
         return (m.find() && m.group().equals(enteredValue));
     }
@@ -52,7 +54,10 @@ public class AppUtils {
         return enteredValue.matches(regex);
         
     }
-    
+    public static Timestamp getCurrentTimeStamp() {
+        return new Timestamp(System.currentTimeMillis());
+        
+    }
     
     
     public static Date getCurrentDate() {
@@ -65,5 +70,26 @@ public class AppUtils {
          java.util.Date uDate = new java.util.Date();
          uDate.setYear(2120);
          return new java.sql.Date(uDate.getTime());
+     }
+     
+     
+     public static char[] fourDigitOTPForMobileVerification() {
+         
+         int len = 4;
+         String numbers = "0123456789"; 
+         
+         // Using random method 
+         Random rndm_method = new Random(); 
+   
+         char[] otp = new char[len]; 
+   
+         for (int i = 0; i < len; i++) 
+         { 
+             // Use of charAt() method : to get character value 
+             // Use of nextInt() as it is scanning the value as int 
+             otp[i] = numbers.charAt(rndm_method.nextInt(numbers.length())); 
+         } 
+         return otp; 
+         
      }
 }

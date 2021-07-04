@@ -1,15 +1,14 @@
 package net.drs.myapp.api.impl;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.commons.io.IOCase;
-import org.apache.commons.io.filefilter.PrefixFileFilter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,13 +18,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.app.exception.RoleException;
-import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dao.IUserDAO;
 import net.drs.myapp.dto.ResetPasswordDTO;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
 import net.drs.myapp.dto.WedDTO;
 import net.drs.myapp.exceptions.UserException;
+import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
 import net.drs.myapp.model.Users;
 import net.drs.myapp.model.Wed;
@@ -53,42 +52,58 @@ public class UserDetailsImpl implements IUserDetails {
     public boolean changePassword(ResetPasswordDTO resetPasswordDTO) throws Exception {
         return userDAO.changePassword(resetPasswordDTO);
     }
-
+//
+//    @Override
+//    public List<UserServiceDTO> getAllUsers(int numberofUsers) {
+//
+//        List<UserServiceDTO> userDTO = new ArrayList<UserServiceDTO>();
+//        System.out.println("uploadImageLocation ====> " + uploadImageLocation);
+//
+//        File directory = new File(uploadImageLocation);
+//
+//        List<User> users = userDAO.getAllUsers(numberofUsers);
+//        users.forEach(user -> {
+//            File[] files = null;
+//            UserServiceDTO udto = new UserServiceDTO();
+//            files = directory.listFiles((FileFilter) new PrefixFileFilter(user.getId().toString() + "--", IOCase.SENSITIVE));
+//            if (files != null && files.length > 0) {
+//                udto.setImage(files[0]);
+//            }
+//
+//            user.getRoles().forEach(v -> {
+//                if (v.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN)) {
+//                    udto.setAdmin(true);
+//                }
+//            });
+//
+//            // udto.setAdmin(user.getRoles().contains(ApplicationConstants.ROLE_ADMIN)?true:false);
+//            modelMapper.map(user, udto);
+//            userDTO.add(udto);
+//        });
+//        return userDTO;
+//    }
+//
+//
+    
     @Override
-    public List<UserServiceDTO> getAllUsers(int numberofUsers) {
-
-        List<UserServiceDTO> userDTO = new ArrayList<UserServiceDTO>();
-        System.out.println("uploadImageLocation ====> " + uploadImageLocation);
-
-        File directory = new File(uploadImageLocation);
-
-        List<User> users = userDAO.getAllUsers(numberofUsers);
-        users.forEach(user -> {
-            File[] files = null;
-            UserServiceDTO udto = new UserServiceDTO();
-            files = directory.listFiles((FileFilter) new PrefixFileFilter(user.getId().toString() + "--", IOCase.SENSITIVE));
-            if (files != null && files.length > 0) {
-                udto.setImage(files[0]);
-            }
-
-            user.getRoles().forEach(v -> {
-                if (v.getRole().equalsIgnoreCase(ApplicationConstants.ROLE_ADMIN)) {
-                    udto.setAdmin(true);
-                }
-            });
-
-            // udto.setAdmin(user.getRoles().contains(ApplicationConstants.ROLE_ADMIN)?true:false);
-            modelMapper.map(user, udto);
-            userDTO.add(udto);
-        });
-        return userDTO;
+    public List<Users>  getAllUsers(int numberofUsers) {
+        return userDAO.getAllUsers(numberofUsers);
     }
 
+    
+    
+    
     // this returns user object no matter user is active or inactive
     @Override
     public User getMemberById(Long userId) {
-        return userDAO.getUser(userId);
+        return userDAO.getMemberByID(userId);
     }
+    
+	@Override
+	public User getUserById(Long userid) {
+		 return userDAO.getUser(userid);
+	}
+    
 
     @Override
     public List<UserServiceDTO> getAllActiveUsers(int numberofUsers) {
@@ -213,8 +228,8 @@ public class UserDetailsImpl implements IUserDetails {
     }
 
     @Override
-    public List<WedDTO> fetchMyWedProfiles(Long loggedinUserId) throws Exception {
-        List<Wed> webList = userDAO.fetchWedProfile(loggedinUserId);
+    public List<WedDTO> fetchMyWedProfiles(Long loggedinUserId,Long wedid) throws Exception {
+        List<Wed> webList = userDAO.fetchWedProfile(loggedinUserId,wedid);
         WedDTO wedDTO = null;
         List<WedDTO> webDTOList = new ArrayList<WedDTO>();
 
@@ -229,7 +244,7 @@ public class UserDetailsImpl implements IUserDetails {
     @Override
     public WedDTO updateWedProfile(WedDTO wedDTO, Long addedBy) throws Exception {
         try {
-            List<WedDTO> webList = fetchMyWedProfiles(addedBy);
+            List<WedDTO> webList = fetchMyWedProfiles(addedBy,wedDTO.getId());
             boolean authorized = false;
             for (WedDTO wed : webList) {
                 if (wed.getId() == wedDTO.getId()) {
@@ -245,19 +260,18 @@ public class UserDetailsImpl implements IUserDetails {
             wed.setAddedBy(addedBy);
             Wed storedWed = userDAO.updateWedProfile(wed);
             modelMapper.map(storedWed, wedDTO);
-            upload(storedWed,wedDTO,"images");
-            upload(storedWed,wedDTO,"documents");
-            
-        return wedDTO;
-    }catch(Exception e) {
-        
-    }
+            upload(storedWed, wedDTO, "images");
+            upload(storedWed, wedDTO, "documents");
+
+            return wedDTO;
+        } catch (Exception e) {
+
+        }
         return wedDTO;
 
-        
     }
 
-    private void upload(Wed storedWed, WedDTO wedDTO,String type) throws Exception {
+    private void upload(Wed storedWed, WedDTO wedDTO, String type) throws Exception {
 
         String folderId = getFolderName(storedWed.getId(), storedWed.getFolderId());
 
@@ -268,19 +282,19 @@ public class UserDetailsImpl implements IUserDetails {
         if (!wedUploadDir) {
             throw new Exception("Unable to create Directory to store uploaded files. Please contact Administrator");
         }
-        
-        if(type.equalsIgnoreCase("images")) {
-        
-        for (MultipartFile image : wedDTO.getWedImage()) {
-            if (image == null || image.isEmpty()) {
-                break;
+
+        if (type.equalsIgnoreCase("images")) {
+
+            for (MultipartFile image : wedDTO.getWedImage()) {
+                if (image == null || image.isEmpty()) {
+                    break;
+                }
+                byte[] bytes = image.getBytes();
+                Path path = Paths.get(wedUploadPath + File.separator + image.getOriginalFilename());
+                Files.write(path, bytes);
             }
-            byte[] bytes = image.getBytes();
-            Path path = Paths.get(wedUploadPath + File.separator + image.getOriginalFilename());
-            Files.write(path, bytes);
-        }
         } else if (type.equalsIgnoreCase("documents")) {
-        
+
             for (MultipartFile file : wedDTO.getWedJataka()) {
                 if (file == null || file.isEmpty()) {
                     break;
@@ -289,11 +303,9 @@ public class UserDetailsImpl implements IUserDetails {
                 Path path = Paths.get(wedUploadPath + File.separator + file.getOriginalFilename());
                 Files.write(path, bytes);
             }
-            
+
         }
-        
-        
-        
+
     }
 
     @Override
@@ -306,7 +318,7 @@ public class UserDetailsImpl implements IUserDetails {
         User user = new User();
         modelMapper.map(userDTO, user);
         user.setAccountValidTill(AppUtils.getAccountValidFor100Years());
-        userDAO.addMember(user);
+        user =  userDAO.addMember(user);
 
         modelMapper.map(user, userDTO);
 
@@ -335,15 +347,14 @@ public class UserDetailsImpl implements IUserDetails {
     }
 
     @Override
-    public List<WedDTO> fetchWedProfile(Long loggedInUser, Long profileId) throws Exception {
+    public List<WedDTO> fetchWedProfile(Long loggedInUser, Long profileId,boolean canview ) throws Exception {
 
         List<WedDTO> viewWedDTO = new ArrayList<>();
         ;
-        List<WedDTO> wedDto = fetchMyWedProfiles(loggedInUser);
+        List<WedDTO> wedDto = fetchMyWedProfiles(loggedInUser,profileId);
 
-        boolean canview = false;
         for (WedDTO weddto : wedDto) {
-            if (weddto.getId() == profileId) {
+            if ( (weddto.getId() == profileId ) || canview) {
                 canview = true;
                 String folderId = getFolderName(weddto.getId(), weddto.getFolderId());
                 Path pathImages = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "images");
@@ -352,25 +363,24 @@ public class UserDetailsImpl implements IUserDetails {
                 File folderDocs = new File(pathJatakams.toString());
                 File[] listofImages = folderImages.listFiles();
                 File[] listofJatakams = folderDocs.listFiles();
-                
-                if(listofImages!=null) {
-                    String[] imageString  = new String[listofImages.length];
-                    for(int i = 0; i<listofImages.length;i++) {
-                        imageString[i]=listofImages[i].getPath();
+
+                if (listofImages != null) {
+                    String[] imageString = new String[listofImages.length];
+                    for (int i = 0; i < listofImages.length; i++) {
+                        imageString[i] = listofImages[i].getPath();
                     }
                     weddto.setWedImageFilePath(imageString);
                 }
-                if(listofJatakams!=null) {
-                    String[] docString  = new String[listofJatakams.length];
-                    for(int i = 0; i<listofJatakams.length;i++) {
-                        docString[i]=listofJatakams[i].getName();
+                if (listofJatakams != null) {
+                    String[] docString = new String[listofJatakams.length];
+                    for (int i = 0; i < listofJatakams.length; i++) {
+                        docString[i] = listofJatakams[i].getName();
                     }
                     weddto.setWedJatakaFilePath(docString);
                 }
                 viewWedDTO.add(weddto);
                 break;
             }
-
         }
         if (!canview) {
             throw new UserException("UE", "You dont have access to view this profile");
@@ -381,34 +391,34 @@ public class UserDetailsImpl implements IUserDetails {
     }
 
     @Override
-    public WedDTO  deletePhoto(String photoName, String folderName, Long addedBy) throws Exception {
+    public WedDTO deletePhoto(String photoName, String folderName, Long addedBy,Long wedId) throws Exception {
 
-        List<WedDTO> webList = fetchMyWedProfiles(addedBy);
+        List<WedDTO> webList = fetchMyWedProfiles(addedBy,wedId);
         boolean authorized = false;
         for (WedDTO wed : webList) {
             String folderId = getFolderName(wed.getId(), wed.getFolderId());
-            if(!folderId.equalsIgnoreCase(folderName)) {
+            if (!folderId.equalsIgnoreCase(folderName)) {
                 continue;
-            }else {
-            Path pathImages = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "images");
-            Path pathJatakams = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
-            File folderImages = new File(pathImages.toString());
-            File folderDocs = new File(pathJatakams.toString());
-            File[] listofImages = folderImages.listFiles();
-            File[] listofJatakams = folderDocs.listFiles();
-            for (File image : listofImages) {
-            if(image.getName().equalsIgnoreCase(photoName)) {
-                authorized = true;
-                if(image.delete()) {
-                    System.out.println("File "+ image + " Deleted Successfully by  "+ addedBy);
-                    return wed;
-                }else {
-                    throw new Exception ("Unable to delete file . Please try later");
+            } else {
+                Path pathImages = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "images");
+                Path pathJatakams = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
+                File folderImages = new File(pathImages.toString());
+                File folderDocs = new File(pathJatakams.toString());
+                File[] listofImages = folderImages.listFiles();
+                File[] listofJatakams = folderDocs.listFiles();
+                for (File image : listofImages) {
+                    if (image.getName().equalsIgnoreCase(photoName)) {
+                        authorized = true;
+                        if (image.delete()) {
+                            System.out.println("File " + image + " Deleted Successfully by  " + addedBy);
+                            return wed;
+                        } else {
+                            throw new Exception("Unable to delete file . Please try later");
+                        }
+                    } else {
+                        continue;
+                    }
                 }
-            }else {
-                continue;
-            }
-            }
             }
         }
         if (!authorized) {
@@ -418,54 +428,129 @@ public class UserDetailsImpl implements IUserDetails {
     }
 
     @Override
-    public WedDTO downloadFile(String fileName, Long loggedInUserId) throws Exception {
-        
-        List<WedDTO> webList = fetchMyWedProfiles(loggedInUserId);      
-        
+    public WedDTO downloadFile(String fileName, Long loggedInUserId,Long wedId) throws Exception {
+
+        List<WedDTO> webList = fetchMyWedProfiles(loggedInUserId,wedId);
+
         for (WedDTO wed : webList) {
             String folderId = getFolderName(wed.getId(), wed.getFolderId());
-            Path pathDocs= Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
-            File folderdocs= new File(pathDocs.toString());
+            Path pathDocs = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
+            File folderdocs = new File(pathDocs.toString());
             File[] listofDocs = folderdocs.listFiles();
-            String[] docString  = new String[listofDocs.length];
+            String[] docString = new String[listofDocs.length];
             for (File list : listofDocs) {
-                if(list.getName().equalsIgnoreCase(fileName)) {
-                    for(int i = 0; i<listofDocs.length;i++) {
-                        docString[i]=listofDocs[0].getPath();
+                if (list.getName().equalsIgnoreCase(fileName)) {
+                    for (int i = 0; i < listofDocs.length; i++) {
+                        docString[i] = listofDocs[0].getPath();
                         break;
                     }
                     wed.setWedJatakaFilePath(docString);
                     return wed;
                 }
             }
-                
-            }
+
+        }
         return null;
     }
 
     @Override
-    public boolean  deleteFile(String fileName, long wedId, Long loggedInUserId) throws Exception {
-        List<WedDTO> webList = fetchMyWedProfiles(loggedInUserId);  
+    public boolean deleteFile(String fileName, long wedId, Long loggedInUserId) throws Exception {
+        List<WedDTO> webList = fetchMyWedProfiles(loggedInUserId,wedId);
         for (WedDTO wed : webList) {
             String folderId = getFolderName(wed.getId(), wed.getFolderId());
-            
-            if(!(wed.getId() == wedId)) {
+
+            if (!(wed.getId() == wedId)) {
                 continue;
             }
-            
-            Path pathDocs= Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
-            File folderdocs= new File(pathDocs.toString());
+
+            Path pathDocs = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
+            File folderdocs = new File(pathDocs.toString());
             File[] listofDocs = folderdocs.listFiles();
-       
+
             for (File file : listofDocs) {
-                if(file.getName().equalsIgnoreCase(fileName)) {
-                    System.out.println("Deleting the file  "+ fileName +  " by " + loggedInUserId);
+                if (file.getName().equalsIgnoreCase(fileName)) {
+                    System.out.println("Deleting the file  " + fileName + " by " + loggedInUserId);
                     file.delete();
                     return true;
                 }
             }
-            }
+        }
         return false;
     }
+
+    @Override
+    public boolean updateUserRole(Long userId, List<String> roleNames, String action) {
+        Users users = userDAO.getUserById(userId);
+        switch (action) {
+        case "addRole":
+            Role role = new Role();
+            role.setRole(net.drs.myapp.utils.Role.MATRIMONY.getRole());
+            users.getRoles().add(role);
+            break;
+        case "updateRole":
+        	Set<Role> newRoleset = new HashSet<Role>();
+        	users.getRoles().clear();
+        	Role  newRoles = new Role();
+        	
+        	//bydefault.. USER ROLE SHOULD BE ADDED... 
+        	newRoles.setRole(net.drs.myapp.utils.Role.valueOf("USER").getRole());
+        	newRoleset.add(newRoles);
+        	for (String roleName : roleNames) {
+        		newRoles = new Role();
+        		newRoles.setRole(net.drs.myapp.utils.Role.valueOf(roleName).getRole());
+        		newRoleset.add(newRoles);
+			}
+            
+           	users.setRoles(newRoleset);
+            break;
+        }
+        
+        userDAO.updateUser(users);
+        return true;
+    }
+
+    @Override
+    public WedDTO fetchSelectedWedProfile(Long wedId) throws Exception {    
+        WedDTO weddto = new WedDTO();
+        
+         Wed wed = userDAO.fetchSelectedWedProfile(wedId);
+         modelMapper.map(wed, weddto);
+         
+             String folderId = getFolderName(wed.getId(), wed.getFolderId());
+             Path pathImages = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "images");
+             Path pathJatakams = Paths.get("imageuploadfolder" + File.separator + folderId + File.separator + "documents");
+             File folderImages = new File(pathImages.toString());
+             File folderDocs = new File(pathJatakams.toString());
+             File[] listofImages = folderImages.listFiles();
+             File[] listofJatakams = folderDocs.listFiles();
+             
+             String[] documentNames = new String[listofJatakams.length];
+             String[] documentPath= new String[listofJatakams.length];
+             String[] images = new String[listofImages.length];
+             
+             for (int i = 0; i < listofImages.length; i++) {
+                 images[i] = listofImages[i].getPath();
+             }
+             weddto.setWedImageFilePath(images);
+             
+             for (int i = 0; i < listofJatakams.length; i++) {
+                 documentNames[i] = listofJatakams[0].getName();
+                 documentPath[i] = listofJatakams[0].getPath();
+             }
+             weddto.setWedJatakaFileName(documentNames);
+             weddto.setWedJatakaFilePath(documentPath);
+         return weddto;
+    }
+
+	@Override
+	public List<User> getAllMembersAddedbyMe(Long loggedInUser) {
+		return userDAO.getAllMembersAddedByMe(loggedInUser);	}
+
+	@Override
+	public Users getUsersById(Long userid) {
+		return userDAO.getUserById(userid);
+	}
+
+
 
 }

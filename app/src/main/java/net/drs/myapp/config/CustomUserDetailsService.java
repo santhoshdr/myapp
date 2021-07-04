@@ -27,16 +27,20 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
              // Let people login with either username or email
-            Users users = UsersRepository.findByUsersnameOrEmail(usernameOrEmail, usernameOrEmail)
+            Users users = UsersRepository.findByPhonenumberOrEmail(usernameOrEmail, usernameOrEmail)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + usernameOrEmail));
 
             if (users.getActive() == 0) {
                 throw new DisabledException("User is not active.Kindly activate theaccount by verifying the email");
             }
-            if (registrationDAO.checkIfUserExistsByUser_ID(users)) {
-                throw new DisabledException("You need to be a member of the group to login.");
+            Users userdetails= registrationDAO.checkIfUserExistsByUser_ID(users);
+            
+            if (userdetails!=null && userdetails.getActive() == 1 ) {
+            	return UserPrincipal.create(users);	
+            }else {
+            	throw new DisabledException("User is not Active. Check with administrator ");
             }
-            return UserPrincipal.create(users);
+            
     }
 
     @Transactional

@@ -16,6 +16,8 @@ and set Can access virtual hosts to /
  Setting up database: 
  https://medium.com/@dilsimchandrasena/how-to-deploy-and-use-a-mysql-docker-container-in-ubuntu-4ace7c893982
  
+ Alias: 
+ alias k='kubectl' 
 
 
 Database: 
@@ -35,9 +37,14 @@ These are the username and password to log in to your database and phpMyAdmin
 
 
 
+cd 	
+docker build --rm -t santhoshdr/az1 .
 
-docker build --rm -t santhoshdr/myappbuild1 .
 
+##dirdatabaseadmin\Mahati@123
+
+
+#dirdatabase
 
 
 DB Setup:
@@ -65,3 +72,79 @@ CREATE SCHEMA `myapp2` ;
 
 
 
+
+
+Pending:
+
+1. Fluetd Service
+2. Log 
+3. CSS in member page
+4. View/Edit memer by me.
+5. Validation of various fields.
+
+
+
+mvn install -Dmaven.test.skip=true
+docker build -t 5 .
+
+directoryadmin / mywork@123
+
+
+docker run  -p 8085:8085  6
+http://localhost:8085/user/loginHome
+
+
+
+Kubernetes commands:
+
+minikube service --url my-nginx
+
+C:\Users\Home>minikube service --url my-nginx
+* Starting tunnel for service my-nginx.
+|-----------|----------|-------------|------------------------|
+| NAMESPACE |   NAME   | TARGET PORT |          URL           |
+|-----------|----------|-------------|------------------------|
+| default   | my-nginx |             | http://127.0.0.1:50419 |
+|-----------|----------|-------------|------------------------|
+http://127.0.0.1:50419
+! Because you are using a Docker driver on windows, the terminal needs to be open to run it.
+
+
+
+
+https://minikube.sigs.k8s.io/docs/handbook/dashboard/
+Minikube dashboard:
+
+C:\Users\Home> minikube dashboard --url
+* Enabling dashboard ...
+  - Using image kubernetesui/dashboard:v2.1.0
+  - Using image kubernetesui/metrics-scraper:v1.0.4
+* Verifying dashboard health ...
+* Launching proxy ...
+* Verifying proxy health ...
+http://127.0.0.1:50501/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+
+
+
+
+https://logz.io/blog/logging-kubernetes-aks-logs-elk-stack-logz-io/
+
+
+ minikube service --url app-directory
+ 
+ 
+ 
+ 				
+ Spinnaker:
+ 
+ https://www.opsmx.com/blog/installing-spinnaker-to-minikube-kubernetes-using-helm-chart/
+ 
+ kubectl exec -it fails with "Unable to use a TTY" and never get a prompt
+ https://github.com/kubernetes/kubernetes/issues/37471
+ winpty kubectl exec -it bash
+ 
+ 
+ 
+ CHange NS:
+ 
+ kubectl config set-context --current --namespace=directory

@@ -5,6 +5,22 @@
 	    String pageName = request.getAttribute("pageName") != null ? (String) request.getAttribute("pageName") : "";
 	    System.out.println("Pagename" + pageName );
 	    switch (pageName) {
+	    
+	    case "callPaymentHtml":
+	        %>
+	    <%@ include file="callPaymentHtml.jsp"%>     
+	        <%	    
+	        break;
+	    case "matromonialServiceViewWedProfile":
+	        %>
+	    <%@ include file="moredetailsWedProfile.jsp"%> 
+	    <%
+	    break;
+	    case "viewAllWedProfiles":
+	      %>
+	      <%@ include file="viewAllWedProfiles.jsp"%> 
+        <%     
+        break;
 	    case "viewWedProfile":
 	     %>
 	      <%@ include file="viewWedProfile.jsp"%>        
@@ -26,6 +42,7 @@
 	<%
 	    break;
 	    case "addMember":
+	    System.out.println("back from payment page");
 	%>
 	<%@ include file="addMember.jsp"%>
 	<%

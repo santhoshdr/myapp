@@ -1,8 +1,11 @@
 package net.drs.myapp.resource.internalui;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -22,14 +25,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.drs.myapp.api.IMatrimonyService;
 import net.drs.myapp.api.IRegistrationService;
 import net.drs.myapp.api.IUserDetails;
 import net.drs.myapp.constants.ApplicationConstants;
 import net.drs.myapp.dto.UserDTO;
 import net.drs.myapp.dto.UserServiceDTO;
+import net.drs.myapp.dto.WedDTO;
+import net.drs.myapp.exceptions.MatrimonialException;
 import net.drs.myapp.model.Role;
 import net.drs.myapp.model.User;
+import net.drs.myapp.model.Users;
+import net.drs.myapp.model.Wed;
 import net.drs.myapp.resource.GenericService;
 import net.drs.myapp.response.handler.ExeceptionHandler;
 import net.drs.myapp.response.handler.SuccessMessageHandler;
@@ -46,6 +55,9 @@ public class AdministrationService extends GenericService {
 
     @Autowired
     IRegistrationService registrationService;
+    
+    @Autowired
+    IMatrimonyService matrimonialService;
 
     @Autowired
     IUserDetails userDetails;
@@ -184,21 +196,25 @@ public class AdministrationService extends GenericService {
 
     
     
+    @PostMapping("/addRoletoUser")
+    public ModelAndView  makeorRemoveAdmin(Long userId,String roleNme) {
+        try {
+            Long updatedBy = getLoggedInUserId();
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(userId);
+            userDTO.setUpdatedBy(Long.toString(updatedBy));
+            userDTO.setUpdatedDate(AppUtils.getCurrentDate());
+            userDetails.makeorremoveAdmin(userDTO);
+            return new ModelAndView("redirect:/admin/getAllActiveUsers");
+        } catch (Exception e) {
+            e.printStackTrace();
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return null;
+        }
+    } 
     
     
     
-    
-    
-    
-    
-    
-    
-    /*
-     * 
-     * { "userId":"2", "roles":[{"roleId":6,"role":"ADMIN"}]
-     * 
-     * }
-     */
     @PutMapping("/changeUserRole")
     public ResponseEntity<?> getAllUsersWithRoles(@AuthenticationPrincipal Principal principal, @RequestBody UserServiceDTO userServiceDTO) {
         try {
@@ -257,8 +273,30 @@ public class AdministrationService extends GenericService {
         try {
             // 10 is not used any where as of now.. Need to use this if
             // performance degrades
-            List<UserServiceDTO> userDTO = userDetails.getAllUsers(10);
-            return new ModelAndView("loginSuccess").addObject("listofusers", userDTO).addObject("pageName", "getAllUsers");
+            net.drs.myapp.utils.Role[]  listofRoles = net.drs.myapp.utils.Role.values();
+            List<Users> users= userDetails.getAllUsers(10);
+            
+            for (Users userServiceDTO : users) {
+            	Iterator it = userServiceDTO.getRoles().iterator();
+            	
+            	while(it.hasNext()) {
+            		Role associatedRole = (Role)it.next();
+            		if(associatedRole.getRole().equalsIgnoreCase(net.drs.myapp.utils.Role.ADMIN.getRole())) {
+            			userServiceDTO.getAssociatedRoles().add(net.drs.myapp.utils.Role.ADMIN.getRoleDisplayName());
+            		}else if(associatedRole.getRole().equalsIgnoreCase(net.drs.myapp.utils.Role.MATRIMONY.getRole())) {
+            			userServiceDTO.getAssociatedRoles().add(net.drs.myapp.utils.Role.MATRIMONY.getRoleDisplayName());
+                    }else if(associatedRole.getRole().equalsIgnoreCase(net.drs.myapp.utils.Role.USER.getRole())) {
+                    	userServiceDTO.getAssociatedRoles().add(net.drs.myapp.utils.Role.USER.getRoleDisplayName());
+                    }
+            		
+            		
+            	}
+			}
+            
+            return new ModelAndView("loginSuccess").
+                                     addObject("listofusers", users).
+                                     addObject("pageName", "getAllUsers").
+                                     addObject("listOfRoles", listofRoles);
         } catch (Exception e) {
             e.printStackTrace();
             ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
@@ -266,6 +304,55 @@ public class AdministrationService extends GenericService {
         }
     }
 
+    
+    @PostMapping("/changeRole")
+    public ModelAndView changeRole(String[] newRole,Long  userId,RedirectAttributes redirectAttributes) {
+    	
+    	
+        try {
+            userDetails.updateUserRole(userId, Arrays.asList(newRole), "updateRole");
+            return new ModelAndView("redirect:/admin/getAllUsers");
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ModelAndView("loginSuccess").addObject("listofusers", errorDetails);
+        }
+    }
+
+    
+    
+    @GetMapping("/getUserRoles")
+    public ResponseEntity<?> getUserRoles(Long  userId) {
+    	
+    	List<String> listofRolesAssociatedwithUser = new ArrayList<String>();
+        try {
+            Users user = userDetails.getUsersById(userId);
+            
+            Iterator it = user.getRoles().iterator();
+            while(it.hasNext()) {
+            Role role1 = (Role)it.next();
+           	String roleName = role1.getRole();
+           	
+           	
+           	// this code needs to be re-looked.
+           	if(roleName.equalsIgnoreCase(net.drs.myapp.utils.Role.ADMIN.getRole())) {
+           		listofRolesAssociatedwithUser.add(net.drs.myapp.utils.Role.ADMIN.getRoleDisplayName());
+           	}else if(roleName.equalsIgnoreCase(net.drs.myapp.utils.Role.MATRIMONY.getRole())) {
+               		listofRolesAssociatedwithUser.add(net.drs.myapp.utils.Role.MATRIMONY.getRoleDisplayName());
+            }else if(roleName.equalsIgnoreCase(net.drs.myapp.utils.Role.USER.getRole())) {
+           		listofRolesAssociatedwithUser.add(net.drs.myapp.utils.Role.USER.getRoleDisplayName());
+            }
+            }
+            return new ResponseEntity<>(listofRolesAssociatedwithUser, HttpStatus.OK);
+        } catch (Exception e) {
+            ExeceptionHandler errorDetails = new ExeceptionHandler(new Date(), "Something not working. Try after some time.", "");
+            return new ResponseEntity<>(listofRolesAssociatedwithUser, HttpStatus.BAD_REQUEST);
+
+        }
+    }
+    
+    
+    
+    
     /*
      * // those who can login
      * 
@@ -278,4 +365,30 @@ public class AdministrationService extends GenericService {
      * "Something not working. Try after some time.", ""); return new
      * ModelAndView("loginSuccess").addObject("listofusers", errorDetails); } }
      */
+    
+    
+    @GetMapping("/deactivateWedProfile/{id}")
+    public ModelAndView deactivateWedProfile(@PathVariable("id") Long wedid,RedirectAttributes redirectAttributes) throws MatrimonialException {
+        
+        WedDTO weddto = new WedDTO();
+        weddto.setId(wedid);
+        weddto.setIsProfileActive(false);
+        weddto.setUpdatedBy(getLoggedInUserName());
+        Wed wed = matrimonialService.activatedeactivateWed(weddto);
+        redirectAttributes.addFlashAttribute("successMessage", "Profile Deactivates Successfully");
+        return new ModelAndView("redirect:/matrimony/getAllWedProfiles");
+    }
+    
+    @GetMapping("/activateWedProfile/{id}")
+    public ModelAndView activateWedProfile(@PathVariable("id") Long wedid,RedirectAttributes redirectAttributes) throws MatrimonialException {
+        
+        WedDTO weddto = new WedDTO();
+        weddto.setIsProfileActive(true);
+        weddto.setId(wedid);
+        weddto.setUpdatedBy(getLoggedInUserName());
+        Wed wed = matrimonialService.activatedeactivateWed(weddto);
+        redirectAttributes.addFlashAttribute("successMessage", "Profile Deactivates Successfully");
+        return new ModelAndView("redirect:/matrimony/getAllWedProfiles");
+    }
+    
 }

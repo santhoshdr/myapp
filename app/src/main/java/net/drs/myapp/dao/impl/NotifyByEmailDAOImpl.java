@@ -6,12 +6,12 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import net.drs.myapp.dao.INotifyByEmailDAO;
-import net.drs.myapp.model.Email;
-import net.drs.myapp.model.SMS;
-
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import net.drs.myapp.dao.INotifyByEmailDAO;
+import net.drs.myapp.notification.Email;
+import net.drs.myapp.notification.SMS;
 
 @Repository("notficationEmailDAO")
 @Transactional

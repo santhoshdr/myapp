@@ -2,8 +2,8 @@ package net.drs.myapp.dao;
 
 import java.util.List;
 
-import net.drs.myapp.model.Email;
-import net.drs.myapp.model.SMS;
+import net.drs.myapp.notification.Email;
+import net.drs.myapp.notification.SMS;
 
 public interface INotifyByEmailDAO {
 
